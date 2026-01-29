@@ -1,1 +1,22 @@
+#Domain : Non-Profit & NGO operations
+#Problem Statement : Volunteer & Resource coordination System
+#Last Updated : 2026-01-29
 
+Volunteer:
+ definition:
+  An individual who willingly contributes time and skills to support NGO activites without receiving financial compensation.
+ examples:
+  A volunteer coordinating medical camps in rural areas
+ aliases:
+ -FieldWorker
+ -AidWorker
+
+Donor:
+ definition: 
+  A person or organization that provides financial or material support to the NGO to fund programs.
+ examples:
+  -An individual donating money through the NGO platform.
+  -A company sponsoring a fundrasinig campaign.
+aliases:
+  - Contributor
+  - Sponsor
