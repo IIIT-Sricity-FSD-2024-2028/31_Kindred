@@ -6,7 +6,8 @@ Volunteer:
  definition:
   An individual who willingly contributes time and skills to support NGO activites without receiving financial compensation.
  examples:
-  A volunteer coordinating medical camps in rural areas
+ - A volunteer coordinating medical camps in rural areas.
+ - A student organizing awareness campaigns on environmental conservation.
  aliases:
  -FieldWorker
  -AidWorker
@@ -16,7 +17,8 @@ Donor:
   A person or organization that provides financial or material support to the NGO to fund programs.
  examples:
   -An individual donating money through the NGO platform.
-  -A company sponsoring a fundrasinig campaign.
+  -A local business donating supplies for disaster relief efforts.
 aliases:
   - Contributor
   - Sponsor
+  - Benefactor
