@@ -116,3 +116,6 @@ __4. Resource management__
 
 ## Feature Diagrams
 
+All feature diagrams are available here:  
+🔗[View Diagrams ](https://drive.google.com/drive/folders/1ODnSBNUionGsIdtz2sQPj2ikyXgasMli?usp=sharing) 
+
