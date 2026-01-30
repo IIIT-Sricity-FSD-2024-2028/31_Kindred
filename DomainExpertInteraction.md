@@ -7,7 +7,7 @@ This document records the interaction with the domain expert for the Volunteer a
 - Problem Statement: Understanding and documenting workflows involved in managing volunteers and          resources in NGO programs
 - Date of Interaction: 23 January 2026
 - Mode of Interaction: Google Meet
-- Duration (in minutes): 17:18
+- Duration (in minutes): 17:18 minutes
 - Publicly Accessible Video Link:https://drive.google.com/file/d/1UrznjB7P8I9RkXtyz_tw-B8cjbnEvhUJ/view?usp=sharing
 
 ## Domain Expert Details
