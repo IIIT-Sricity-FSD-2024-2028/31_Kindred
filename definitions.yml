@@ -51,3 +51,14 @@ Task:
   aliases:
     - VolunteerTask
     - ProgramActivity
+
+AssistanceRequest:
+  definition:
+    A formal request submitted by a beneficiary through the system to receive support or resources from the NGO.
+  examples:
+    - Request for medical aid
+    - Request for food supplies
+  aliases:
+    - HelpRequest
+    - SupportRequest
+
