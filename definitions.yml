@@ -3,22 +3,51 @@
 #Last Updated : 2026-01-29
 
 Volunteer:
- definition:
-  An individual who willingly contributes time and skills to support NGO activites without receiving financial compensation.
- examples:
- - A volunteer coordinating medical camps in rural areas.
- - A student organizing awareness campaigns on environmental conservation.
- aliases:
- -FieldWorker
- -AidWorker
+  definition:
+    An individual who willingly contributes time and skills to support NGO activities without receiving financial compensation.
+  examples:
+    - A student organizing awareness campaigns on environmental conservation
+    - A college student applying to help in a food distribution drive
+  aliases:
+    - FieldWorker
+    - AidWorker
 
 Donor:
- definition: 
-  A person or organization that provides financial or material support to the NGO to fund programs.
- examples:
-  -An individual donating money through the NGO platform.
-  -A local business donating supplies for disaster relief efforts.
-aliases:
-  - Contributor
-  - Sponsor
-  - Benefactor
+  definition: 
+    An individual or organization that provides financial or material support to the NGO programs and causes.
+  examples:
+    - An individual donating money through the NGO platform.
+    - A local business donating supplies for disaster relief
+  aliases:
+    - Contributor
+    - Sponsor
+
+Beneficiary:
+  definition:
+    An individual or group that receives aid, services, or support provided by the NGO through its programs and initiatives.
+  examples:
+    - Elderly individuals receiving healthcare support through outreach camps
+    - Homeless individuals receiving meals through a community feeding program
+  aliases:
+    - ServiceRecipient
+    - AidReceiver
+
+FundrasingCampaign:
+  definition:
+    A structured initiative led by the NGO to collect funds or resources from donors for a specific social cause.
+  examples:
+    - Emergency medical aid fundraising campaign
+    - Child welfare fundraising campaign
+  aliasas:
+    - FundDrive
+    - SupportCampaign
+
+Task:
+  definition:
+    A clearly defined responsibility assigned to a volunteer to support NGO programs and activites.
+  examples:
+    - Conducting household surveys for community needs assessment
+    - Collecting beneficiary feedback
+  aliases:
+    - VolunteerResponsibility
+    - FieldTask
