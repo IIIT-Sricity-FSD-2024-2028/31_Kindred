@@ -9,8 +9,8 @@ Volunteer:
     - A student organizing awareness campaigns on environmental conservation
     - A college student applying to help in a food distribution drive
   aliases:
-    - FieldWorker
-    - AidWorker
+    - ProgramVolunteer
+    - CommunityVolunteer
 
 Donor:
   definition: 
@@ -19,8 +19,8 @@ Donor:
     - An individual donating money through the NGO platform
     - A local business donating supplies for disaster relief
   aliases:
-    - Contributor
-    - Sponsor
+    - ResourceContributor
+    - FinancialSupporter
 
 Beneficiary:
   definition:
@@ -30,7 +30,7 @@ Beneficiary:
     - Homeless individuals receiving meals through a community feeding program
   aliases:
     - ServiceRecipient
-    - AidReceiver
+    - AidRecipient
 
 FundraisingCampaign:
   definition:
@@ -40,7 +40,7 @@ FundraisingCampaign:
     - Child welfare fundraising campaign
   aliases:
     - FundDrive
-    - SupportCampaign
+    - DonationCampaign
 
 Task:
   definition:
@@ -49,5 +49,5 @@ Task:
     - Conducting household surveys for community needs assessment
     - Collecting beneficiary feedback
   aliases:
-    - VolunteerResponsibility
-    - FieldTask
+    - VolunteerTask
+    - ProgramActivity
