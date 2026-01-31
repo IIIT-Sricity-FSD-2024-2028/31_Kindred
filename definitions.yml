@@ -4,7 +4,7 @@
 
 Volunteer:
   definition:
-    An individual who willingly contributes time and skills to support NGO activities without receiving financial compensation.
+    A person who actively participates in NGO activities by contributing time, effort, or skills to carry out assigned tasks and support program execution.
   examples:
     - A student organizing awareness campaigns on environmental conservation
     - A college student applying to help in a food distribution drive
@@ -14,9 +14,9 @@ Volunteer:
 
 Donor:
   definition: 
-    An individual or organization that provides financial or material support to the NGO programs and causes.
+    An individual or organization that supports the NGO by providing financial contributions or material resources to enable programs and initiatives.
   examples:
-    - An individual donating money through the NGO platform.
+    - An individual donating money through the NGO platform
     - A local business donating supplies for disaster relief
   aliases:
     - Contributor
@@ -24,7 +24,7 @@ Donor:
 
 Beneficiary:
   definition:
-    An individual or group that receives aid, services, or support provided by the NGO through its programs and initiatives.
+    An individual or community for whom the NGO's programs are intended and who receives assistance, services, or support as an outcome of those programs.
   examples:
     - Elderly individuals receiving healthcare support through outreach camps
     - Homeless individuals receiving meals through a community feeding program
@@ -32,19 +32,19 @@ Beneficiary:
     - ServiceRecipient
     - AidReceiver
 
-FundrasingCampaign:
+FundraisingCampaign:
   definition:
     A structured initiative led by the NGO to collect funds or resources from donors for a specific social cause.
   examples:
     - Emergency medical aid fundraising campaign
     - Child welfare fundraising campaign
-  aliasas:
+  aliases:
     - FundDrive
     - SupportCampaign
 
 Task:
   definition:
-    A clearly defined responsibility assigned to a volunteer to support NGO programs and activites.
+    A clearly defined responsibility assigned to a volunteer to support NGO programs and activities.
   examples:
     - Conducting household surveys for community needs assessment
     - Collecting beneficiary feedback
