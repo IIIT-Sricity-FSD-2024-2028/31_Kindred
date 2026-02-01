@@ -2,60 +2,6 @@
 # Problem Statement: Volunteer & Resource Coordination System
 # Last Updated: 2026-02-01
 
-Volunteer:
-  definition:
-    An individual who actively participates in organizational activities by contributing time,
-    effort, or skills to support programs and assigned responsibilities.
-  examples:
-    - A student organizing awareness campaigns on environmental conservation
-    - A volunteer assisting in a food distribution drive
-  aliases:
-    - ProgramVolunteer
-    - CommunityVolunteer
-
-Donor:
-  definition: 
-    An individual or organization that supports the organization by providing financial
-    contributions or material resources to enable programs and initiatives.
-  examples:
-    - An individual donating money through a fundraising campaign
-    - A local business donating supplies for disaster relief
-  aliases:
-    - ResourceContributor
-    - FinancialSupporter
-
-Beneficiary:
-  definition: 
-    An individual or community for whom organizational programs are intended and who receives
-    assistance, services, or support as an outcome of those programs.
-  examples:
-    - Elderly individuals receiving healthcare support through outreach camps
-    - Homeless individuals receiving meals through a community feeding program
-  aliases:
-    - ServiceRecipient
-    - AidRecipient
-
-FundraisingCampaign:
-  definition: 
-    A structured initiative led by the organization to collect monetary or material contributions
-    from donors for a specific social cause.
-  examples:
-    - Emergency medical aid fundraising campaign
-    - Child welfare fundraising campaign
-  aliases:
-    - FundDrive
-    - DonationCampaign
-
-Donation:
-  definition: 
-    A voluntary contribution made by a donor to support a fundraising campaign or organizational mission.
-  examples:
-    - A donor contributing money to a disaster relief campaign
-    - A donor providing essential supplies for a shelter
-  aliases:
-    - Contribution
-    - Gift
-
 DonationImpact:
   definition: 
     The observable outcome or positive change created through the effective use of donations.
@@ -138,3 +84,43 @@ ProgramPerformance:
   aliases:
     - ProgramEvaluation
     - PerformanceReview
+
+Impact Report:
+  definition: A document summarizing the outcomes and effectiveness of donations or programs over a period.
+  aliases:
+    - Outcome Report
+    - Performance Summary
+
+Shift:
+  definition: The specific day and time when a volunteer is scheduled to help.
+  aliases:
+    - Time Slot
+    - Schedule
+  examples:
+   - My shift is from 9 AM to 12 PM on Saturday
+   
+Distribution:
+    definition: The act of giving out resources to beneficiaries or communities.
+    aliases:
+      - Handout
+      - Resource Sharing
+    examples:
+      - The food distribution happens every Saturday morning
+      - We completed the medicine distribution for this month
+
+Feedback:
+    definition: Comments or opinions shared by volunteers, donors, or beneficiaries about their experience.
+    aliases:
+      - Review
+      - Response
+    examples:
+      - Beneficiary feedback helps us improve our programs
+      - Volunteers can submit feedback after each shift
+
+Inventory:
+    definition: The complete list of all resources currently available with the organization.
+    aliases:
+      - Stock
+      - Available Supplies
+    examples:
+      - The inventory shows were low on winter clothing
