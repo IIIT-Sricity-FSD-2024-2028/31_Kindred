@@ -116,6 +116,8 @@ __4. Resource management__
 
 ## Feature Diagrams
 
-All the feature diagrams are available here:  
-🔗[View Diagrams ](https://drive.google.com/drive/folders/1ODnSBNUionGsIdtz2sQPj2ikyXgasMli?usp=sharing) 
+All the diagram Links are available here:  
+🔗[View Feature Diagrams ](https://drive.google.com/drive/folders/1ODnSBNUionGsIdtz2sQPj2ikyXgasMli?usp=sharing) 
+
+🔗[all UML Diagrams](https://drive.google.com/drive/folders/1pVUc5ODSy_EJXsrURGvRIXgbKM3LPCqv?usp=drive_link)
 
