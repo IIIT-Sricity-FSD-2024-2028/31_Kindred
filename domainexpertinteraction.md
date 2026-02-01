@@ -8,7 +8,7 @@ This document records the interaction with the domain expert for the Volunteer a
 - Date of Interaction: 23 January 2026
 - Mode of Interaction: Google Meet
 - Duration (in minutes): 17:18 minutes
-- Publicly Accessible Video Link:https://drive.google.com/file/d/1UrznjB7P8I9RkXtyz_tw-B8cjbnEvhUJ/view?usp=sharing
+- Publicly Accessible Video Link: https://drive.google.com/file/d/1agg3S50LHzx5Z5VP-ZTwoMfgap8nSqvR/view?usp=sharing
 
 ## Domain Expert Details
 - Role / Designation: Program Manager – Social Impact & Volunteer Coordination
