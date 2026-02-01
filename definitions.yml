@@ -85,11 +85,15 @@ ProgramPerformance:
     - ProgramEvaluation
     - PerformanceReview
 
-Impact Report:
-  definition: A document summarizing the outcomes and effectiveness of donations or programs over a period.
+ImpactReport:
+  definition: 
+    A document that summarizes the outcomes, results, and effectiveness of donations or NGO programs over a defined period.
+  examples:
+    - A summary report explaining how medical aid donations supported a rural health camp
+    - A program impact report detailing the success of a flood relief initiative
   aliases:
-    - Outcome Report
-    - Performance Summary
+    - outcome report
+    - performance summary
 
 Shift:
   definition: The specific day and time when a volunteer is scheduled to help.
