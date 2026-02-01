@@ -124,3 +124,12 @@ Inventory:
       - Available Supplies
     examples:
       - The inventory shows were low on winter clothing
+
+ResourceRequest:
+    definition: A request raised by volunteers or programs for required resources to execute NGO activities.
+    aliases:
+      - resource demand
+      - support request
+    examples:
+      - Requesting medical kits for a health camp
+ 
