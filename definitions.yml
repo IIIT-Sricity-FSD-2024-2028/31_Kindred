@@ -1,30 +1,33 @@
-#Domain : Non-Profit & NGO operations
-#Problem Statement : Volunteer & Resource coordination System
-#Last Updated : 2026-01-29
+# Domain: Non-Profit & NGO Operations
+# Problem Statement: Volunteer & Resource Coordination System
+# Last Updated: 2026-02-01
 
 Volunteer:
   definition:
-    A person who actively participates in NGO activities by contributing time, effort, or skills to carry out assigned tasks and support program execution.
+    An individual who actively participates in organizational activities by contributing time,
+    effort, or skills to support programs and assigned responsibilities.
   examples:
     - A student organizing awareness campaigns on environmental conservation
-    - A college student applying to help in a food distribution drive
+    - A volunteer assisting in a food distribution drive
   aliases:
     - ProgramVolunteer
     - CommunityVolunteer
 
 Donor:
   definition: 
-    An individual or organization that supports the NGO by providing financial contributions or material resources to enable programs and initiatives.
+    An individual or organization that supports the organization by providing financial
+    contributions or material resources to enable programs and initiatives.
   examples:
-    - An individual donating money through the NGO platform
+    - An individual donating money through a fundraising campaign
     - A local business donating supplies for disaster relief
   aliases:
     - ResourceContributor
     - FinancialSupporter
 
 Beneficiary:
-  definition:
-    An individual or community for whom the NGO's programs are intended and who receives assistance, services, or support as an outcome of those programs.
+  definition: 
+    An individual or community for whom organizational programs are intended and who receives
+    assistance, services, or support as an outcome of those programs.
   examples:
     - Elderly individuals receiving healthcare support through outreach camps
     - Homeless individuals receiving meals through a community feeding program
@@ -33,8 +36,9 @@ Beneficiary:
     - AidRecipient
 
 FundraisingCampaign:
-  definition:
-    A structured initiative led by the NGO to collect funds or resources from donors for a specific social cause.
+  definition: 
+    A structured initiative led by the organization to collect monetary or material contributions
+    from donors for a specific social cause.
   examples:
     - Emergency medical aid fundraising campaign
     - Child welfare fundraising campaign
@@ -42,19 +46,30 @@ FundraisingCampaign:
     - FundDrive
     - DonationCampaign
 
-Task:
-  definition:
-    A clearly defined responsibility assigned to a volunteer to support NGO programs and activities.
+Donation:
+  definition: 
+    A voluntary contribution made by a donor to support a fundraising campaign or organizational mission.
   examples:
-    - Conducting household surveys for community needs assessment
-    - Collecting beneficiary feedback
+    - A donor contributing money to a disaster relief campaign
+    - A donor providing essential supplies for a shelter
   aliases:
-    - VolunteerTask
-    - ProgramActivity
+    - Contribution
+    - Gift
+
+DonationImpact:
+  definition: 
+    The observable outcome or positive change created through the effective use of donations.
+  examples:
+    - Number of families supported using donated funds
+    - Relief supplies distributed through donor contributions
+  aliases:
+    - ImpactOutcome
+    - ContributionImpact
 
 AssistanceRequest:
-  definition:
-    A formal request submitted by a beneficiary through the system to receive support or resources from the NGO.
+  definition: 
+    A formal request submitted by a beneficiary seeking assistance, resources, or services
+    from the organization.
   examples:
     - Request for medical aid
     - Request for food supplies
@@ -62,3 +77,64 @@ AssistanceRequest:
     - HelpRequest
     - SupportRequest
 
+RequestApproval:
+  definition: 
+    A decision-making process in which an assistance request is evaluated and either accepted
+    or declined based on priority and availability.
+  examples:
+    - Approving a request for emergency shelter
+    - Rejecting a request due to insufficient resources
+  aliases:
+    - RequestDecision
+    - ApprovalProcess
+
+Task:
+  definition: 
+    A clearly defined responsibility assigned to a volunteer to support organizational programs
+    and assistance activities.
+  examples:
+    - Conducting household surveys for community needs assessment
+    - Collecting feedback from beneficiaries
+  aliases:
+    - VolunteerTask
+    - ProgramActivity
+
+Resource:
+  definition: 
+    Any financial, material, or human asset used to support programs and fulfill assistance requests.
+  examples:
+    - Food supplies for relief distribution
+    - Funds allocated for healthcare support
+  aliases:
+    - AidResource
+    - SupportAsset
+
+ResourceAssignment:
+  definition: 
+    The allocation of volunteers or resources to fulfill an approved assistance request.
+  examples:
+    - Assigning a volunteer to deliver medical supplies
+    - Allocating funds to a beneficiary request
+  aliases:
+    - ResourceAllocation
+    - Assignment
+
+VolunteerOpportunity:
+  definition: 
+    A defined activity or engagement through which volunteers can contribute to organizational efforts.
+  examples:
+    - Teaching sessions for underprivileged children
+    - Field support during disaster relief
+  aliases:
+    - ServiceOpportunity
+    - VolunteerAssignment
+
+ProgramPerformance:
+  definition: 
+    The evaluation of how effectively programs achieve their intended goals and outcomes.
+  examples:
+    - Measuring the success of a nutrition program
+    - Reviewing volunteer participation levels
+  aliases:
+    - ProgramEvaluation
+    - PerformanceReview
