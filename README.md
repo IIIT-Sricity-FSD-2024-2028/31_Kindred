@@ -19,7 +19,7 @@ The system supports four primary user roles:
 
 * Beneficiary - Individuals or groups who receive assistance and support from the organization
 
-* Admin - System administrators and organizational staff who manage operations, users, and programs
+* Administrator - System administrators and organizational staff who manage operations, users, and programs
 
 # Actor Features:
 
@@ -83,7 +83,7 @@ __2. Beneficiary Support & Engagement__
 * Schedule virtual or in-person meetings with case workers: Arrange consultations with support personnel
 * Share success stories and testimonials anonymously or publicly: Contribute testimonials to showcase program impact
 
-## Admin Features
+## Administrator Features
 
 __1. Manage Users__
 
