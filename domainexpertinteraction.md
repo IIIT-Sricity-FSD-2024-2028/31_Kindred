@@ -41,7 +41,7 @@ The purpose of the volunteer and resource coordination system is to ensure effec
 
 |      Actor / Role    |                               Responsibilities                             |
 |----------------------|----------------------------------------------------------------------------|
-|         Admin        |           Manages users, resources, inventory, and task assignments        |
+| Administrator        |           Manages users, resources, inventory, and task assignments        |
 |       Volunteer      |               Performs assigned tasks and reports observations             |
 |         Donor        |                   Provides monetary or physical resources                  |
 |      Beneficiary     |                          Requests and receives aid                         |
@@ -52,17 +52,17 @@ The purpose of the volunteer and resource coordination system is to ensure effec
 ### Workflow 1: Volunteer Task Assignment
 - Trigger: A new NGO activity is planned
 - Steps:
-  1. Admin creates a task in the system
+  1. Administrator creates a task in the system
   2. System displays available volunteers
-  3. Admin assigns volunteers to the task
+  3. Administrator assigns volunteers to the task
   4. System notifies volunteers
 - Outcome: Volunteers are successfully assigned to the activity
 
 ### Workflow 2: Resource Management and Inventory Update
 - Trigger: New resources are donated or distributed
 - Steps:
-  1. Admin logs into the system
-  2. Admin adds or updates resource details
+  1. Administrator logs into the system
+  2. Administrator adds or updates resource details
   3. System validates the input
   4. Inventory is updated
 - Outcome: Accurate and up-to-date inventory records
@@ -72,13 +72,13 @@ The purpose of the volunteer and resource coordination system is to ensure effec
 - Steps:
   1. Beneficiary submits an aid request
   2. System records the request
-  3. Admin reviews and approves the request
+  3. Administrator reviews and approves the request
   4. Resources and volunteers are allocated
 - Outcome: Aid is delivered to the beneficiary
 
 ## Rules, Constraints, and Exceptions
 - Mandatory rules or policies:
-  - Only admins can modify inventory and assign tasks
+  - Only Administrators can modify inventory and assign tasks
   - Beneficiary requests must be verified before approval
 - Constraints or limitations:
   - Limited availability of volunteers and resources
