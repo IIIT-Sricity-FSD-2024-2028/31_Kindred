@@ -4,7 +4,7 @@ USE KINDRED;
 CREATE TABLE Users (
     user_id INT PRIMARY KEY,
     user_name VARCHAR(100) NOT NULL,
-    user_email VARCHAR(100) NOT NULL,
+    user_email VARCHAR(100) UNIQUE NOT NULL,
     user_contact VARCHAR(15) NOT NULL,
     user_address TEXT,
     password VARCHAR(255) NOT NULL,
@@ -71,18 +71,19 @@ CREATE TABLE Location (
 );
 
 CREATE TABLE Task (
-    task_id INT PRIMARY KEY,
-    task_name VARCHAR(150),
-    task_type_id INT,
-    task_status VARCHAR(20)
-        CHECK (task_status IN ('PENDING','ONGOING','COMPLETED','CANCELLED')),
-    start_date DATE,
-    end_date DATE,
-    pincode INT,
-    organization_id INT,
-    FOREIGN KEY (task_type_id) REFERENCES Task_Type(task_type_id),
-    FOREIGN KEY (pincode) REFERENCES Location(pincode),
-    FOREIGN KEY (organization_id) REFERENCES Organization(organization_id)
+ task_id INT PRIMARY KEY,
+ task_name VARCHAR(150),
+ task_type_id INT,
+ task_status VARCHAR(20)
+ CHECK (task_status IN ('PENDING','ONGOING','COMPLETED','CANCELLED')),
+ start_date DATE,
+ end_date DATE,
+ pincode INT,
+ organization_id INT,
+CHECK (end_date IS NULL OR end_date >= start_date),
+FOREIGN KEY (task_type_id) REFERENCES Task_Type(task_type_id),
+FOREIGN KEY (pincode) REFERENCES Location(pincode),
+FOREIGN KEY (organization_id) REFERENCES Organization(organization_id)
 );
 
 CREATE TABLE Resource_Type (
@@ -108,28 +109,29 @@ CREATE TABLE Disaster_Type (
 );
 
 CREATE TABLE Volunteer_Application (
-    application_id INT PRIMARY KEY,
-    volunteer_id INT,
-    task_id INT,
-    application_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    application_status VARCHAR(20)
-        CHECK (application_status IN ('PENDING','APPROVED','REJECTED','WITHDRAWN')),
-    organization_id INT,
-    FOREIGN KEY (volunteer_id) REFERENCES Volunteer(volunteer_id),
-    FOREIGN KEY (task_id) REFERENCES Task(task_id),
-    FOREIGN KEY (organization_id) REFERENCES Organization(organization_id)
+application_id INT PRIMARY KEY,
+volunteer_id INT NOT NULL,
+task_id INT NOT NULL,
+application_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+application_status VARCHAR(20)
+CHECK (application_status IN ('PENDING','APPROVED','REJECTED','WITHDRAWN')),
+organization_id INT,
+UNIQUE (volunteer_id, task_id),
+FOREIGN KEY (volunteer_id) REFERENCES Volunteer(volunteer_id),
+FOREIGN KEY (task_id) REFERENCES Task(task_id),
+FOREIGN KEY (organization_id) REFERENCES Organization(organization_id)
 );
 
 CREATE TABLE Volunteer_Assignment (
-    assignment_id INT PRIMARY KEY,
-    application_id INT UNIQUE,
-    volunteer_id INT,
-    task_id INT,
-    hours_logged DECIMAL(6,2) CHECK (hours_logged >= 0),
-    assigned_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (application_id) REFERENCES Volunteer_Application(application_id),
-    FOREIGN KEY (volunteer_id) REFERENCES Volunteer(volunteer_id),
-    FOREIGN KEY (task_id) REFERENCES Task(task_id)
+assignment_id INT PRIMARY KEY,
+application_id INT UNIQUE,
+volunteer_id INT NOT NULL,
+task_id INT NOT NULL,
+hours_logged DECIMAL(6,2) CHECK (hours_logged >= 0),
+assigned_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY (application_id) REFERENCES Volunteer_Application(application_id),
+FOREIGN KEY (volunteer_id) REFERENCES Volunteer(volunteer_id),
+FOREIGN KEY (task_id) REFERENCES Task(task_id)
 );
 
 CREATE TABLE Beneficiary_Request (
@@ -148,14 +150,15 @@ CREATE TABLE Beneficiary_Request (
 );
 
 CREATE TABLE Request_Item (
-    request_item_id INT PRIMARY KEY,
-    beneficiary_request_id INT,
-    resource_id INT,
-    quantity_requested INT CHECK (quantity_requested > 0),
-    FOREIGN KEY (beneficiary_request_id)
-        REFERENCES Beneficiary_Request(beneficiary_request_id),
-    FOREIGN KEY (resource_id)
-        REFERENCES Resources(resource_id)
+ request_item_id INT PRIMARY KEY,
+ beneficiary_request_id INT,
+ resource_id INT,
+ quantity_requested INT CHECK (quantity_requested > 0),
+UNIQUE (beneficiary_request_id, resource_id),
+FOREIGN KEY (beneficiary_request_id)
+REFERENCES Beneficiary_Request(beneficiary_request_id),
+FOREIGN KEY (resource_id)
+REFERENCES Resources(resource_id)
 );
 
 CREATE TABLE Resource_Allocation (
@@ -179,17 +182,18 @@ CREATE TABLE Donations (
     donation_amount DECIMAL(10,2),
     donation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     payment_method VARCHAR(50),
-    status VARCHAR(20)
-        CHECK (status IN ('PENDING','COMPLETED','FAILED','CANCELLED')),
-    FOREIGN KEY (donor_id) REFERENCES Donor(donor_id),
-    FOREIGN KEY (organization_id) REFERENCES Organization(organization_id)
+status VARCHAR(20)
+CHECK (status IN ('PENDING','COMPLETED','FAILED','CANCELLED')),
+FOREIGN KEY (donor_id) REFERENCES Donor(donor_id),
+FOREIGN KEY (organization_id) REFERENCES Organization(organization_id)
 );
 
 CREATE TABLE Donation_Item (
-    donation_item_id INT PRIMARY KEY,
-    donation_id INT,
-    resource_id INT,
-    quantity INT CHECK (quantity > 0),
-    FOREIGN KEY (donation_id) REFERENCES Donations(donation_id),
-    FOREIGN KEY (resource_id) REFERENCES Resources(resource_id)
+donation_item_id INT PRIMARY KEY,
+donation_id INT,
+resource_id INT,
+quantity INT CHECK (quantity > 0),
+UNIQUE (donation_id, resource_id),
+FOREIGN KEY (donation_id) REFERENCES Donations(donation_id),
+FOREIGN KEY (resource_id) REFERENCES Resources(resource_id)
 );
