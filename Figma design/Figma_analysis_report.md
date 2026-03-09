@@ -104,11 +104,10 @@ These improve **user engagement and accessibility**.
 ---
 
 ## Figma Design Link
+### https://www.figma.com/design/fH0QdaVZAosjykAv4PV05b/Figma-prototype-final
 
-View the complete design prototype here:  
-https://www.figma.com/design/fH0QdaVZAosjykAv4PV05b/Figma-prototype-final?node-id=0-1&t=Md0T1PzhQCWk9rLm-1
-
----
+Drive link(.pdf):  
+https://drive.google.com/drive/folders/1yRxrZatDCDbv8eIs4dPCaPqD0tx1kflU?usp=sharing
 
 ## Conclusion
 
