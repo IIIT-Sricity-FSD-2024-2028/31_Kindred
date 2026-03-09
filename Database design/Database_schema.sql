@@ -5,7 +5,7 @@ CREATE TABLE Users (
     user_id INT PRIMARY KEY,
     user_name VARCHAR(100) NOT NULL,
     user_email VARCHAR(100) UNIQUE NOT NULL,
-    user_contact VARCHAR(15) UNIQUE,
+    user_contact VARCHAR(15) NOT NULL,
     user_address TEXT,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(30)
