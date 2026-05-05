@@ -1,0 +1,138 @@
+# Domain: Non-Profit & NGO Operations
+# Problem Statement: Volunteer & Resource Coordination System
+# Last Updated: 2026-02-01
+
+DonationImpact:
+  definition: 
+    The observable outcome or positive change created through the effective use of donations.
+  examples:
+    - Number of families supported using donated funds
+    - Relief supplies distributed through donor contributions
+  aliases:
+    - ImpactOutcome
+    - ContributionImpact
+
+AssistanceRequest:
+  definition: 
+    A formal request submitted by a beneficiary seeking assistance, resources, or services
+    from the organization.
+  examples:
+    - Request for medical aid
+    - Request for food supplies
+  aliases:
+    - HelpRequest
+    - SupportRequest
+
+RequestApproval:
+  definition: 
+    A decision-making process in which an assistance request is evaluated and either accepted
+    or declined based on priority and availability.
+  examples:
+    - Approving a request for emergency shelter
+    - Rejecting a request due to insufficient resources
+  aliases:
+    - RequestDecision
+    - ApprovalProcess
+
+Task:
+  definition: 
+    A clearly defined responsibility assigned to a volunteer to support organizational programs
+    and assistance activities.
+  examples:
+    - Conducting household surveys for community needs assessment
+    - Collecting feedback from beneficiaries
+  aliases:
+    - VolunteerTask
+    - ProgramActivity
+
+Resource:
+  definition: 
+    Any financial, material, or human asset used to support programs and fulfill assistance requests.
+  examples:
+    - Food supplies for relief distribution
+    - Funds allocated for healthcare support
+  aliases:
+    - AidResource
+    - SupportAsset
+
+ResourceAssignment:
+  definition: 
+    The allocation of volunteers or resources to fulfill an approved assistance request.
+  examples:
+    - Assigning a volunteer to deliver medical supplies
+    - Allocating funds to a beneficiary request
+  aliases:
+    - ResourceAllocation
+    - Assignment
+
+VolunteerOpportunity:
+  definition: 
+    A defined activity or engagement through which volunteers can contribute to organizational efforts.
+  examples:
+    - Teaching sessions for underprivileged children
+    - Field support during disaster relief
+  aliases:
+    - ServiceOpportunity
+    - VolunteerAssignment
+
+ProgramPerformance:
+  definition: 
+    The evaluation of how effectively programs achieve their intended goals and outcomes.
+  examples:
+    - Measuring the success of a nutrition program
+    - Reviewing volunteer participation levels
+  aliases:
+    - ProgramEvaluation
+    - PerformanceReview
+
+ImpactReport:
+  definition: 
+    A document that summarizes the outcomes, results, and effectiveness of donations or NGO programs over a defined period.
+  examples:
+    - A summary report explaining how medical aid donations supported a rural health camp
+    - A program impact report detailing the success of a flood relief initiative
+  aliases:
+    - outcome report
+    - performance summary
+
+Shift:
+  definition: The specific day and time when a volunteer is scheduled to help.
+  aliases:
+    - Time Slot
+    - Schedule
+  examples:
+   - My shift is from 9 AM to 12 PM on Saturday
+   
+Distribution:
+    definition: The act of giving out resources to beneficiaries or communities.
+    aliases:
+      - Handout
+      - Resource Sharing
+    examples:
+      - The food distribution happens every Saturday morning
+      - We completed the medicine distribution for this month
+
+Feedback:
+    definition: Comments or opinions shared by volunteers, donors, or beneficiaries about their experience.
+    aliases:
+      - Review
+      - Response
+    examples:
+      - Beneficiary feedback helps us improve our programs
+      - Volunteers can submit feedback after each shift
+
+Inventory:
+    definition: The complete list of all resources currently available with the organization.
+    aliases:
+      - Stock
+      - Available Supplies
+    examples:
+      - The inventory shows were low on winter clothing
+
+ResourceRequest:
+    definition: A request raised by volunteers or programs for required resources to execute NGO activities.
+    aliases:
+      - resource demand
+      - support request
+    examples:
+      - Requesting medical kits for a health camp
