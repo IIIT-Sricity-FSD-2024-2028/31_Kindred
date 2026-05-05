@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kindred — Request Broadcast Sent</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    /* Page 4: full-page centered confirmation, footer visible below */
+    body { display: flex; flex-direction: column; min-height: 100vh; }
+    .confirmation-page {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+      background: var(--bg);
+    }
+    .confirmation-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+      padding: 56px 48px;
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+      animation: scaleIn 0.3s ease;
+    }
+    @keyframes scaleIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
+    .big-icon {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+      box-shadow: 0 4px 20px rgba(16,185,129,0.25);
+    }
+    .confirmation-card h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .confirmation-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .ref-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      margin-top: 16px;
+    }
+    .ref-code {
+      font-size: 44px;
+      font-weight: 900;
+      letter-spacing: 8px;
+      color: var(--primary);
+      line-height: 1;
+      margin-bottom: 32px;
+    }
+    .action-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-back-home {
+      padding: 12px 32px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s;
+      box-shadow: 0 2px 10px rgba(26,60,94,0.28);
+    }
+    .btn-back-home:hover { background: var(--primary-light); transform: translateY(-1px); }
+    .btn-new-req {
+      padding: 12px 24px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-new-req:hover { background: var(--bg); }
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+    .step-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .step-dot.active { background: var(--success); width: 24px; border-radius: 4px; }
+  </style>
+  <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+  
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+<!-- ===== CONFIRMATION PAGE ===== -->
+<div class="confirmation-page">
+  <div class="confirmation-card">
+
+    <div class="step-indicator">
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot active"></div>
+    </div>
+
+    <div class="big-icon">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+      </svg>
+    </div>
+
+    <h2>Request Broadcast Sent</h2>
+
+    <p>
+      Your assistance request has been successfully broadcast to all organizations on the Kindred platform.
+      Our team will match you with the most suitable volunteers and organizations to provide support.
+    </p>
+
+    <p>
+      You will receive a notification once an organization responds to your request. In the meantime, you can track the status from your dashboard.
+    </p>
+
+    <div class="ref-label">Your Reference Number</div>
+    <div class="ref-code">3008</div>
+
+    <div class="action-group">
+      <button class="btn-back-home" onclick="window.location.href='beneficiary-dashboard.html'">
+        Back to Dashboard
+      </button>
+      <button class="btn-new-req" onclick="window.location.href='page2-new-request-modal.html'">
+        Submit Another Request
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+  
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+<script src="auth.js"></script>
+<script src="mock-data.js"></script>
+<script src="api.js"></script>
+<script src="shared.js"></script>
+<script src="end-user-init.js"></script>
+<script src="nav-controller.js"></script>
+</body>
+</html>
+

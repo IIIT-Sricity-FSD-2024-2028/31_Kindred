@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Program — Kindred</title>
+  <link rel="stylesheet" href="styles1.css" />
+  <link rel="stylesheet" href="style1.css" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+<main>
+  <div class="form-page fade-in">
+    <a href="org-admin-overview.html" class="back-link">← Back to Dashboard</a>
+
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="form-card-icon">+</div>
+        <div>
+          <div class="form-card-title">Create New Program</div>
+          <div class="form-card-sub">HopeConnect</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="programTitle">Program Title <span class="required">*</span></label>
+        <input class="form-input" type="text" id="programTitle" placeholder="e.g. Rural Health Camp 2026" />
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label class="form-label">Category <span class="required">*</span> <span style="font-weight:400;font-size:.75rem;color:#94a3b8">(select one or more)</span></label>
+          <div id="progCategoryContainer" style="display:flex;flex-wrap:wrap;gap:6px;padding:10px;border:1px solid #e2e8f0;border-radius:10px;background:#fafbfc;min-height:40px">
+            <!-- Populated by JS -->
+          </div>
+          <div style="display:flex;gap:8px;margin-top:6px;align-items:center">
+            <input type="text" id="customCategoryInput" placeholder="Custom category..." style="flex:1;padding:7px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:.82rem;font-family:inherit;outline:none" />
+            <button type="button" onclick="addCustomCategory()" style="padding:7px 14px;background:#f59e0b;color:#fff;border:none;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap">+ Add</button>
+          </div>
+        </div>
+        <div>
+          <label class="form-label" for="programLocation">Location <span class="required">*</span></label>
+          <div class="form-input-icon">
+            <span class="icon">📍</span>
+            <input class="form-input" type="text" id="programLocation" placeholder="e.g. Patna, Bihar" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label class="form-label" for="programBudget">Budget (₹)</label>
+          <input class="form-input" type="number" id="programBudget" placeholder="e.g. 500000" min="0" />
+        </div>
+        <div>
+          <label class="form-label" for="programEndDate">End Date</label>
+          <div class="form-input-icon">
+            <span class="icon">📅</span>
+            <input class="form-input" type="date" id="programEndDate" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="volunteerGoal">
+          <span style="display:flex;align-items:center;gap:6px;">👥 Volunteer Goal</span>
+        </label>
+        <input class="form-input" type="number" id="volunteerGoal" placeholder="How many volunteers do you need?" min="0" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="programDesc">Program Description <span class="required">*</span></label>
+        <textarea class="form-textarea" id="programDesc" placeholder="Describe the program objectives, target beneficiaries, and activities..."></textarea>
+      </div>
+
+      <!-- Required Skills -->
+      <div class="form-group">
+        <label class="form-label">🎯 Required Skills</label>
+        <div id="progSkillsContainer" style="display:flex;flex-wrap:wrap;gap:6px;padding:10px;border:1px solid #e2e8f0;border-radius:10px;background:#fafbfc;min-height:40px">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Open for Applications -->
+      <div class="form-group">
+        <label class="form-label">Open for Volunteer Applications?</label>
+        <select class="form-select" id="progOpenApps">
+          <option value="true" selected>Yes — Volunteers can apply via portal</option>
+          <option value="false">No — Invite only</option>
+        </select>
+      </div>
+
+      <!-- Assign Volunteers -->
+      <div class="form-group">
+        <label class="form-label">👥 Assign Volunteers <span style="font-weight:400;color:#94a3b8">(optional — select one or more)</span></label>
+        <div id="progVolsContainer" style="max-height:220px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:10px;background:#fafbfc">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <a href="org-admin-overview.html" class="btn btn-outline" style="flex:1;justify-content:center;">Cancel</a>
+        <button class="btn btn-primary" style="flex:2;justify-content:center;" id="createProgramBtn">+ Create Program</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer" style="background: #1a3b5c; color: #fff; padding: 40px 0 24px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin-top: auto;">
+  <div class="footer-content" style="max-width: 1200px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 40px; margin-bottom: 40px;">
+    <div class="footer-brand">
+      <div class="footer-logo" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 24px; margin-bottom: 16px;">
+        Kindred
+      </div>
+      <p style="color: #e2e8f0; font-size: 14px; line-height: 1.6; padding-right: 20px;">Connecting individuals, volunteers, donors, and beneficiaries to create meaningful impact across communities in India.</p>
+    </div>
+    <div class="footer-col">
+      <h4 style="color: #94a3b8; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">Quick Links</h4>
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        <li style="margin-bottom: 12px;"><a href="organizations.html" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">All Organizations</a></li>
+        <li style="margin-bottom: 12px;"><a href="beneficiary-dashboard.html" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">Beneficiary Portal</a></li>
+        <li style="margin-bottom: 12px;"><a href="donate.html" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">Donations Portal</a></li>
+        <li style="margin-bottom: 12px;"><a href="register-ngo.html" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">Register NGO</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 style="color: #94a3b8; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">For Users</h4>
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        <li style="margin-bottom: 12px;"><a href="signin.html" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">Donor Dashboard</a></li>
+        <li style="margin-bottom: 12px;"><a href="programs.html" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">All Programs</a></li>
+        <li style="margin-bottom: 12px;"><a href="org-admin-overview.html" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">Organization Portal</a></li>
+        <li style="margin-bottom: 12px;"><a href="#" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 style="color: #94a3b8; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">Contact</h4>
+      <div class="footer-contact-item" style="color: #e2e8f0; font-size: 14px; margin-bottom: 12px; display: flex; gap: 10px;">
+        <span style="flex-shrink: 0;">✉</span> contact@kindred.org.in
+      </div>
+      <div class="footer-contact-item" style="color: #e2e8f0; font-size: 14px; margin-bottom: 12px; display: flex; gap: 10px;">
+        <span style="flex-shrink: 0;">📞</span> +91 912 345 6789
+      </div>
+      <div class="footer-contact-item" style="color: #e2e8f0; font-size: 14px; margin-bottom: 12px; display: flex; gap: 10px;">
+        <span style="flex-shrink: 0;">📍</span> New Delhi, India
+      </div>
+      <div class="footer-contact-item" style="color: #e2e8f0; font-size: 14px; margin-bottom: 12px; display: flex; gap: 10px;">
+        <span style="flex-shrink: 0;">⚠</span> <a href="emergency-request.html" style="color: #ffcccc; text-decoration: none; font-weight: 600;">Emergency Help</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom" style="max-width: 1200px; margin: 0 auto; padding: 24px 32px 0; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #94a3b8; flex-wrap: wrap; gap: 16px;">
+    <span>© 2026 Kindred Platform. All rights reserved.</span>
+    <div class="footer-bottom-links" style="display: flex; gap: 20px;">
+      <a href="#" style="color: #94a3b8; text-decoration: none;">Privacy Policy</a>
+      <a href="#" style="color: #94a3b8; text-decoration: none;">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+<script src="auth.js"></script>
+<script src="mock-data.js"></script>
+<script src="api.js"></script>
+<script src="org-admin-crud.js"></script>
+<script src="nav-controller.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Populate category checkboxes
+  var catContainer = document.getElementById('progCategoryContainer');
+  var CATEGORY_OPTIONS = ['Food & Nutrition','Medical Aid','Shelter & Housing','Disaster Relief','Education','Livelihood','Women & Children','Environment','Healthcare','Youth Empowerment','Community Development'];
+  if (catContainer) {
+    catContainer.innerHTML = CATEGORY_OPTIONS.map(function(cat) {
+      return '<label style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:#fff;border:1px solid #e2e8f0;border-radius:20px;font-size:.75rem;font-weight:500;cursor:pointer;transition:all .15s">' +
+        '<input type="checkbox" name="prog-categories" value="' + cat + '" style="display:none" onchange="this.parentElement.style.background=this.checked?\'#fef3c7\':\'#fff\';this.parentElement.style.borderColor=this.checked?\'#f59e0b\':\'#e2e8f0\'">' + cat + '</label>';
+    }).join('');
+  }
+
+  // Populate skills checkboxes
+  var skillsContainer = document.getElementById('progSkillsContainer');
+  if (skillsContainer && typeof SKILL_OPTIONS !== 'undefined') {
+    skillsContainer.innerHTML = SKILL_OPTIONS.map(function(sk) {
+      return '<label style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:#fff;border:1px solid #e2e8f0;border-radius:20px;font-size:.75rem;font-weight:500;cursor:pointer;transition:all .15s" class="skill-chip">' +
+        '<input type="checkbox" name="prog-skills" value="' + sk + '" style="display:none" onchange="this.parentElement.style.background=this.checked?\'#eff6ff\':\'#fff\';this.parentElement.style.borderColor=this.checked?\'#3b82f6\':\'#e2e8f0\'">' + sk + '</label>';
+    }).join('');
+  }
+
+  // Populate volunteer assignment list
+  var volContainer = document.getElementById('progVolsContainer');
+  if (volContainer) {
+    var vols = (typeof VolDB !== 'undefined') ? VolDB.getAll() : [];
+    if (typeof UserDB !== 'undefined') {
+      var registeredVols = UserDB.getAll().filter(function(u) { return u.role === 'volunteer' && u.status === 'approved'; });
+      registeredVols.forEach(function(u) {
+        if (!vols.some(function(v) { return v.email === u.email; })) {
+          vols.push({ id: u.id, name: u.name, email: u.email, skills: u.skills || [] });
+        }
+      });
+    }
+    volContainer.innerHTML = vols.map(function(v) {
+      return '<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;border-bottom:1px solid #f1f5f9;transition:background .1s" onmouseover="this.style.background=\'#f8fafc\'" onmouseout="this.style.background=this.querySelector(\'input\').checked?\'#f0fdf4\':\'\'">' +
+        '<input type="checkbox" name="prog-vols" value="' + v.name + '|' + v.email + '" style="width:16px;height:16px;accent-color:#10b981">' +
+        '<div style="width:30px;height:30px;border-radius:50%;background:#6366f1;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0">' + v.name.charAt(0) + '</div>' +
+        '<div style="flex:1"><div style="font-weight:600;font-size:.82rem;color:#1e293b">' + v.name + '</div>' +
+        '<div style="font-size:.72rem;color:#94a3b8">' + v.email + '</div>' +
+        (v.skills && v.skills.length ? '<div style="font-size:.65rem;color:#64748b;margin-top:2px">' + v.skills.join(', ') + '</div>' : '') +
+        '</div></label>';
+    }).join('');
+  }
+});
+
+function addCustomCategory() {
+  var input = document.getElementById('customCategoryInput');
+  if (!input) return;
+  var val = input.value.trim();
+  if (!val) return;
+  var exists = false;
+  document.querySelectorAll('input[name="prog-categories"]').forEach(function(cb) {
+    if (cb.value.toLowerCase() === val.toLowerCase()) exists = true;
+  });
+  if (exists) { input.value = ''; return; }
+  var container = document.getElementById('progCategoryContainer');
+  if (!container) return;
+  var lbl = document.createElement('label');
+  lbl.style.cssText = 'display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:#fef3c7;border:1px solid #f59e0b;border-radius:20px;font-size:.75rem;font-weight:500;cursor:pointer;transition:all .15s';
+  lbl.innerHTML = '<input type="checkbox" name="prog-categories" value="' + val.replace(/"/g, '&quot;') + '" checked style="display:none" onchange="this.parentElement.style.background=this.checked?\'#fef3c7\':\'#fff\';this.parentElement.style.borderColor=this.checked?\'#f59e0b\':\'#e2e8f0\'">' + val;
+  container.appendChild(lbl);
+  input.value = '';
+}
+
+document.getElementById('createProgramBtn').addEventListener('click', function () {
+  const title = document.getElementById('programTitle').value.trim();
+  const location = document.getElementById('programLocation').value.trim();
+  const budget = document.getElementById('programBudget').value;
+  const endDate = document.getElementById('programEndDate').value;
+  const volGoal = document.getElementById('volunteerGoal').value;
+  const desc = document.getElementById('programDesc').value.trim();
+
+  // Collect selected categories
+  var selectedCategories = [];
+  document.querySelectorAll('input[name="prog-categories"]:checked').forEach(function(cb) {
+    selectedCategories.push(cb.value);
+  });
+
+  if (!title) { showToastMsg('Please enter a program title.', 'error'); return; }
+  if (selectedCategories.length === 0) { showToastMsg('Please select at least one category.', 'error'); return; }
+  if (!location) { showToastMsg('Please enter a location.', 'error'); return; }
+  if (!desc) { showToastMsg('Please add a program description.', 'error'); return; }
+
+  // Collect skills
+  var selectedSkills = [];
+  document.querySelectorAll('input[name="prog-skills"]:checked').forEach(function(cb) {
+    selectedSkills.push(cb.value);
+  });
+
+  // Collect volunteers
+  var selectedVols = [];
+  document.querySelectorAll('input[name="prog-vols"]:checked').forEach(function(cb) {
+    var parts = cb.value.split('|');
+    selectedVols.push({ name: parts[0], email: parts[1] });
+  });
+
+  var openApps = document.getElementById('progOpenApps') ? document.getElementById('progOpenApps').value === 'true' : true;
+
+  var progId;
+  if (typeof ProgDB !== 'undefined') {
+    var newProg = ProgDB.create({
+      name: title,
+      focus: selectedCategories,
+      location: location,
+      budget: parseInt(budget) || 0,
+      endDate: endDate,
+      volunteerGoal: parseInt(volGoal) || 0,
+      description: desc,
+      status: 'active',
+      raised: 0,
+      volunteers: 0,
+      beneficiaries: 0,
+      requiredSkills: selectedSkills,
+      openForApplications: openApps
+    });
+    progId = newProg.id;
+
+    // Create volunteer assignments
+    if (typeof ProgramAssignmentDB !== 'undefined') {
+      selectedVols.forEach(function(v) {
+        ProgramAssignmentDB.create({
+          programId: progId,
+          programName: title,
+          volunteerEmail: v.email,
+          volunteerName: v.name,
+          role: 'Volunteer',
+          status: 'active'
+        });
+      });
+    }
+
+    showToastMsg('Program "' + title + '" created with ' + selectedVols.length + ' volunteer(s) assigned!', 'success');
+  }
+
+  // Store for success page if needed, then redirect
+  sessionStorage.setItem('newProgramName', title);
+  setTimeout(() => {
+    window.location.href = 'org-admin-overview.html';
+  }, 1200);
+});
+</script>
+</body>
+</html>

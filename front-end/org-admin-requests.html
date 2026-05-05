@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Requests — HopeConnect | Kindred</title>
+  <link rel="stylesheet" href="styles1.css" />
+  <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+  
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+<main>
+  <div class="page-header fade-in">
+    <div><h1 class="page-title">HopeConnect</h1><p class="page-subtitle">Organization Admin Dashboard</p></div>
+    <div class="header-actions">
+      <a href="#" class="btn btn-outline">📊 Reports</a>
+      <a href="create-program.html" class="btn btn-primary">+ New Program</a>
+    </div>
+  </div>
+
+  <div class="tabs fade-in">
+    <a class="tab-btn" href="org-admin-overview.html">Overview</a>
+    <a class="tab-btn" href="volunteers.html">Volunteers</a>
+    <a class="tab-btn" href="org-admin-programs.html">Programs</a>
+    <a class="tab-btn" href="resources.html">Resources</a>
+    <a class="tab-btn active" href="org-admin-requests.html">Requests</a>
+
+  </div>
+
+  <div class="stats-grid stagger">
+    <div class="stat-card volunteers"><div class="stat-card-header"><div class="stat-icon green">👥</div><button class="stat-more">⋯</button></div><div class="stat-value">1,240</div><div class="stat-label">Active Volunteers</div></div>
+    <div class="stat-card programs"><div class="stat-card-header"><div class="stat-icon blue">📋</div><button class="stat-more">⋯</button></div><div class="stat-value">3</div><div class="stat-label">Active Programs</div></div>
+    <div class="stat-card resources"><div class="stat-card-header"><div class="stat-icon orange">📦</div><button class="stat-more">⋯</button></div><div class="stat-value">5,910</div><div class="stat-label">Resources Allocated</div></div>
+    <div class="stat-card requests"><div class="stat-card-header"><div class="stat-icon red">⚠️</div><button class="stat-more">⋯</button></div><div class="stat-value">23</div><div class="stat-label">Pending Requests</div></div>
+  </div>
+
+  <div class="beneficiary-section fade-in">
+    <div class="section-header"><div class="section-title">📝 Beneficiary Requests</div></div>
+    <div id="beneficiaryReqList"></div>
+  </div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+  
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+<script src="auth.js"></script>
+<script src="mock-data.js"></script>
+<script src="api.js"></script>
+<script src="org-admin-crud.js"></script>
+<script src="nav-controller.js"></script>
+</body>
+</html>

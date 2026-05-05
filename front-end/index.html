@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kindred - Connecting Communities Through Kindness</title>
+  <meta name="description"
+    content="Kindred connects NGOs, volunteers, donors, and beneficiaries to create lasting positive impact across communities in India.">
+  <link rel="stylesheet" href="style1.css">
+  <script src="auth.js"></script>
+  <script src="mock-data.js"></script>
+<script src="api.js"></script>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+
+
+
+
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index" class="nav-active">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+  <!-- HERO SECTION -->
+  <section class="hero hero-video-bg">
+    <video class="hero-bg-video" autoplay loop muted playsinline>
+      <source src="Untitled design (1).mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-content-centered">
+      <div class="hero-text-centered">
+        <span class="hero-subtitle">INDIA'S VOLUNTEER PLATFORM</span>
+        <h1 class="hero-title-main">
+          <span class="text-blue">Connecting</span><br>
+          <span class="text-blue">Communities</span><br>
+          <span class="text-blue">Through</span> <span class="text-red">Kindness</span>
+        </h1>
+        <div class="hero-buttons-centered">
+          <a href="join-volunteer.html" class="btn-hero btn-blue">
+            <span class="btn-icon">🤝</span> Join as Volunteer →
+          </a>
+          <a href="donate.html" class="btn-hero btn-green">
+            <span class="btn-icon">♡</span> Donate Now
+          </a>
+          <a href="emergency-request.html" class="btn-hero btn-red">
+            <span class="btn-icon">⚠</span> Emergency Help
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTIVE FUNDRAISING CAMPAIGNS -->
+  <section class="home-section bg-light">
+    <div class="home-container">
+      <span class="section-badge">💰 ACTIVE CAMPAIGNS</span>
+      <h2 class="section-title">Active Fundraising Campaigns</h2>
+      <p class="section-subtitle">Help us reach our goals. Every contribution makes a difference!</p>
+
+      <div class="campaigns-grid" id="campaignsGrid">
+        <!-- Populated by JS -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PARTNER ORGANIZATIONS -->
+  <section class="home-section">
+    <div class="home-container">
+      <span class="section-badge">🤝 OUR PARTNERS</span>
+      <h2 class="section-title">Partner Organizations</h2>
+      <p class="section-subtitle">Trusted NGOs and institutions we work with to amplify social impact</p>
+
+      <div class="partners-grid" id="partnersGrid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPACT STATS -->
+  <section class="home-section">
+    <div class="home-container">
+      <h2 class="section-title">Making a Difference Together</h2>
+      <div class="impact-stats">
+        <div class="impact-stat">
+          <div class="impact-icon">🏢</div>
+          <div class="impact-number" data-target="120">0</div>
+          <div class="impact-suffix">+</div>
+          <div class="impact-label">NGOs Partnered</div>
+        </div>
+        <div class="impact-stat">
+          <div class="impact-icon">👥</div>
+          <div class="impact-number" data-target="45000">0</div>
+          <div class="impact-suffix">+</div>
+          <div class="impact-label">Active Volunteers</div>
+        </div>
+        <div class="impact-stat">
+          <div class="impact-icon">❤️</div>
+          <div class="impact-number" data-target="23">0</div>
+          <div class="impact-suffix">Lakh+</div>
+          <div class="impact-label">Lives Impacted</div>
+        </div>
+        <div class="impact-stat">
+          <div class="impact-icon">💰</div>
+          <div class="impact-number" data-target="15">0</div>
+          <div class="impact-suffix">.2 Cr</div>
+          <div class="impact-label">Funds Raised</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED PROGRAMS -->
+  <section class="home-section bg-light">
+    <div class="home-container">
+      <span class="section-badge">🌟 OUR WORK</span>
+      <h2 class="section-title">Featured Programs</h2>
+
+      <div class="programs-grid">
+        <div class="program-card large">
+          <img src="images/program-disaster.png" alt="Disaster Response">
+          <div class="program-card-overlay">
+            <span class="program-tag">Disaster Relief</span>
+            <h3>Disaster Response & Recovery</h3>
+            <p>Rapid deployment of volunteers and resources to communities affected by natural disasters across India.
+            </p>
+          </div>
+        </div>
+        <div class="program-card">
+          <img src="images/program-education.png" alt="Education Initiatives">
+          <div class="program-card-overlay">
+            <span class="program-tag">Education</span>
+            <h3>Rural Education Initiative</h3>
+            <p>Bridging the education gap in underserved rural communities.</p>
+          </div>
+        </div>
+        <div class="program-card">
+          <img src="images/program-environment.png" alt="Clean Environment">
+          <div class="program-card-overlay">
+            <span class="program-tag">Environment</span>
+            <h3>Clean India, Green India</h3>
+            <p>Tree plantation, river cleanups, and sustainable living programs.</p>
+          </div>
+        </div>
+        <div class="program-card">
+          <img src="images/program-healthcare.png" alt="Healthcare Camps">
+          <div class="program-card-overlay">
+            <span class="program-tag">Healthcare</span>
+            <h3>Free Health Camps</h3>
+            <p>Mobile medical units bringing healthcare to remote villages.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="home-section">
+    <div class="home-container">
+      <h2 class="section-title">Voices from Our Community</h2>
+      <div class="testimonials-grid" id="testimonialsGrid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA SECTION -->
+  <section class="cta-section">
+    <div class="home-container">
+      <h2>Ready to Make a Difference?</h2>
+      <p>Join the Kindred community today and be part of India's largest social impact network.</p>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+
+
+
+
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across
+          India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+  <script src="script.js"></script>
+
+  <script>
+    // If already signed in, redirect Sign In / Sign Up buttons to dashboard
+    document.addEventListener('DOMContentLoaded', function () {
+      var session = getSession();
+      if (session) {
+        document.querySelectorAll('.btn-signin, [onclick*="signin"]').forEach(function (btn) {
+          btn.textContent = 'My Dashboard';
+          btn.onclick = function () { window.location.href = session.dashboard; };
+        });
+      }
+      // Wire nav Sign In button
+      var signinBtn = document.querySelector('.btn-signin');
+      if (signinBtn && !session) signinBtn.onclick = function () { window.location.href = 'signin.html'; };
+      var signupBtn = document.querySelector('.btn-signup');
+      if (signupBtn && !session) signupBtn.onclick = function () { window.location.href = 'signup.html'; };
+    });
+  </script>
+  <script src="nav-controller.js"></script>
+</body>
+
+</html>

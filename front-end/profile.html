@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile — Kindred</title>
+  <meta name="description" content="View and edit your Kindred profile — update your name, phone, bio, and organization details.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style1.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f8fafc; min-height: 100vh; }
+
+    .profile-page { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* ── Header Card ── */
+    .profile-hero {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-radius: 20px;
+      padding: 36px 36px 28px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .profile-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top right, rgba(99,102,241,.25) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .profile-avatar-big {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.2rem; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+      border: 4px solid rgba(255,255,255,.15);
+      box-shadow: 0 8px 24px rgba(0,0,0,.3);
+    }
+    .profile-hero-info { flex: 1; }
+    .profile-hero-name { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .profile-hero-email { font-size: .88rem; color: #94a3b8; margin-bottom: 10px; }
+    .profile-hero-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .profile-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 14px; border-radius: 100px;
+      font-size: .76rem; font-weight: 600;
+    }
+    .badge-role { background: rgba(99,102,241,.25); color: #a5b4fc; border: 1px solid rgba(99,102,241,.3); }
+    .badge-status-approved { background: rgba(16,185,129,.2); color: #6ee7b7; border: 1px solid rgba(16,185,129,.25); }
+    .badge-status-pending  { background: rgba(245,158,11,.2); color: #fde68a; border: 1px solid rgba(245,158,11,.25); }
+
+    /* ── Edit Form Card ── */
+    .profile-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.04);
+    }
+    .profile-card-title {
+      font-size: 1rem; font-weight: 700; color: #1e293b;
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 1.5px solid #f1f5f9;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .profile-field { margin-bottom: 18px; }
+    .profile-field label {
+      display: block; font-size: .82rem; font-weight: 600;
+      color: #374151; margin-bottom: 7px;
+    }
+    .profile-field .field-hint { font-size: .74rem; color: #94a3b8; margin-top: 4px; }
+    .profile-input, .profile-textarea, .profile-select {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      font-family: inherit; font-size: .9rem; color: #1e293b;
+      background: #fff;
+      transition: border-color .15s, box-shadow .15s;
+      outline: none;
+    }
+    .profile-input:focus, .profile-textarea:focus, .profile-select:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99,102,241,.1);
+    }
+    .profile-input[readonly] {
+      background: #f8fafc; color: #94a3b8; cursor: not-allowed;
+    }
+    .profile-textarea { resize: vertical; min-height: 90px; }
+    .profile-fields-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 540px) { .profile-fields-grid { grid-template-columns: 1fr; } }
+
+    /* ── Buttons ── */
+    .profile-actions { display: flex; gap: 12px; margin-top: 8px; }
+    .btn-profile-save {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff; border: none;
+      padding: 12px 28px; border-radius: 10px;
+      font-family: inherit; font-size: .9rem; font-weight: 600;
+      cursor: pointer; transition: all .2s;
+      box-shadow: 0 4px 12px rgba(99,102,241,.3);
+    }
+    .btn-profile-save:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(99,102,241,.4); }
+    .btn-profile-save:active { transform: translateY(0); }
+    .btn-profile-cancel {
+      background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;
+      padding: 12px 24px; border-radius: 10px;
+      font-family: inherit; font-size: .9rem; font-weight: 600;
+      cursor: pointer; transition: all .15s;
+    }
+    .btn-profile-cancel:hover { background: #e2e8f0; }
+
+    /* ── Org section ── */
+    .org-section { display: none; }
+    .org-section.visible { display: block; }
+
+    /* ── Skills Section (Volunteer) ── */
+    .vol-skills-section { display: none; }
+    .vol-skills-section.visible { display: block; }
+    .pf-skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .pf-skill-check {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 12px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: .82rem;
+      color: #475569;
+      transition: all .2s;
+      user-select: none;
+    }
+    .pf-skill-check:hover { border-color: #10b981; background: #f0fdf4; }
+    .pf-skill-check.selected {
+      border-color: #10b981;
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      color: #065f46;
+      font-weight: 600;
+    }
+    .pf-skill-check input[type="checkbox"] {
+      accent-color: #10b981;
+      width: 15px; height: 15px;
+    }
+    .custom-skill-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px;
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border: 1.5px solid #a7f3d0;
+      border-radius: 20px;
+      font-size: .8rem; font-weight: 600; color: #065f46;
+      animation: fadeIn .2s ease;
+    }
+    .custom-skill-tag .remove-btn {
+      background: none; border: none;
+      color: #dc2626; cursor: pointer;
+      font-size: 14px; font-weight: 700;
+      padding: 0 2px; line-height: 1;
+    }
+    @keyframes fadeIn { from { opacity:0; transform:scale(.9); } to { opacity:1; transform:scale(1); } }
+
+    /* ── Change Password ── */
+    .pass-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 540px) { .pass-fields { grid-template-columns: 1fr; } }
+
+    /* ── Toast ── */
+    .profile-toast {
+      position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+      background: #0f1923; color: #fff;
+      padding: 14px 20px; border-radius: 12px;
+      border-left: 3px solid #00c896;
+      font-size: 14px; font-weight: 500;
+      box-shadow: 0 8px 28px rgba(0,0,0,.2);
+      display: flex; align-items: center; gap: 10px;
+      animation: slideUp .25s ease;
+    }
+    @keyframes slideUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+
+    /* ── Back link ── */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: #6366f1; font-size: .85rem; font-weight: 600;
+      text-decoration: none; margin-bottom: 24px;
+      transition: gap .15s;
+    }
+    .back-link:hover { gap: 10px; }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand">Kindred</a>
+  <div class="navbar-links">
+    <a href="index.html" data-nav="index">Home</a>
+    <a href="organizations.html" data-nav="organizations">Organizations</a>
+    <a href="programs.html" data-nav="programs">Programs</a>
+    <a href="donate.html" data-nav="donate">Donate</a>
+    <a href="contact.html" data-nav="contact">Contact</a>
+  </div>
+  <div class="navbar-auth">
+    <a href="signin.html" class="btn-nav-signin">Sign In</a>
+    <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+  </div>
+  <div class="navbar-user hidden">
+    <div class="avatar">U</div>
+    <div class="user-info">
+      <span class="user-name">User</span>
+      <span class="user-role">Role</span>
+    </div>
+    <span class="chevron">▾</span>
+  </div>
+</nav>
+
+<div class="profile-page">
+
+  <!-- Back link (set by JS) -->
+  <a href="#" class="back-link" id="backLink">
+    ← Back to Dashboard
+  </a>
+
+  <!-- Hero Card -->
+  <div class="profile-hero">
+    <div class="profile-avatar-big" id="heroAvatar">U</div>
+    <div class="profile-hero-info">
+      <div class="profile-hero-name" id="heroName">Loading…</div>
+      <div class="profile-hero-email" id="heroEmail"></div>
+      <div class="profile-hero-badges">
+        <span class="profile-badge badge-role" id="heroBadgeRole">—</span>
+        <span class="profile-badge badge-status-approved" id="heroBadgeStatus">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Profile Form -->
+  <div class="profile-card">
+    <div class="profile-card-title">✏️ Personal Information</div>
+    <form id="profileForm" onsubmit="saveProfile(event)" novalidate>
+      <div class="profile-fields-grid">
+        <div class="profile-field">
+          <label>Full Name *</label>
+          <input type="text" class="profile-input" id="pf-name" placeholder="Your full name"/>
+        </div>
+        <div class="profile-field">
+          <label>Email Address</label>
+          <input type="email" class="profile-input" id="pf-email" readonly/>
+          <p class="field-hint">Email cannot be changed</p>
+        </div>
+      </div>
+      <div class="profile-fields-grid">
+        <div class="profile-field">
+          <label>Phone Number</label>
+          <input type="tel" class="profile-input" id="pf-phone" placeholder="+91 98765 43210"/>
+        </div>
+        <div class="profile-field">
+          <label>Role</label>
+          <input type="text" class="profile-input" id="pf-role" readonly/>
+          <p class="field-hint">Role is assigned by administrator</p>
+        </div>
+      </div>
+
+      <!-- Organization field — shown only for admin role -->
+      <div class="profile-field org-section" id="orgSection">
+        <label>Organization Name</label>
+        <input type="text" class="profile-input" id="pf-org" placeholder="Your NGO / Organization name"/>
+        <p class="field-hint">Organization you manage on Kindred</p>
+      </div>
+
+      <div class="profile-field">
+        <label>Bio / About You</label>
+        <textarea class="profile-textarea" id="pf-bio" placeholder="Tell us a little about yourself…"></textarea>
+      </div>
+
+      <div class="profile-actions">
+        <button type="submit" class="btn-profile-save" id="saveBtn">💾 Save Changes</button>
+        <button type="button" class="btn-profile-cancel" onclick="resetForm()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Volunteer Skills Card -->
+  <div class="profile-card vol-skills-section" id="skillsSection">
+    <div class="profile-card-title">🛠️ Skills & Expertise</div>
+    <p style="font-size:.82rem;color:#64748b;margin-bottom:16px">Select your skills and add custom ones. Changes are saved when you click "Save Skills".</p>
+
+    <div class="pf-skills-grid" id="pfSkillsGrid">
+      <label class="pf-skill-check"><input type="checkbox" name="pf-skill" value="teaching" /> Teaching</label>
+      <label class="pf-skill-check"><input type="checkbox" name="pf-skill" value="medical" /> Medical Aid</label>
+      <label class="pf-skill-check"><input type="checkbox" name="pf-skill" value="logistics" /> Logistics</label>
+      <label class="pf-skill-check"><input type="checkbox" name="pf-skill" value="cooking" /> Cooking</label>
+      <label class="pf-skill-check"><input type="checkbox" name="pf-skill" value="translation" /> Translation</label>
+      <label class="pf-skill-check"><input type="checkbox" name="pf-skill" value="technology" /> Technology</label>
+      <label class="pf-skill-check"><input type="checkbox" name="pf-skill" value="counseling" /> Counseling</label>
+      <label class="pf-skill-check"><input type="checkbox" name="pf-skill" value="driving" /> Driving</label>
+      <label class="pf-skill-check"><input type="checkbox" name="pf-skill" value="construction" /> Construction</label>
+      <label class="pf-skill-check"><input type="checkbox" name="pf-skill" value="first-aid" /> First Aid</label>
+      <label class="pf-skill-check"><input type="checkbox" name="pf-skill" value="fundraising" /> Fundraising</label>
+      <label class="pf-skill-check"><input type="checkbox" name="pf-skill" value="photography" /> Photography</label>
+    </div>
+
+    <!-- Custom Skill Input -->
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+      <input type="text" id="pf-custom-skill" class="profile-input" placeholder="Add a custom skill…"
+        style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomSkillProfile()}" />
+      <button type="button" onclick="addCustomSkillProfile()"
+        style="padding:10px 18px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:10px;font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s;"
+        onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">+ Add</button>
+    </div>
+    <div id="pfCustomSkillTags" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;"></div>
+
+    <div class="profile-actions">
+      <button type="button" class="btn-profile-save" onclick="saveSkills()">🛠️ Save Skills</button>
+      <button type="button" class="btn-profile-cancel" onclick="resetSkills()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Change Password Card -->
+  <div class="profile-card">
+    <div class="profile-card-title">🔒 Change Password</div>
+    <form id="passForm" onsubmit="changePassword(event)" novalidate>
+      <div class="pass-fields">
+        <div class="profile-field">
+          <label>New Password</label>
+          <input type="password" class="profile-input" id="pf-newpass" placeholder="Min 8 characters"/>
+        </div>
+        <div class="profile-field">
+          <label>Confirm New Password</label>
+          <input type="password" class="profile-input" id="pf-newpass2" placeholder="Repeat password"/>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <button type="submit" class="btn-profile-save">🔑 Update Password</button>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer class="premium-footer">
+  <div class="footer-container">
+    <div class="footer-brand">
+      <span class="footer-logo">Kindred</span>
+      <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+    </div>
+    <div class="footer-section">
+      <h4>Explore</h4>
+      <ul class="footer-links">
+        <li><a href="programs.html">Active Programs</a></li>
+        <li><a href="organizations.html">Our Partners</a></li>
+        <li><a href="donate.html">Donation Portal</a></li>
+        <li><a href="signup.html">Join Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Information</h4>
+      <ul class="footer-links">
+        <li><a href="about.html">About Kindred</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="emergency-request.html">Emergency Help</a></li>
+        <li><a href="feedback.html">Give Feedback</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Contact</h4>
+      <ul class="footer-links" style="color:#cbd5e1;font-size:14px;">
+        <li style="margin-bottom:12px;">✉ contact@kindred.org.in</li>
+        <li style="margin-bottom:12px;">📞 +91 912 345 6789</li>
+        <li style="margin-bottom:12px;">📍 New Delhi, India</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 Kindred Platform. All rights reserved.</p>
+    <div style="display:flex;gap:20px;">
+      <a href="#" style="color:#94a3b8;text-decoration:none;">Privacy Policy</a>
+      <a href="#" style="color:#94a3b8;text-decoration:none;">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+<script src="auth.js"></script>
+<script src="mock-data.js"></script>
+<script src="api.js"></script>
+<script src="nav-controller.js"></script>
+<script>
+/* ============================================================
+   PROFILE PAGE — profile.html
+   Accessible by all roles except superuser
+   ============================================================ */
+
+var ROLE_LABELS = {
+  admin: 'Organization Admin', volunteer: 'Volunteer',
+  donor: 'Donor', beneficiary: 'Beneficiary', superuser: 'Platform Administrator'
+};
+var ROLE_DASHBOARDS = {
+  admin: 'org-admin-overview.html', volunteer: 'volunteer-dashboard.html',
+  donor: 'donor-dashboard.html', beneficiary: 'beneficiary-dashboard.html',
+  superuser: 'overview.html'
+};
+
+var _session = null;
+var _userRecord = null; // from UserDB (if registered user)
+var _pfCustomSkills = []; // custom skills for profile page
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Auth guard — superusers use the platform admin panel, not this page
+  _session = (typeof requireAuth === 'function') ? requireAuth(['admin','volunteer','donor','beneficiary'], true) : getSession();
+  if (!_session) {
+    window.location.href = 'signin.html';
+    return;
+  }
+
+  // Set back link
+  var backEl = document.getElementById('backLink');
+  if (backEl) backEl.href = _session.dashboard || ROLE_DASHBOARDS[_session.role] || 'index.html';
+
+  // Try to load full record from UserDB
+  if (typeof UserDB !== 'undefined') {
+    _userRecord = UserDB.getById(_session.id);
+  }
+
+  populatePage();
+});
+
+function populatePage() {
+  var u = _userRecord || _session;
+  var roleLabel = ROLE_LABELS[u.role] || u.role;
+  var statusLabel = (u.status === 'approved') ? '✓ Active' : (u.status || 'Active');
+  var statusClass = (u.status === 'pending') ? 'badge-status-pending' : 'badge-status-approved';
+  var initials = u.initials || (u.name || '?').split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+  var avatarBg  = u.avatar || '#6366f1';
+
+  // Hero
+  var heroAv  = document.getElementById('heroAvatar');
+  var heroNm  = document.getElementById('heroName');
+  var heroEm  = document.getElementById('heroEmail');
+  var heroBR  = document.getElementById('heroBadgeRole');
+  var heroBS  = document.getElementById('heroBadgeStatus');
+  if (heroAv) { heroAv.textContent = initials; heroAv.style.background = avatarBg; }
+  if (heroNm) heroNm.textContent = u.name || '—';
+  if (heroEm) heroEm.textContent = u.email || '—';
+  if (heroBR) heroBR.textContent = roleLabel;
+  if (heroBS) { heroBS.textContent = statusLabel; heroBS.className = 'profile-badge ' + statusClass; }
+
+  // Form
+  setValue('pf-name', u.name || '');
+  setValue('pf-email', u.email || '');
+  setValue('pf-phone', u.phone || '');
+  setValue('pf-role', roleLabel);
+  setValue('pf-bio', u.bio || '');
+
+  // Skills section — show for volunteer role
+  if (u.role === 'volunteer') {
+    var skillsSec = document.getElementById('skillsSection');
+    if (skillsSec) skillsSec.classList.add('visible');
+    loadSkillsIntoForm(u.skills || []);
+  }
+
+  // Org field — show for admin role
+  if (u.role === 'admin') {
+    var orgSec = document.getElementById('orgSection');
+    if (orgSec) orgSec.classList.add('visible');
+    setValue('pf-org', u.org || '');
+  }
+}
+
+function setValue(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.value = val;
+}
+
+function resetForm() {
+  populatePage();
+}
+
+function saveProfile(e) {
+  e.preventDefault();
+  var name  = (document.getElementById('pf-name')  || {}).value || '';
+  var phone = (document.getElementById('pf-phone') || {}).value || '';
+  var bio   = (document.getElementById('pf-bio')   || {}).value || '';
+  var org   = (document.getElementById('pf-org')   || {}).value || '';
+
+  name = name.trim();
+  if (!name || name.length < 2) {
+    showToast('Name must be at least 2 characters.', false); return;
+  }
+
+  // Strict 10-digit phone validation
+  if (phone.trim()) {
+    var pDigits = phone.trim().replace(/\D/g, '');
+    if (pDigits.length === 12 && pDigits.indexOf('91') === 0) pDigits = pDigits.slice(2);
+    if (pDigits.length !== 10 || !/^[6-9]\d{9}$/.test(pDigits)) {
+      showToast('Phone must be exactly 10 digits and start with 6, 7, 8, or 9.', false); return;
+    }
+  }
+
+
+  var updates = {
+    name:     name,
+    phone:    phone.trim(),
+    bio:      bio.trim(),
+    initials: name.split(' ').map(function(w){ return w.charAt(0).toUpperCase(); }).join('').slice(0,2)
+  };
+  if (_session.role === 'admin') { updates.org = org.trim(); }
+
+  // Persist to UserDB (registered users only)
+  var persisted = false;
+  if (typeof UserDB !== 'undefined' && _userRecord) {
+    UserDB.update(_session.id, updates);
+    // Sync updated data back into current session
+    if (typeof UserDB.updateSession === 'function') {
+      UserDB.updateSession(_session.id);
+    }
+    _userRecord = Object.assign({}, _userRecord, updates);
+    // Re-read session
+    try {
+      var r2 = sessionStorage.getItem('kindred_session');
+      if (r2) _session = JSON.parse(r2);
+    } catch(ex) {}
+    persisted = true;
+  } else {
+    // For system/mock users: update sessionStorage manually
+    var rawSession = sessionStorage.getItem('kindred_session');
+    if (rawSession) {
+      try {
+        var sess = JSON.parse(rawSession);
+        Object.assign(sess, updates);
+        sessionStorage.setItem('kindred_session', JSON.stringify(sess));
+        _session = sess;
+      } catch(ex) {}
+    }
+  }
+
+  // Refresh hero
+  populatePage();
+
+  // Update navbar avatar/name if elements exist
+  var navName = document.querySelector('.navbar-user .user-name');
+  var navAv   = document.querySelector('.navbar-user .avatar');
+  if (navName) navName.textContent = name;
+  if (navAv)   navAv.textContent = updates.initials;
+
+  showToast(persisted ? '✓ Profile saved!' : '✓ Session updated (changes applied until sign-out)', true);
+}
+
+// ── Skills Management (Volunteer Profile) ─────────────────────
+var PREDEFINED_SKILLS = ['teaching','medical','logistics','cooking','translation','technology','counseling','driving','construction','first-aid','fundraising','photography'];
+
+function loadSkillsIntoForm(skills) {
+  if (!skills || !Array.isArray(skills)) skills = [];
+
+  // Reset checkboxes
+  document.querySelectorAll('.pf-skill-check input[type="checkbox"]').forEach(function(cb) {
+    cb.checked = false;
+    cb.closest('.pf-skill-check').classList.remove('selected');
+  });
+
+  _pfCustomSkills = [];
+
+  skills.forEach(function(s) {
+    var lower = s.toLowerCase();
+    var matched = false;
+    document.querySelectorAll('.pf-skill-check input[type="checkbox"]').forEach(function(cb) {
+      if (cb.value === lower || cb.value === s) {
+        cb.checked = true;
+        cb.closest('.pf-skill-check').classList.add('selected');
+        matched = true;
+      }
+    });
+    if (!matched) {
+      _pfCustomSkills.push(s);
+    }
+  });
+
+  renderPfCustomTags();
+}
+
+function addCustomSkillProfile() {
+  var inp = document.getElementById('pf-custom-skill');
+  if (!inp) return;
+  var val = inp.value.trim();
+  if (!val || val.length < 2) return;
+  val = val.charAt(0).toUpperCase() + val.slice(1);
+  var lower = val.toLowerCase();
+
+  // Check duplicate in custom list
+  if (_pfCustomSkills.some(function(s){ return s.toLowerCase() === lower; })) {
+    inp.value = '';
+    return;
+  }
+
+  // Check if matches predefined checkbox and auto-check it
+  var matchedExisting = false;
+  document.querySelectorAll('.pf-skill-check input[type="checkbox"]').forEach(function(cb) {
+    if (cb.value.toLowerCase() === lower || cb.parentElement.textContent.trim().toLowerCase() === lower) {
+      cb.checked = true;
+      cb.closest('.pf-skill-check').classList.add('selected');
+      matchedExisting = true;
+    }
+  });
+  if (matchedExisting) {
+    inp.value = '';
+    return;
+  }
+
+  _pfCustomSkills.push(val);
+  inp.value = '';
+  renderPfCustomTags();
+}
+
+function removeCustomSkillProfile(idx) {
+  _pfCustomSkills.splice(idx, 1);
+  renderPfCustomTags();
+}
+
+function renderPfCustomTags() {
+  var container = document.getElementById('pfCustomSkillTags');
+  if (!container) return;
+  if (_pfCustomSkills.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+  container.innerHTML = _pfCustomSkills.map(function(s, i) {
+    return '<span class="custom-skill-tag">' +
+      s +
+      '<button type="button" class="remove-btn" onclick="removeCustomSkillProfile(' + i + ')" title="Remove">×</button>' +
+      '</span>';
+  }).join('');
+}
+
+function collectAllSkills() {
+  var skills = [];
+  document.querySelectorAll('.pf-skill-check input[type="checkbox"]:checked').forEach(function(cb) {
+    skills.push(cb.value);
+  });
+  _pfCustomSkills.forEach(function(cs) {
+    if (skills.indexOf(cs) === -1) skills.push(cs);
+  });
+  return skills;
+}
+
+function saveSkills() {
+  var skills = collectAllSkills();
+  if (skills.length === 0) {
+    showToast('Please select at least one skill.', false);
+    return;
+  }
+
+  var persisted = false;
+  if (typeof UserDB !== 'undefined' && _userRecord) {
+    UserDB.update(_session.id, { skills: skills });
+    if (typeof UserDB.updateSession === 'function') {
+      UserDB.updateSession(_session.id);
+    }
+    _userRecord = Object.assign({}, _userRecord, { skills: skills });
+    persisted = true;
+  }
+
+  // Also update session storage directly
+  try {
+    var rawSession = sessionStorage.getItem('kindred_session');
+    if (rawSession) {
+      var sess = JSON.parse(rawSession);
+      sess.skills = skills;
+      sessionStorage.setItem('kindred_session', JSON.stringify(sess));
+      _session = sess;
+    }
+  } catch(ex) {}
+
+  showToast(persisted ? '✓ Skills saved successfully!' : '✓ Skills updated for this session!', true);
+}
+
+function resetSkills() {
+  var u = _userRecord || _session;
+  loadSkillsIntoForm(u.skills || []);
+}
+
+// ── Wire up checkbox toggle styling ──────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  // Slight delay to ensure page is ready
+  setTimeout(function() {
+    document.querySelectorAll('.pf-skill-check input[type="checkbox"]').forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        if (cb.checked) {
+          cb.closest('.pf-skill-check').classList.add('selected');
+        } else {
+          cb.closest('.pf-skill-check').classList.remove('selected');
+        }
+      });
+    });
+  }, 100);
+});
+
+function changePassword(e) {
+  e.preventDefault();
+  var p1 = (document.getElementById('pf-newpass')  || {}).value || '';
+  var p2 = (document.getElementById('pf-newpass2') || {}).value || '';
+  if (p1.length < 8) { showToast('Password must be at least 8 characters.', false); return; }
+  if (p1 !== p2)      { showToast('Passwords do not match.', false); return; }
+
+  if (typeof UserDB !== 'undefined' && _userRecord) {
+    UserDB.update(_session.id, { password: p1 });
+    showToast('✓ Password changed successfully!', true);
+  } else {
+    showToast('Password changes are session-only for demo accounts.', true);
+  }
+  document.getElementById('pf-newpass').value  = '';
+  document.getElementById('pf-newpass2').value = '';
+}
+
+function showToast(msg, success) {
+  var t = document.createElement('div');
+  t.className = 'profile-toast';
+  t.style.borderLeftColor = success ? '#00c896' : '#ef4444';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(function() {
+    t.style.transition = 'opacity .35s';
+    t.style.opacity = '0';
+    setTimeout(function() { t.remove(); }, 350);
+  }, 3200);
+}
+</script>
+</body>
+</html>

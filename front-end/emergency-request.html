@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergency Assistance Request - Kindred</title>
+  <meta name="description" content="Submit an emergency assistance request.">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css?v=2">
+  <style>
+    .pill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .pill-btn{padding:10px 8px;border:1.5px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:500;color:var(--mid);transition:all var(--t);text-align:center}
+    .pill-btn:hover{border-color:var(--blue);background:var(--role-bg)}
+    .pill-btn.active{border-color:#ef4444;background:#fef2f2;color:#ef4444}
+    
+    .emergency-icon-wrap {
+      width: 58px; height: 58px; background: #fef2f2; border: 2px solid #fecaca;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px; font-size: 1.5rem;
+    }
+    
+    .btn-emergency {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+    }
+    .btn-emergency:hover { box-shadow: 0 6px 16px rgba(239,68,68,0.4); opacity: 0.95; }
+  </style>
+  <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <!-- ===== NAVBAR ===== -->
+  
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+  <!-- MAIN WRAPPER -->
+  <main>
+    <div class="page-wrap" style="max-width:560px">
+      
+      <div class="emergency-icon-wrap">🚨</div>
+      <h1 class="screen-title" style="color:#ef4444;">Emergency Request</h1>
+      <p class="screen-sub">No login required — submit your request and nearby organizations will be notified.</p>
+
+      <div class="card">
+        <form id="emergencyRequestForm">
+          
+          <div class="field-row">
+            <div class="field">
+              <label>Full Name <span class="req">*</span></label>
+              <input type="text" id="er-name" placeholder="Enter your full name" required>
+            </div>
+            <div class="field">
+              <label>Phone Number <span class="req">*</span></label>
+              <input type="tel" id="er-phone" placeholder="+91 98765 43210" required>
+            </div>
+          </div>
+
+          <div class="field" style="position:relative;">
+            <label>Location <span class="req">*</span></label>
+            <input type="text" id="er-location" placeholder="Address or location details" required>
+            <a href="#" id="currentLocationLink" style="position:absolute; right:0; top:0; font-size:0.75rem; color:var(--blue); font-weight:600; text-decoration:none;">📍 Use my location</a>
+          </div>
+
+          <div class="field">
+            <label>Emergency Type <span class="req">*</span></label>
+            <div class="pill-grid" id="emergencyTypePills">
+              <button type="button" class="pill-btn">Flood</button>
+              <button type="button" class="pill-btn">Earthquake</button>
+              <button type="button" class="pill-btn">Fire</button>
+              <button type="button" class="pill-btn">Medical</button>
+              <button type="button" class="pill-btn">Food Shortage</button>
+              <button type="button" class="pill-btn">Displacement</button>
+              <button type="button" class="pill-btn">Cyclone</button>
+              <button type="button" class="pill-btn">Other</button>
+            </div>
+            <input type="hidden" id="selectedEmergencyType" required>
+          </div>
+
+          <div class="field">
+            <label>Description <span class="req">*</span></label>
+            <textarea id="er-desc" placeholder="Describe the situation and help needed..." rows="4" required></textarea>
+          </div>
+
+          <div class="field">
+            <label>Photo (Optional)</label>
+            <input type="file" accept="image/*" style="padding:9px;">
+          </div>
+
+          <button type="submit" class="btn btn-emergency" id="er-submit-btn" style="margin-top:10px;">
+            🚨 Submit Emergency Request
+          </button>
+          
+          <a href="index.html" class="back-link" style="display:flex; justify-content:center; margin-top:20px;">
+            &#8592; Cancel &amp; Back
+          </a>
+
+        </form>
+
+        <!-- Success Banner -->
+        <div id="er-success-banner" style="display:none;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border-radius:12px;padding:18px 20px;margin-top:20px;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:8px;">✅</div>
+          <strong style="font-size:1rem;">Emergency Request Submitted!</strong>
+          <p style="margin:6px 0 0;font-size:.85rem;opacity:.9;">Your request has been sent to the platform admin and nearby organizations.</p>
+          <p style="margin:8px 0 0;font-size:.8rem;opacity:.8;">Reference ID: <strong id="er-ref-id"></strong></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+  <script src="auth.js"></script>
+  <script src="mock-data.js"></script>
+<script src="api.js"></script>
+  <script src="script.js"></script>
+  <script src="nav-controller.js"></script>
+  <script>
+  document.getElementById('emergencyRequestForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const name     = document.getElementById('er-name').value.trim();
+    const phone    = document.getElementById('er-phone').value.trim();
+    const location = document.getElementById('er-location').value.trim();
+    const type     = document.getElementById('selectedEmergencyType').value;
+    const desc     = document.getElementById('er-desc').value.trim();
+
+    if (!name || !phone || !location || !type || !desc) {
+      alert('Please fill in all required fields including Emergency Type.');
+      return;
+    }
+
+    // Strict 10-digit phone validation
+    var pDigits = phone.replace(/\D/g, '');
+    if (pDigits.length === 12 && pDigits.indexOf('91') === 0) pDigits = pDigits.slice(2);
+    if (pDigits.length === 11 && pDigits.charAt(0) === '0') pDigits = pDigits.slice(1);
+    
+    var dummy = ['1234567890','0123456789','9876543210','1111111111','1234512345'];
+    if (pDigits.length !== 10 || !/^[6-9]\d{9}$/.test(pDigits) || dummy.indexOf(pDigits) !== -1 || /^(\d)\1{9}$/.test(pDigits) || /^(\d{2})\1{4}$/.test(pDigits)) {
+      alert('Please enter a valid 10-digit phone number (no dummy, sequential, or repeating sequences).');
+      document.getElementById('er-phone').focus();
+      return;
+    }
+
+    const refId = 'ER' + Date.now().toString().slice(-7);
+    const record = {
+      id:       refId,
+      type:     'emergency',
+      name,
+      phone,
+      location,
+      emergencyType: type,
+      description:   desc,
+      date:     new Date().toISOString(),
+      status:   'pending'
+    };
+
+    const existing = JSON.parse(localStorage.getItem('kindred_emergency_requests') || '[]');
+    existing.unshift(record);
+    localStorage.setItem('kindred_emergency_requests', JSON.stringify(existing));
+
+    // Also push to backend
+    if (typeof apiPost === 'function') {
+      apiPost('/incoming', {
+        name: record.name,
+        type: 'Emergency: ' + record.emergencyType,
+        desc: record.description,
+        urgency: 'high',
+        location: record.location
+      }).catch(function(){});
+    }
+
+    // Show success
+    document.getElementById('emergencyRequestForm').style.display = 'none';
+    document.getElementById('er-ref-id').textContent = refId;
+    document.getElementById('er-success-banner').style.display = 'block';
+
+    // Redirect after 3s
+    setTimeout(() => { window.location.href = 'emergency-success.html'; }, 3000);
+  });
+
+  // Pill selection
+  document.querySelectorAll('.pill-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('selectedEmergencyType').value = this.textContent;
+    });
+  });
+  </script>
+</body>
+</html>

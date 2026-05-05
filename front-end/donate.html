@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donate - Kindred India</title>
+  <meta name="description" content="Make an impact. Donate to verified NGOs and support direct causes across India.">
+  <link rel="stylesheet" href="style1.css">
+</head>
+
+<body class="bg-light-grey">
+
+  <!-- NAVBAR (Public) -->
+    
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate" class="nav-active">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+  <!-- DONATE HERO -->
+  <section class="page-hero donate-hero" id="donate-hero">
+    <h1 id="donate-hero-title">Make a Donation</h1>
+    <p id="donate-hero-subtitle">Sign in as a Donor to make a direct impact. 100% of your donation goes to the cause.</p>
+    <div class="hero-actions" id="donate-hero-actions">
+      <a href="signin.html?redirect=donate.html" class="btn-primary btn-green" id="hero-signin-btn">🔒 Sign In to Donate</a>
+      <a href="#browse-orgs" class="btn-secondary btn-ghost-white">♡ Browse Campaigns as Guest</a>
+    </div>
+  </section>
+
+  <!-- DONATE CONTENT -->
+  <section class="donate-section">
+    <div class="donate-container">
+
+      <!-- Option Cards -->
+      <div class="donate-options-grid">
+        <!-- Auth Card -->
+        <div class="donate-option-card" id="signin-donate-card">
+          <div class="option-icon dark-icon">🔒</div>
+          <h3>Sign In & Donate</h3>
+          <p class="option-desc">Create a Donor account or sign in to track your donations, receive tax receipts (80G),
+            view impact metrics, and manage recurring contributions.</p>
+          <ul class="feature-list">
+            <li>✔ 80G tax-compliant receipts</li>
+            <li>✔ Track all donation history</li>
+            <li>✔ Set up recurring donations</li>
+            <li>✔ View your personal impact</li>
+            <li>✔ Exclusive donor updates</li>
+          </ul>
+          <a href="signin.html?redirect=donate.html" class="btn-primary block-btn">🔒 Sign In to Donate</a>
+          <p class="new-donor-text">New donor? <a href="signup.html">Create a free account</a></p>
+        </div>
+
+        <!-- Guest Card -->
+        <div class="donate-option-card">
+          <div class="option-icon green-icon">♡</div>
+          <h3>Donate as Guest</h3>
+          <p class="option-desc">No account needed. Browse active fundraising campaigns and donate directly using UPI,
+            card, or bank transfer — quickly and securely.</p>
+          <ul class="feature-list">
+            <li>✔ No sign-up required</li>
+            <li>✔ UPI / GPay / PhonePe</li>
+            <li>✔ Credit & debit cards</li>
+            <li>✔ Net banking</li>
+            <li>✔ Instant confirmation</li>
+          </ul>
+          <a href="#browse-orgs" class="btn-primary block-btn btn-green">♡ Browse Fundraising Campaigns</a>
+        </div>
+      </div>
+
+      <!-- Partner Organizations List -->
+      <div class="partner-orgs-list" id="browse-orgs">
+        <h2>Partner Organizations</h2>
+        <p>Sign in to donate directly to any of these verified NGOs.</p>
+
+        <div class="small-org-grid">
+          <!-- Card 1 -->
+          <div class="small-org-card">
+            <div class="org-avatar color-1">H</div>
+            <div class="org-details">
+              <h4>HopeConnect</h4>
+              <span>Disaster Relief • 15,400 beneficiaries</span>
+            </div>
+            <a href="#" class="btn-outline-sm">Donate</a>
+          </div>
+          <!-- Card 2 -->
+          <div class="small-org-card">
+            <div class="org-avatar color-2">M</div>
+            <div class="org-details">
+              <h4>MyTrust Foundation</h4>
+              <span>Community Development • 18,200 families</span>
+            </div>
+            <a href="#" class="btn-outline-sm">Donate</a>
+          </div>
+          <!-- Card 3 -->
+          <div class="small-org-card">
+            <div class="org-avatar color-3">G</div>
+            <div class="org-details">
+              <h4>GreenEarth Initiative</h4>
+              <span>Environment • 120 communities</span>
+            </div>
+            <a href="#" class="btn-outline-sm">Donate</a>
+          </div>
+          <!-- Card 4 -->
+          <div class="small-org-card">
+            <div class="org-avatar color-4">E</div>
+            <div class="org-details">
+              <h4>EduBridge</h4>
+              <span>Education • 32,000 students</span>
+            </div>
+            <a href="#" class="btn-outline-sm">Donate</a>
+          </div>
+          <!-- Card 5 -->
+          <div class="small-org-card">
+            <div class="org-avatar color-5">M</div>
+            <div class="org-details">
+              <h4>MedReach</h4>
+              <span>Healthcare • 6,800 patients</span>
+            </div>
+            <a href="#" class="btn-outline-sm">Donate</a>
+          </div>
+          <!-- Card 6 -->
+          <div class="small-org-card">
+            <div class="org-avatar color-6">F</div>
+            <div class="org-details">
+              <h4>FoodFirst Alliance</h4>
+              <span>Food Security • 22,000 meals/month</span>
+            </div>
+            <a href="#" class="btn-outline-sm">Donate</a>
+          </div>
+          <!-- Card 7 -->
+          <div class="small-org-card">
+            <div class="org-avatar color-7">S</div>
+            <div class="org-details">
+              <h4>ShelterHope</h4>
+              <span>Housing • 3,200 families</span>
+            </div>
+            <a href="#" class="btn-outline-sm">Donate</a>
+          </div>
+          <!-- Card 8 -->
+          <div class="small-org-card">
+            <div class="org-avatar color-8">C</div>
+            <div class="org-details">
+              <h4>CareBridge</h4>
+              <span>Elder Care • 4,100 elders</span>
+            </div>
+            <a href="#" class="btn-outline-sm">Donate</a>
+          </div>
+          <!-- Card 9 -->
+          <div class="small-org-card">
+            <div class="org-avatar color-1">G</div>
+            <div class="org-details">
+              <h4>GlobalAid Network</h4>
+              <span>Multi-Sector Aid • 46,000 beneficiaries</span>
+            </div>
+            <a href="#" class="btn-outline-sm">Donate</a>
+          </div>
+          <!-- Card 10 -->
+          <div class="small-org-card">
+            <div class="org-avatar color-9">P</div>
+            <div class="org-details">
+              <h4>PathFinders</h4>
+              <span>Youth Empowerment • 7,600 youth</span>
+            </div>
+            <a href="#" class="btn-outline-sm">Donate</a>
+          </div>
+        </div>
+
+        <div class="trust-badge">
+          🔒 Secure, encrypted payment processing · 80G Tax Benefits Available
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+    
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+  <!-- DONATION MODAL -->
+  <div id="donation-modal-overlay" class="modal-overlay" style="display: none;">
+    <div class="modal-box donation-box" style="max-width:520px;">
+      <button class="modal-close" id="close-donate-modal">✕</button>
+      
+      <!-- STEP 1: Amount & Donor Info -->
+      <div id="donate-step-1">
+        <h2 class="modal-title">Donate to <span id="donate-org-name">Organization</span></h2>
+        <p class="modal-subtitle">Your generous contribution creates a lasting impact.</p>
+
+        <div class="donate-frequency">
+          <button class="freq-btn active" data-freq="one-time">One-Time</button>
+          <button class="freq-btn" data-freq="monthly">Monthly</button>
+        </div>
+
+        <label class="input-label">Select Amount</label>
+        <div class="amount-options">
+          <button class="amount-btn active" data-amount="500">₹500</button>
+          <button class="amount-btn" data-amount="1000">₹1,000</button>
+          <button class="amount-btn" data-amount="2500">₹2,500</button>
+          <button class="amount-btn" data-amount="5000">₹5,000</button>
+        </div>
+
+        <label class="input-label mt-3">Or Enter Custom Amount</label>
+        <div class="custom-amount-wrapper">
+          <span class="currency-symbol">₹</span>
+          <input type="number" id="custom-amount" class="custom-amount-input" placeholder="e.g. 1500" min="100">
+        </div>
+
+        <div class="donor-details">
+          <div class="input-group">
+            <input type="text" id="donor-name" placeholder="Full Name" class="std-input" required>
+            <input type="email" id="donor-email" placeholder="Email Address" class="std-input" required>
+          </div>
+          <input type="text" id="donor-pan" placeholder="PAN Card (Optional, for 80G Tax Exemption)" class="std-input full-width mt-2">
+        </div>
+
+        <button class="btn-primary full-width mt-4" id="proceed-donate-btn">
+          💳 Proceed to Pay <span id="display-total">₹500</span>
+        </button>
+        <p class="secure-text">🔒 100% Secure &amp; Encrypted Payment</p>
+      </div>
+
+      <!-- STEP 2: Card Details -->
+      <div id="donate-step-2" style="display:none;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+          <button id="back-to-step1" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:#6366f1;">← Back</button>
+          <h2 class="modal-title" style="margin:0;">Card Details</h2>
+        </div>
+
+        <!-- Animated Card Preview -->
+        <div class="card-scene">
+          <div class="card-3d" id="card-3d">
+            <div class="card-face card-front">
+              <div class="card-front-top">
+                <span class="card-chip">💳</span>
+                <span class="card-network-logo" id="card-network-logo"></span>
+              </div>
+              <div class="card-number-display" id="card-number-display">•••• •••• •••• ••••</div>
+              <div class="card-front-bottom">
+                <div>
+                  <div class="card-label-sm">CARDHOLDER</div>
+                  <div class="card-holdername" id="card-holdername-display">YOUR NAME</div>
+                </div>
+                <div>
+                  <div class="card-label-sm">EXPIRES</div>
+                  <div class="card-expiry-display" id="card-expiry-display">MM/YY</div>
+                </div>
+              </div>
+            </div>
+            <div class="card-face card-back">
+              <div class="card-stripe"></div>
+              <div class="card-cvv-area">
+                <div class="card-label-sm" style="color:#aaa;">CVV</div>
+                <div class="card-cvv-display" id="card-cvv-display">•••</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Form -->
+        <div class="card-form">
+          <!-- Card Number -->
+          <div class="card-field-group">
+            <label class="card-field-label">Card Number <span style="color:#ef4444">*</span></label>
+            <div class="card-field-wrap" id="card-num-wrap">
+              <input type="text" id="card-number" class="card-field-input" placeholder="1234 5678 9012 3456"
+                maxlength="19" autocomplete="cc-number" inputmode="numeric">
+              <span class="card-field-icon" id="card-type-icon">💳</span>
+            </div>
+            <span class="card-field-error" id="card-num-error"></span>
+            <div id="card-prefix-indicator" style="font-size:.78rem;margin-top:2px;min-height:18px;font-weight:600;"></div>
+            <div style="font-size:.72rem;color:#94a3b8;margin-top:2px;">We accept Visa (starts with 4) and Mastercard (starts with 51 or 52)</div>
+          </div>
+
+          <!-- Cardholder Name -->
+          <div class="card-field-group">
+            <label class="card-field-label">Cardholder Name <span style="color:#ef4444">*</span></label>
+            <div class="card-field-wrap" id="card-name-wrap">
+              <input type="text" id="card-holder-name" class="card-field-input" placeholder="As printed on card"
+                autocomplete="cc-name">
+            </div>
+            <span class="card-field-error" id="card-name-error"></span>
+          </div>
+
+          <!-- Expiry + CVV -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div class="card-field-group">
+              <label class="card-field-label">Expiry Date <span style="color:#ef4444">*</span></label>
+              <div class="card-field-wrap" id="card-exp-wrap">
+                <input type="text" id="card-expiry" class="card-field-input" placeholder="MM/YY"
+                  maxlength="5" autocomplete="cc-exp" inputmode="numeric">
+              </div>
+              <span class="card-field-error" id="card-exp-error"></span>
+            </div>
+            <div class="card-field-group">
+              <label class="card-field-label">CVV <span style="color:#ef4444">*</span></label>
+              <div class="card-field-wrap" id="card-cvv-wrap">
+                <input type="password" id="card-cvv" class="card-field-input" placeholder="•••"
+                  maxlength="4" autocomplete="cc-csc" inputmode="numeric">
+                <span class="card-field-icon">🔒</span>
+              </div>
+              <span class="card-field-error" id="card-cvv-error"></span>
+            </div>
+          </div>
+
+          <!-- Save card checkbox -->
+          <label class="save-card-label">
+            <input type="checkbox" id="save-card-check" checked>
+            <span>Save card for future donations</span>
+          </label>
+
+          <!-- Pay Button -->
+          <button class="btn-pay-now" id="pay-now-btn">
+            🔒 Pay Securely <span id="pay-amount-display">₹500</span>
+          </button>
+          <p style="text-align:center;font-size:.78rem;color:#94a3b8;margin-top:10px;">🏦 256-bit SSL encrypted · PCI DSS Compliant</p>
+        </div>
+      </div>
+
+      <!-- STEP LOADING -->
+      <div id="donate-step-loading" style="display: none;" class="text-center py-4">
+        <div class="spinner"></div>
+        <p class="mt-3">Processing payment securely...</p>
+        <p style="font-size:.8rem;color:#94a3b8;">Please do not close or refresh this window.</p>
+      </div>
+
+      <!-- STEP SUCCESS -->
+      <div id="donate-step-success" style="display: none;" class="text-center">
+        <div class="success-icon-large" style="background:linear-gradient(135deg,#22c55e,#16a34a);">✓</div>
+        <h2>Payment Successful!</h2>
+        <p>Your donation of <strong id="success-amount"></strong> to <strong id="success-org"></strong> was successful.</p>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;margin:16px 0;text-align:left;">
+          <div style="font-size:.8rem;color:#15803d;font-weight:600;margin-bottom:6px;">📧 Receipt Details</div>
+          <div style="font-size:.82rem;color:#166534;">Transaction ID: <strong id="success-txn-id"></strong></div>
+          <div style="font-size:.82rem;color:#166534;">Card: <strong id="success-card-mask"></strong></div>
+        </div>
+        <p class="receipt-text">A receipt with 80G exemption details has been sent to your email.</p>
+        <button class="btn-outline full-width mt-4" id="close-success-btn">Return to Campaigns</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Payment Styles -->
+  <style>
+    /* ─── 3D Card Scene ─── */
+    .card-scene { width:100%; perspective:900px; margin-bottom:22px; }
+    .card-3d {
+      width:100%; max-width:320px; height:180px;
+      margin:0 auto;
+      position:relative; transform-style:preserve-3d;
+      transition:transform .6s cubic-bezier(.4,0,.2,1);
+    }
+    .card-3d.flipped { transform:rotateY(180deg); }
+    .card-face {
+      position:absolute; width:100%; height:100%;
+      border-radius:16px; backface-visibility:hidden;
+      padding:20px 22px;
+      display:flex; flex-direction:column; justify-content:space-between;
+      box-shadow:0 8px 32px rgba(0,0,0,.18);
+    }
+    .card-front {
+      background:linear-gradient(135deg,#1e293b 0%,#334155 50%,#1e293b 100%);
+      color:#fff;
+    }
+    .card-back {
+      background:linear-gradient(135deg,#334155,#1e293b);
+      transform:rotateY(180deg);
+    }
+    .card-front-top { display:flex; justify-content:space-between; align-items:center; }
+    .card-chip { font-size:1.6rem; }
+    .card-network-logo { font-size:1.7rem; }
+    .card-number-display { font-size:1.15rem; letter-spacing:.18em; color:#e2e8f0; font-family:monospace; }
+    .card-front-bottom { display:flex; gap:24px; align-items:flex-end; }
+    .card-label-sm { font-size:.6rem; letter-spacing:.06em; color:#94a3b8; text-transform:uppercase; }
+    .card-holdername { font-size:.82rem; color:#f1f5f9; letter-spacing:.05em; text-transform:uppercase; margin-top:2px; max-width:160px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .card-expiry-display { font-size:.88rem; color:#f1f5f9; font-family:monospace; margin-top:2px; }
+    .card-stripe { background:linear-gradient(90deg,#1e293b,#475569); height:46px; margin:-20px -22px 14px; }
+    .card-cvv-area { background:#f1f5f9; border-radius:6px; padding:6px 14px; display:flex; justify-content:space-between; align-items:center; }
+    .card-cvv-display { font-family:monospace; letter-spacing:.15em; color:#1e293b; font-size:.95rem; }
+
+    /* ─── Card Form Fields ─── */
+    .card-form { display:flex; flex-direction:column; gap:14px; }
+    .card-field-group { display:flex; flex-direction:column; gap:4px; }
+    .card-field-label { font-size:.8rem; font-weight:600; color:#374151; }
+    .card-field-wrap {
+      display:flex; align-items:center; gap:8px;
+      border:1.5px solid #e2e8f0; border-radius:10px;
+      padding:0 12px; background:#fff;
+      transition:border-color .2s, box-shadow .2s;
+    }
+    .card-field-wrap:focus-within { border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,.12); }
+    .card-field-wrap.valid { border-color:#22c55e; }
+    .card-field-wrap.invalid { border-color:#ef4444; box-shadow:0 0 0 3px rgba(239,68,68,.1); }
+    .card-field-input {
+      flex:1; border:none; outline:none; padding:11px 0;
+      font-size:.9rem; font-family:monospace; background:transparent; color:#1e293b;
+    }
+    .card-field-icon { font-size:1rem; color:#94a3b8; flex-shrink:0; }
+    .card-field-error { font-size:.75rem; color:#ef4444; min-height:16px; }
+    .save-card-label { display:flex; align-items:center; gap:8px; font-size:.82rem; color:#4b5563; cursor:pointer; }
+    .save-card-label input { accent-color:#6366f1; width:15px; height:15px; }
+    .btn-pay-now {
+      background:linear-gradient(135deg,#6366f1,#4f46e5);
+      color:#fff; border:none; padding:14px 24px;
+      border-radius:12px; font-size:1rem; font-weight:700;
+      cursor:pointer; width:100%;
+      box-shadow:0 4px 14px rgba(99,102,241,.35);
+      transition:all .2s; letter-spacing:.02em;
+    }
+    .btn-pay-now:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(99,102,241,.45); }
+    .btn-pay-now:active { transform:translateY(0); }
+  </style>
+
+  <script src="auth.js"></script>
+  <script src="mock-data.js"></script>
+<script src="api.js"></script>
+  <script src="script.js"></script>
+  <script src="nav-controller.js"></script>
+  <script src="donate.js"></script>
+  <script>
+    // Hide "Sign In to Donate" elements if donor is already logged in
+    (function() {
+      var raw = sessionStorage.getItem('kindred_session');
+      if (!raw) return;
+      try {
+        var session = JSON.parse(raw);
+        if (session && session.role === 'donor') {
+          // Update hero
+          var heroTitle = document.getElementById('donate-hero-title');
+          var heroSub = document.getElementById('donate-hero-subtitle');
+          var heroSignIn = document.getElementById('hero-signin-btn');
+          if (heroTitle) heroTitle.textContent = 'Welcome back, ' + (session.name ? session.name.split(' ')[0] : 'Donor') + '!';
+          if (heroSub) heroSub.textContent = 'Browse campaigns below and make a donation. 100% goes to the cause.';
+          if (heroSignIn) heroSignIn.style.display = 'none';
+          // Hide the Sign In & Donate option card
+          var signinCard = document.getElementById('signin-donate-card');
+          if (signinCard) signinCard.style.display = 'none';
+        }
+      } catch(e) {}
+    })();
+
+    // Auto-open donation modal if navigated from donor dashboard with program context
+    (function() {
+      var ctx = sessionStorage.getItem('kindred_donate_context');
+      if (!ctx) return;
+      try {
+        var context = JSON.parse(ctx);
+        sessionStorage.removeItem('kindred_donate_context'); // Clear after reading
+
+        // Wait for donate.js to initialize
+        setTimeout(function() {
+          var orgDisplay = document.getElementById('donate-org-name');
+          var overlay = document.getElementById('donation-modal-overlay');
+          var step1 = document.getElementById('donate-step-1');
+
+          if (orgDisplay && overlay) {
+            // Set the org/program name
+            var displayName = context.program || context.org || 'Kindred Verified NGO';
+            if (context.program && context.org) {
+              displayName = context.program + ' (' + context.org + ')';
+            }
+            orgDisplay.textContent = displayName;
+
+            // Set the currentOrg variable in donate.js so the payment record is correct
+            if (typeof window._setDonateOrg === 'function') {
+              window._setDonateOrg(displayName);
+            }
+
+            // Reset modal state
+            if (step1) step1.style.display = 'block';
+            var step2 = document.getElementById('donate-step-2');
+            var stepLoading = document.getElementById('donate-step-loading');
+            var stepSuccess = document.getElementById('donate-step-success');
+            if (step2) step2.style.display = 'none';
+            if (stepLoading) stepLoading.style.display = 'none';
+            if (stepSuccess) stepSuccess.style.display = 'none';
+
+            // Pre-fill donor info from session
+            var raw = sessionStorage.getItem('kindred_session');
+            if (raw) {
+              try {
+                var user = JSON.parse(raw);
+                var nameInput = document.getElementById('donor-name');
+                var emailInput = document.getElementById('donor-email');
+                if (nameInput && user.name) nameInput.value = user.name;
+                if (emailInput && user.email) emailInput.value = user.email;
+              } catch(e) {}
+            }
+
+            // Show modal
+            overlay.style.display = 'flex';
+
+            // Scroll to top of page
+            window.scrollTo(0, 0);
+          }
+        }, 300);
+      } catch(e) {}
+    })();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kindred - Platform Administrator Dashboard | Overview</title>
+  <meta name="description" content="Kindred Platform Administrator Dashboard - Overview of organizations, volunteers, and platform analytics">
+  <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-header-text">
+        <h1>Platform Administrator Dashboard</h1>
+        <p>Manage all organizations on the Kindred platform</p>
+      </div>
+      <button class="btn-add-org">+ Add Organization</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <a href="overview.html" class="tab active">Overview</a>
+      <a href="organizations.html" class="tab">Organizations</a>
+      <a href="requests.html" class="tab" id="tab-requests">Requests (1)</a>
+      <a href="admin-users.html" class="tab">User Management</a>
+      <a href="admin-inbox.html" class="tab">Inbox</a>
+      <a href="analytics.html" class="tab">Analytics</a>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <div class="stat-icon blue">🏢</div>
+          <button class="more-btn">⋮</button>
+        </div>
+        <div class="stat-value" data-stat="orgs">120</div>
+        <div class="stat-label">Total Organizations</div>
+        <div class="stat-change positive">+8 this month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <div class="stat-icon green">👥</div>
+          <button class="more-btn">⋮</button>
+        </div>
+        <div class="stat-value">45,230</div>
+        <div class="stat-label">Total Volunteers</div>
+        <div class="stat-change positive">+1,245 this month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <div class="stat-icon orange">⚠</div>
+          <button class="more-btn">⋮</button>
+        </div>
+        <div class="stat-value">23</div>
+        <div class="stat-label">Emergency Requests</div>
+        <div class="stat-change warning">5 critical</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <div class="stat-icon purple">📈</div>
+          <button class="more-btn">⋮</button>
+        </div>
+        <div class="stat-value">+34%</div>
+        <div class="stat-label">Platform Growth</div>
+        <div class="stat-change info">vs last quarter</div>
+      </div>
+    </div>
+
+    <!-- ── Live User Stats (from UserDB) ──────────────────── -->
+    <div id="liveUserStats" style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:24px;"></div>
+
+    <!-- Pending User Approvals -->
+    <div class="section-card" id="pendingUsersSection" style="display:none">
+      <div class="section-card-header">
+        <h2>⏳ Pending User Approvals</h2>
+        <a href="admin-users.html" class="btn-view-all" style="font-size:.82rem;color:#6366f1;text-decoration:none;font-weight:600">View All Users →</a>
+      </div>
+      <div id="pendingUsersList">
+        <!-- Populated by superuser-crud.js -->
+      </div>
+    </div>
+
+    <!-- Platform Growth Trend Chart -->
+    <div class="charts-row">
+      <div class="chart-container">
+        <h3>Platform Growth Trend</h3>
+        <canvas id="lineChart" class="line-chart-canvas"></canvas>
+      </div>
+    </div>
+
+    <!-- Donut + Bar Charts -->
+    <div class="charts-split">
+      <div class="chart-container">
+        <h3>Organizations by Category</h3>
+        <div class="donut-chart-wrapper">
+          <canvas id="donutChart" width="180" height="180"></canvas>
+          <div class="donut-legend" id="donutLegend"></div>
+        </div>
+      </div>
+      <div class="chart-container">
+        <h3>Volunteer Activity</h3>
+        <div class="bar-chart-wrapper">
+          <div class="bar-chart" id="barChart"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NGO Registration Requests -->
+    <!-- NGO Registration Requests Container -->
+    <div id="requestsList" class="request-list-container">
+      <!-- Dynamically Rendered by superuser-crud.js -->
+    </div>
+
+    <!-- Registered Organizations Table -->
+    <div class="section-card">
+      <div class="section-card-header">
+        <h2>Registered Organizations</h2>
+        <div class="search-bar">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Search organizations..." id="searchOrgs"><span id="searchClear" style="cursor:pointer;color:#9ca3af;padding:0 6px" onclick="document.getElementById('searchOrgs').value='';renderOrgTable()">×</span>
+        </div>
+      </div>
+      <table class="org-table">
+        <thead>
+          <tr>
+            <th>Organization</th>
+            <th>Focus Area</th>
+            <th>Status</th>
+            <th>Volunteers</th>
+            <th>Beneficiaries</th>
+            <th>Rating</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="orgTableBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Recent Emergency Requests -->
+    <div class="section-card">
+      <div class="section-card-header">
+        <h2>Recent Emergency Requests</h2>
+      </div>
+      <div id="emergencyRequests">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- Platform Inbox (Live from localStorage) -->
+    <div class="section-card" id="platformInboxSection">
+      <div class="section-card-header">
+        <h2>📥 Platform Inbox</h2>
+        <a href="admin-inbox.html" class="btn-view-all" style="font-size:.82rem;color:#6366f1;text-decoration:none;font-weight:600">View All →</a>
+      </div>
+      <div id="platformInboxList" style="max-height:400px;overflow-y:auto;">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+  
+<script src="auth.js"></script>
+<script src="mock-data.js"></script>
+<script src="api.js"></script>
+<script src="shared.js"></script>
+<script src="superuser-crud.js"></script>
+<script src="nav-controller.js"></script>
+<script>
+/* ── Live User Stats ── */
+(function renderLiveUserStats() {
+  var bar = document.getElementById('liveUserStats');
+  if (!bar) return;
+  var all = (typeof UserDB !== 'undefined') ? UserDB.getAllCombined() : (typeof MOCK_USERS !== 'undefined' ? MOCK_USERS.map(function(u){ return Object.assign({}, u, {source:'system'}); }) : []);
+  var total    = all.length;
+  var pending  = all.filter(function(u){ return u.status === 'pending'; }).length;
+  var approved = all.filter(function(u){ return u.status === 'approved'; }).length;
+  var rejected = all.filter(function(u){ return u.status === 'rejected'; }).length;
+  var registered = all.filter(function(u){ return u.source === 'registered'; }).length;
+
+  var chip = function(icon, label, count, border, numColor) {
+    return '<div style="display:flex;align-items:center;gap:10px;padding:12px 20px;background:#fff;border:1px solid ' + border + ';border-radius:14px;box-shadow:0 1px 6px rgba(0,0,0,.04);">' +
+      '<span style="font-size:1.15rem;">' + icon + '</span>' +
+      '<div><div style="font-size:1.05rem;font-weight:700;color:' + numColor + ';">' + count + '</div>' +
+      '<div style="font-size:.74rem;font-weight:600;color:#64748b;">' + label + '</div></div></div>';
+  };
+
+  bar.innerHTML =
+    chip('👥', 'Total Users',      total,      '#e2e8f0', '#1e293b') +
+    chip('✅', 'Approved',         approved,   '#a7f3d0', '#059669') +
+    chip('⏳', 'Pending Approval', pending,    '#fde68a', '#f59e0b') +
+    chip('✕',  'Rejected',         rejected,   '#fecaca', '#ef4444') +
+    chip('📝', 'Registered',       registered, '#c7d2fe', '#4f46e5');
+
+  // Also update the tab-requests label dynamically
+  var tabReq = document.getElementById('tab-requests');
+  if (tabReq && pending > 0) tabReq.textContent = 'Requests (' + pending + ')';
+})();
+
+/* Platform Inbox — show recent submissions on Overview */
+(function renderPlatformInbox() {
+  const emergencies = JSON.parse(localStorage.getItem('kindred_emergency_requests') || '[]').map(r => ({...r, type:'emergency'}));
+  const contacts    = JSON.parse(localStorage.getItem('kindred_contact_messages') || '[]').map(r => ({...r, type:'contact'}));
+  const feedback    = JSON.parse(localStorage.getItem('kindred_feedback') || '[]').map(r => ({...r, type:'feedback'}));
+  const donations   = JSON.parse(localStorage.getItem('kindred_donations') || '[]').map(r => ({...r, type:'donation', status: r.status || 'paid'}));
+
+  const all = [...emergencies, ...contacts, ...feedback, ...donations]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 10);
+
+  const container = document.getElementById('platformInboxList');
+  if (!container) return;
+
+  const typeColors = { emergency:'#fef2f2', contact:'#eff6ff', feedback:'#f5f3ff', donation:'#ecfdf5' };
+  const typeTextColors = { emergency:'#dc2626', contact:'#2563eb', feedback:'#7c3aed', donation:'#059669' };
+  const typeIcons = { emergency:'🚨', contact:'✉️', feedback:'💬', donation:'💰' };
+  const typeLabels = { emergency:'Emergency', contact:'Contact', feedback:'Feedback', donation:'Donation' };
+
+  if (!all.length) {
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:#94a3b8;font-size:.88rem;">📭 No submissions yet. They will appear here once users submit emergency requests, contact messages, feedback, or donations.</div>';
+    return;
+  }
+
+  container.innerHTML = all.map(item => {
+    const msg = item.message || item.description || item.subject || (item.org ? '₹' + (item.amount||0).toLocaleString('en-IN') + ' → ' + item.org : '—');
+    const date = new Date(item.date).toLocaleDateString('en-IN', { day:'numeric', month:'short' }) + ' ' + new Date(item.date).toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+    return `
+    <div style="display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid #f1f5f9;transition:background .15s;" onmouseover="this.style.background='#fafbfe'" onmouseout="this.style.background='transparent'">
+      <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;background:${typeColors[item.type]};flex-shrink:0;">${typeIcons[item.type]}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+          <span style="font-weight:600;font-size:.86rem;color:#1e293b;">${item.name || item.donor || 'Anonymous'}</span>
+          <span style="font-size:.72rem;color:#94a3b8;white-space:nowrap;">${date}</span>
+        </div>
+        <div style="font-size:.8rem;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:400px;">${msg}</div>
+      </div>
+      <span style="display:inline-flex;padding:3px 10px;border-radius:100px;font-size:.7rem;font-weight:600;background:${typeColors[item.type]};color:${typeTextColors[item.type]};">${typeLabels[item.type]}</span>
+    </div>`;
+  }).join('');
+})();
+</script>
+</body>
+</html>

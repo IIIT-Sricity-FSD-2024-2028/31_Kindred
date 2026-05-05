@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kindred — My Payments</title>
+  <meta name="description" content="View your donation history and saved payment cards on the Kindred platform.">
+  <link rel="stylesheet" href="shared.css" />
+  <link rel="stylesheet" href="style1.css">
+  <style>
+    /* ── Payments Page ── */
+    .payments-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .payment-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow);
+      transition: box-shadow .2s;
+    }
+
+    .payment-card:hover {
+      box-shadow: 0 4px 18px rgba(0, 0, 0, .09);
+    }
+
+    .payment-card .payment-org {
+      flex: 1;
+      font-weight: 600;
+      font-size: 13.5px;
+    }
+
+    .payment-card .payment-date {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .payment-amount {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--success);
+    }
+
+    .payment-status {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .payment-status.paid {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .payment-status.pending {
+      background: #fef9c3;
+      color: #ca8a04;
+    }
+
+    /* ── Saved Cards ── */
+    .saved-cards-section {
+      margin-top: 28px;
+    }
+
+    .saved-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .saved-card-tile {
+      background: linear-gradient(135deg, #1e293b, #334155);
+      border-radius: 14px;
+      padding: 18px 16px;
+      color: #fff;
+      position: relative;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .2);
+    }
+
+    .saved-card-tile:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+    }
+
+    .saved-card-tile .card-tile-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .saved-card-tile .card-tile-icon {
+      font-size: 1.4rem;
+    }
+
+    .saved-card-tile .card-tile-type {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      opacity: .8;
+      text-transform: uppercase;
+    }
+
+    .saved-card-tile .card-tile-number {
+      font-family: monospace;
+      font-size: 1rem;
+      letter-spacing: .15em;
+      color: #e2e8f0;
+      margin-bottom: 10px;
+    }
+
+    .saved-card-tile .card-tile-expiry {
+      font-size: .75rem;
+      color: #94a3b8;
+    }
+
+    .saved-card-tile .card-tile-holder {
+      font-size: .78rem;
+      color: #cbd5e1;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    .btn-add-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 2px dashed #cbd5e1;
+      border-radius: 14px;
+      padding: 18px 16px;
+      color: #6366f1;
+      font-weight: 700;
+      background: #f8faff;
+      cursor: pointer;
+      font-size: .88rem;
+      transition: all .2s;
+      justify-content: center;
+    }
+
+    .btn-add-card:hover {
+      border-color: #6366f1;
+      background: #eef2ff;
+    }
+
+    .empty-payments {
+      text-align: center;
+      padding: 40px 20px;
+      color: #94a3b8;
+    }
+
+    .empty-payments-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+
+    .empty-payments p {
+      font-size: .9rem;
+    }
+
+    .empty-payments a {
+      color: #6366f1;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* ── Program Cards for Donors ── */
+    .donor-programs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+      margin-top: 12px;
+    }
+
+    .donor-prog-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      transition: all .25s;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+    }
+
+    .donor-prog-card:hover {
+      box-shadow: 0 8px 28px rgba(0, 0, 0, .1);
+      transform: translateY(-3px);
+    }
+
+    .donor-prog-card .prog-new-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #fff;
+      font-size: .68rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: .04em;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .7; }
+    }
+
+    .donor-prog-card .prog-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .donor-prog-card .prog-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .donor-prog-card .prog-title {
+      font-weight: 700;
+      font-size: .95rem;
+      color: #1e293b;
+      margin-bottom: 2px;
+    }
+
+    .donor-prog-card .prog-org {
+      font-size: .78rem;
+      color: #64748b;
+    }
+
+    .donor-prog-card .prog-desc {
+      font-size: .82rem;
+      color: #475569;
+      line-height: 1.5;
+      margin-bottom: 14px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .donor-prog-card .prog-progress {
+      margin-bottom: 14px;
+    }
+
+    .donor-prog-card .prog-progress-bar {
+      background: #f3f4f6;
+      border-radius: 6px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .donor-prog-card .prog-progress-fill {
+      height: 8px;
+      border-radius: 6px;
+      transition: width .6s ease;
+    }
+
+    .donor-prog-card .prog-tags {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .donor-prog-card .prog-tag {
+      font-size: .7rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+
+    .donor-prog-card .btn-donate-prog {
+      width: 100%;
+      padding: 10px 16px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: .88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .donor-prog-card .btn-donate-prog:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(99, 102, 241, .35);
+    }
+
+    .new-programs-banner {
+      background: linear-gradient(135deg, #fdf4ff, #fae8ff);
+      border: 1.5px solid #e9d5ff;
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+
+    .new-programs-banner h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #581c87;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .new-programs-banner p {
+      font-size: .82rem;
+      color: #7c3aed;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+
+
+
+
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+  <!-- ===== MAIN ===== -->
+  <main class="page-wrapper">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-header-text">
+        <h1 id="donor-welcome">Welcome, Donor</h1>
+        <p>Track your donation history and manage your saved payment cards.</p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <a href="profile.html"
+          style="display:inline-flex;align-items:center;gap:7px;padding:10px 18px;background:#f1f5f9;color:#374151;border:1px solid #e2e8f0;border-radius:10px;font-size:.85rem;font-weight:600;text-decoration:none;transition:all .15s;"
+          onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
+          👤 Edit Profile
+        </a>
+        <a href="donate.html" class="btn-new-request" style="text-decoration:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          New Donation
+        </a>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn" data-tab="overview" onclick="switchTab(this, 'tab-overview')">Overview</button>
+      <button class="tab-btn active" data-tab="mypayments" onclick="switchTab(this, 'tab-payments')">My
+        Payments</button>
+      <button class="tab-btn" data-tab="resources" onclick="switchTab(this, 'tab-resources')">📦 Resource Donations</button>
+      <button class="tab-btn" data-tab="programs" onclick="switchTab(this, 'tab-programs')">Active Programs</button>
+      <button class="tab-btn" data-tab="savedcards" onclick="switchTab(this, 'tab-cards')">Saved Cards</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid" id="payment-stats">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Tab: My Payments -->
+    <div id="tab-payments">
+      <div class="section-title">Donation History</div>
+      <div class="payments-list" id="payments-list">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- New Donor Onboarding (shown when no donations) -->
+    <div id="new-donor-onboarding" style="display:none; margin-top:20px;">
+      <div
+        style="background:linear-gradient(135deg,#fdf4ff,#fae8ff);border:1px solid #e9d5ff;border-radius:16px;padding:32px 28px;">
+        <h3 style="font-size:1.1rem;font-weight:700;color:#581c87;margin-bottom:6px;">🎉 Welcome to Kindred!</h3>
+        <p style="color:#7c3aed;font-size:.88rem;margin-bottom:20px;">You haven't made a donation yet. Here's how you
+          can make an impact:</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;">
+          <div onclick="window.location.href='donate.html'"
+            style="background:#fff;border:1px solid #e9d5ff;border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;"
+            onmouseover="this.style.borderColor='#a855f7'" onmouseout="this.style.borderColor='#e9d5ff'">
+            <div style="font-size:1.8rem;margin-bottom:8px;">💝</div>
+            <div style="font-size:.82rem;font-weight:700;color:#581c87;">Make a Donation</div>
+            <div style="font-size:.74rem;color:#64748b;margin-top:4px;">Support a verified NGO</div>
+          </div>
+          <div onclick="window.location.href='programs.html'"
+            style="background:#fff;border:1px solid #e9d5ff;border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;"
+            onmouseover="this.style.borderColor='#a855f7'" onmouseout="this.style.borderColor='#e9d5ff'">
+            <div style="font-size:1.8rem;margin-bottom:8px;">📋</div>
+            <div style="font-size:.82rem;font-weight:700;color:#581c87;">Browse Programs</div>
+            <div style="font-size:.74rem;color:#64748b;margin-top:4px;">Explore active campaigns</div>
+          </div>
+          <div onclick="window.location.href='organizations.html'"
+            style="background:#fff;border:1px solid #e9d5ff;border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;"
+            onmouseover="this.style.borderColor='#a855f7'" onmouseout="this.style.borderColor='#e9d5ff'">
+            <div style="font-size:1.8rem;margin-bottom:8px;">🏢</div>
+            <div style="font-size:.82rem;font-weight:700;color:#581c87;">Explore NGOs</div>
+            <div style="font-size:.74rem;color:#64748b;margin-top:4px;">Find organisations to support</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Overview (hidden by default) -->
+    <div id="tab-overview" style="display:none;">
+      <div class="section-title">Donation Overview</div>
+      <div id="overview-content"></div>
+    </div>
+
+    <!-- Tab: Saved Cards (hidden by default) -->
+    <div id="tab-cards" style="display:none;">
+      <div class="saved-cards-section">
+        <div class="section-title">Saved Cards</div>
+        <div class="saved-cards-grid" id="saved-cards-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Active Programs -->
+    <div id="tab-programs" style="display:none;">
+      <div id="new-programs-highlight"></div>
+      <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>🏢 Active Programs</span>
+        <a href="programs.html" style="font-size:.82rem;font-weight:600;color:#6366f1;text-decoration:none;">View All →</a>
+      </div>
+      <div class="donor-programs-grid" id="donor-programs-grid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+
+    <!-- Tab: Resource Donations -->
+    <div id="tab-resources" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+        <div class="section-title">📦 My Resource Donations</div>
+        <button onclick="openResourceDonationModal()" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;padding:10px 20px;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(16,185,129,.3);transition:all .15s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">📦 Donate Resources</button>
+      </div>
+      <div id="donor-resource-list">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Resource Donation Modal -->
+  <div id="resourceDonationModal" class="modal-overlay" style="display:none;">
+    <div class="modal-box" style="width:620px;max-width:95vw;max-height:90vh;overflow-y:auto;">
+      <div class="modal-header">
+        <h3>📦 Donate Resources</h3>
+        <button class="modal-close-btn" onclick="closeResourceDonationModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="resourceDonationForm" onsubmit="submitResourceDonation(event)" novalidate>
+          <!-- Donor Info (pre-filled) -->
+          <div style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+            <div style="font-size:.78rem;font-weight:600;color:#065f46;margin-bottom:6px;">🙋 Donor Information</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="field">
+                <label>Full Name <span class="req">*</span></label>
+                <input type="text" id="rd-name" placeholder="Your full name" />
+                <p class="field-error" id="rd-name-err"></p>
+              </div>
+              <div class="field">
+                <label>Phone <span class="req">*</span></label>
+                <input type="text" id="rd-phone" placeholder="10-digit number" maxlength="15" />
+                <p class="field-error" id="rd-phone-err"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category -->
+          <div class="field">
+            <label>Category <span class="req">*</span></label>
+            <select id="rd-category">
+              <option value="">— Select Category —</option>
+            </select>
+            <p class="field-error" id="rd-category-err"></p>
+          </div>
+
+          <!-- Items -->
+          <div class="field">
+            <label style="display:flex;justify-content:space-between;align-items:center;">Items to Donate <span class="req">*</span>
+              <button type="button" onclick="addDonationItem()" style="background:#6366f1;color:#fff;border:none;padding:4px 12px;border-radius:6px;font-size:.78rem;font-weight:600;cursor:pointer;">+ Add Item</button>
+            </label>
+            <div id="rd-items-container">
+              <div class="rd-item-row" style="display:grid;grid-template-columns:2fr 1fr 1fr 30px;gap:8px;align-items:start;margin-bottom:8px;">
+                <input type="text" class="rd-item-name" placeholder="Item name (e.g. Rice Bags)" />
+                <input type="number" class="rd-item-qty" placeholder="Qty" min="1" />
+                <select class="rd-item-condition">
+                  <option value="New">New</option>
+                  <option value="Good">Good</option>
+                  <option value="Fair">Fair</option>
+                </select>
+                <span></span>
+              </div>
+            </div>
+            <p class="field-error" id="rd-items-err"></p>
+          </div>
+
+          <!-- Description -->
+          <div class="field">
+            <label>Description <span class="req">*</span></label>
+            <textarea id="rd-desc" rows="3" placeholder="Describe the items you want to donate and any special handling notes (min 10 chars)..."></textarea>
+            <p class="field-error" id="rd-desc-err"></p>
+          </div>
+
+          <!-- Pickup Details -->
+          <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+            <div style="font-size:.78rem;font-weight:600;color:#1e40af;margin-bottom:6px;">🚚 Pickup Details</div>
+            <div class="field">
+              <label>Pickup Address <span class="req">*</span></label>
+              <textarea id="rd-address" rows="2" placeholder="Full address with pin code (min 10 chars)"></textarea>
+              <p class="field-error" id="rd-address-err"></p>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="field">
+                <label>Preferred Date <span class="req">*</span></label>
+                <input type="date" id="rd-date" />
+                <p class="field-error" id="rd-date-err"></p>
+              </div>
+              <div class="field">
+                <label>Time Slot <span class="req">*</span></label>
+                <select id="rd-timeslot">
+                  <option value="">— Select —</option>
+                  <option value="Morning (9AM-12PM)">Morning (9AM-12PM)</option>
+                  <option value="Afternoon (12PM-4PM)">Afternoon (12PM-4PM)</option>
+                  <option value="Evening (4PM-7PM)">Evening (4PM-7PM)</option>
+                </select>
+                <p class="field-error" id="rd-timeslot-err"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Program (optional) -->
+          <div class="field">
+            <label>Allocate to Program <span style="font-weight:400;font-size:.75rem;color:#64748b;">(optional)</span></label>
+            <select id="rd-program">
+              <option value="">— No specific program —</option>
+            </select>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-modal-cancel" onclick="closeResourceDonationModal()">Cancel</button>
+            <button type="submit" class="btn-modal-save" style="background:linear-gradient(135deg,#10b981,#059669);">📦 Submit Donation</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+
+
+
+
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across
+          India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script src="mock-data.js"></script>
+<script src="api.js"></script>
+  <script src="shared.js"></script>
+  <script src="end-user-init.js"></script>
+  <script src="nav-controller.js"></script>
+  <script>
+    /* ── Tab Controller ── */
+    function switchTab(btn, showId) {
+      document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      ['tab-overview', 'tab-payments', 'tab-cards', 'tab-programs', 'tab-resources'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = id === showId ? 'block' : 'none';
+      });
+    }
+
+    /* ── Date Formatter ── */
+    function fmtDate(iso) {
+      return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    /* ── Render Stats ── */
+    function renderStats(donations) {
+      const total = donations.length;
+      const totalAmt = donations.reduce((s, d) => s + d.amount, 0);
+      const paid = donations.filter(d => d.status === 'paid').length;
+      const orgs = [...new Set(donations.map(d => d.org))].length;
+
+      const icons = [
+        { icon: '💰', label: 'Total Donated', value: '₹' + totalAmt.toLocaleString('en-IN'), cls: 'green' },
+        { icon: '📋', label: 'Transactions', value: total, cls: 'blue' },
+        { icon: '✅', label: 'Successful', value: paid, cls: 'purple' },
+        { icon: '🏢', label: 'NGOs Supported', value: orgs, cls: 'orange' },
+      ];
+      document.getElementById('payment-stats').innerHTML = icons.map(s => `
+    <div class="stat-card">
+      <div class="stat-icon ${s.cls}">${s.icon}</div>
+      <div class="stat-value">${s.value}</div>
+      <div class="stat-label">${s.label}</div>
+    </div>`).join('');
+    }
+
+    /* ── Render Payments List ── */
+    function renderPayments(donations) {
+      const list = document.getElementById('payments-list');
+      if (!donations.length) {
+        list.innerHTML = `<div class="empty-payments">
+      <div class="empty-payments-icon">💳</div>
+      <p>No donations yet. <a href="donate.html">Make your first donation</a> to support verified NGOs.</p>
+    </div>`;
+        return;
+      }
+      list.innerHTML = donations.map(d => `
+    <div class="payment-card">
+      <div class="request-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      </div>
+      <div style="flex:1">
+        <div class="payment-org">${d.org || 'Kindred Donation'}</div>
+        <div class="payment-date">Txn: ${d.id}</div>
+        <div style="font-size:11.5px;color:var(--text-light);margin-top:2px;">
+          ${fmtDate(d.date)} • ${d.frequency === 'monthly' ? '🔁 Monthly' : 'One-Time'}
+          ${d.cardType ? '• ' + d.cardType + ' ••••' + d.cardLast4 : ''}
+        </div>
+      </div>
+      <div class="request-badges">
+        <span class="payment-amount">₹${d.amount.toLocaleString('en-IN')}</span>
+        <span class="payment-status ${d.status === 'paid' ? 'paid' : 'pending'}">${d.status === 'paid' ? 'Paid' : 'Pending'}</span>
+      </div>
+    </div>`).join('');
+    }
+
+    /* ── Render Saved Cards ── */
+    function renderSavedCards(cards) {
+      const grid = document.getElementById('saved-cards-grid');
+      const cardHTML = cards.map(c => `
+    <div class="saved-card-tile">
+      <div class="card-tile-top">
+        <span class="card-tile-icon">${c.icon || '💳'}</span>
+        <span class="card-tile-type">${c.type || 'Card'}</span>
+      </div>
+      <div class="card-tile-number">•••• •••• •••• ${c.last4}</div>
+      <div class="card-tile-holder">${c.holder || 'CARDHOLDER'}</div>
+      <div class="card-tile-expiry">Expires ${c.expiry || '--/--'}</div>
+    </div>`).join('');
+
+      grid.innerHTML = cardHTML + `
+    <button class="btn-add-card" onclick="window.location.href='donate.html'">
+      ➕ Add New Card
+    </button>`;
+    }
+
+    /* ── Render Overview Tab ── */
+    function renderOverview(donations) {
+      const el = document.getElementById('overview-content');
+      if (!donations.length) {
+        el.innerHTML = '<p style="color:#94a3b8;font-size:.9rem;">No donation history yet.</p>';
+        return;
+      }
+      const orgGroups = {};
+      donations.forEach(d => {
+        orgGroups[d.org] = (orgGroups[d.org] || 0) + d.amount;
+      });
+      el.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;">
+      ${Object.entries(orgGroups).map(([org, amt]) => `
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;">
+          <div style="font-weight:700;font-size:.92rem;color:#1e293b;margin-bottom:4px;">${org}</div>
+          <div style="color:#22c55e;font-weight:700;font-size:1.1rem;">₹${amt.toLocaleString('en-IN')}</div>
+          <div style="color:#94a3b8;font-size:.75rem;">Total donated</div>
+        </div>`).join('')}
+    </div>`;
+    }
+
+    /* ── Render Active Programs for Donors ── */
+    function renderDonorPrograms() {
+      const grid = document.getElementById('donor-programs-grid');
+      const highlight = document.getElementById('new-programs-highlight');
+      if (!grid) return;
+
+      let programs = [];
+      if (typeof ProgDB !== 'undefined') {
+        programs = ProgDB.getAll().filter(p => p.status === 'active');
+      }
+
+      if (!programs.length) {
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:#94a3b8;">
+          <div style="font-size:2.5rem;margin-bottom:12px;">📋</div>
+          <p style="font-weight:600;color:#1e293b;margin-bottom:6px;">No active programs right now</p>
+          <p style="font-size:.85rem;">Check back soon for new programs to support!</p>
+        </div>`;
+        return;
+      }
+
+      // Identify new programs (created in last 7 days)
+      const now = Date.now();
+      const sevenDays = 7 * 24 * 60 * 60 * 1000;
+      const newProgs = programs.filter(p => {
+        if (!p.startDate) return false;
+        return (now - new Date(p.startDate).getTime()) < sevenDays;
+      });
+
+      if (newProgs.length > 0 && highlight) {
+        highlight.innerHTML = `<div class="new-programs-banner">
+          <h3>✨ ${newProgs.length} New Program${newProgs.length > 1 ? 's' : ''} Added!</h3>
+          <p>${newProgs.map(p => p.name).join(', ')} — support ${newProgs.length > 1 ? 'these causes' : 'this cause'} today!</p>
+        </div>`;
+      }
+
+      const focusIcons = {
+        'Disaster Relief': '🌊', 'Healthcare': '🏥', 'Education': '📚',
+        'Environment': '🌿', 'Food Security': '🍱', 'Housing': '🏠',
+        'Community Development': '🤝', 'Elder Care': '👴', 'Child Welfare': '👶',
+        'Youth Empowerment': '💪', 'International Aid': '🌍', 'Sustainability': '♻️'
+      };
+      const focusColors = {
+        'Disaster Relief': '#ef4444', 'Healthcare': '#06b6d4', 'Education': '#f59e0b',
+        'Environment': '#22c55e', 'Food Security': '#14b8a6', 'Housing': '#8b5cf6',
+        'Community Development': '#ec4899', 'Elder Care': '#6366f1', 'Child Welfare': '#a855f7',
+        'Youth Empowerment': '#f97316', 'International Aid': '#84cc16', 'Sustainability': '#10b981'
+      };
+
+      grid.innerHTML = programs.map(p => {
+        const focus = Array.isArray(p.focus) ? p.focus[0] : (p.focus || 'General');
+        const icon = focusIcons[focus] || '📋';
+        const color = focusColors[focus] || '#6366f1';
+        const raised = p.raised || 0;
+        const budget = p.budget || 1;
+        const pct = Math.min(100, Math.round((raised / budget) * 100));
+        const remaining = Math.max(0, budget - raised);
+        const isNew = newProgs.some(np => np.id === p.id);
+        const orgName = p.org || 'Kindred Partner';
+
+        let tagsHtml = '';
+        if (p.requiredSkills && p.requiredSkills.length > 0) {
+          tagsHtml = '<div class="prog-tags">' +
+            p.requiredSkills.slice(0, 3).map(sk =>
+              `<span class="prog-tag" style="background:${color}15;color:${color};border:1px solid ${color}25;">${sk}</span>`
+            ).join('') +
+            (p.requiredSkills.length > 3 ? `<span class="prog-tag" style="background:#f1f5f9;color:#64748b;">+${p.requiredSkills.length - 3}</span>` : '') +
+            '</div>';
+        }
+
+        const focusBadge = `<span style="display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:20px;background:${color}12;color:${color};border:1px solid ${color}25;">${focus}</span>`;
+
+        return `<div class="donor-prog-card">
+          ${isNew ? '<span class="prog-new-badge">✨ NEW</span>' : ''}
+          <div class="prog-header">
+            <div class="prog-icon" style="background:${color}15;color:${color};">${icon}</div>
+            <div>
+              <div class="prog-title">${escHtml(p.name)}</div>
+              <div class="prog-org">${escHtml(orgName)} • ${focusBadge}</div>
+            </div>
+          </div>
+          <div class="prog-desc">${escHtml(p.description || 'Support this program by making a donation.')}</div>
+          ${tagsHtml}
+          <div class="prog-progress">
+            <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:4px;">
+              <span style="font-weight:600;color:#374151;">₹${raised.toLocaleString('en-IN')} raised</span>
+              <span style="font-weight:700;color:${pct >= 75 ? '#10b981' : (pct >= 40 ? '#f59e0b' : color)};">${pct}%</span>
+            </div>
+            <div class="prog-progress-bar">
+              <div class="prog-progress-fill" style="background:${pct >= 75 ? '#10b981' : (pct >= 40 ? '#f59e0b' : color)};width:${pct}%;"></div>
+            </div>
+            <div style="font-size:.72rem;color:#94a3b8;margin-top:4px;">Goal: ₹${budget.toLocaleString('en-IN')} • ₹${remaining.toLocaleString('en-IN')} remaining</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-donate-prog" onclick="donateToProgram('${escHtml(p.name)}', '${escHtml(orgName)}')">💝 Donate Now</button>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:.72rem;color:#94a3b8;">
+            <span>👥 ${p.beneficiaries || 0} beneficiaries</span>
+            <span>🙋 ${p.volunteers || 0} volunteers</span>
+            ${p.location ? '<span>📍 ' + escHtml(p.location) + '</span>' : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function donateToProgram(progName, orgName) {
+      // Store program info and navigate to donate page
+      sessionStorage.setItem('kindred_donate_context', JSON.stringify({
+        program: progName,
+        org: orgName
+      }));
+      window.location.href = 'donate.html';
+    }
+
+    function escHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    /* ── Init ── */
+    (function init() {
+      // Session check
+      const session = sessionStorage.getItem('kindred_session');
+      if (session) {
+        try {
+          const user = JSON.parse(session);
+          const el = document.getElementById('donor-welcome');
+          if (el && user.name) el.textContent = 'Welcome, ' + user.name.split(' ')[0];
+        } catch (e) { }
+      }
+
+      const donations = JSON.parse(localStorage.getItem('kindred_donations') || '[]');
+      const cards = JSON.parse(localStorage.getItem('kindred_saved_cards') || '[]');
+
+      renderStats(donations);
+      renderPayments(donations);
+      renderSavedCards(cards);
+      renderOverview(donations);
+      renderDonorPrograms();
+      renderDonorResourceDonations();
+
+      // Show onboarding if new donor (no donations yet)
+      if (donations.length === 0) {
+        document.getElementById('new-donor-onboarding').style.display = 'block';
+      }
+    })();
+
+    /* ── Render Donor Resource Donations ── */
+    function renderDonorResourceDonations() {
+      var list = document.getElementById('donor-resource-list');
+      if (!list) return;
+      var session = sessionStorage.getItem('kindred_session');
+      var email = '';
+      try { email = JSON.parse(session).email; } catch(e) {}
+      if (!email || typeof ResourceDonationDB === 'undefined') {
+        list.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;"><div style="font-size:2.5rem;margin-bottom:12px;">📦</div><p style="font-weight:600;color:#1e293b;margin-bottom:6px;">No resource donations yet</p><p style="font-size:.85rem;">Click "Donate Resources" to contribute items to verified programs.</p></div>';
+        return;
+      }
+      var donations = ResourceDonationDB.getByDonor(email);
+      if (!donations.length) {
+        list.innerHTML = '<div style="text-align:center;padding:40px;color:#94a3b8;"><div style="font-size:2.5rem;margin-bottom:12px;">📦</div><p style="font-weight:600;color:#1e293b;margin-bottom:6px;">No resource donations yet</p><p style="font-size:.85rem;">Click "Donate Resources" to contribute items to verified programs.</p></div>';
+        return;
+      }
+      donations.sort(function(a,b){ return new Date(b.createdAt) - new Date(a.createdAt); });
+      list.innerHTML = donations.map(function(d) {
+        var icon = (typeof RESOURCE_CATEGORY_ICONS !== 'undefined' ? RESOURCE_CATEGORY_ICONS[d.category] : '📦') || '📦';
+        var color = (typeof RESOURCE_CATEGORY_COLORS !== 'undefined' ? RESOURCE_CATEGORY_COLORS[d.category] : '#64748b') || '#64748b';
+        var statusIdx = (typeof RESOURCE_STATUS_FLOW !== 'undefined') ? RESOURCE_STATUS_FLOW.indexOf(d.status) : 0;
+        var statusLabels = ['Submitted', 'Volunteer Assigned', 'In Transit', 'Delivered', 'Completed'];
+        var statusColors = ['#f59e0b', '#3b82f6', '#8b5cf6', '#10b981', '#059669'];
+        var currentLabel = statusLabels[statusIdx] || d.status;
+        var currentColor = statusColors[statusIdx] || '#64748b';
+        var itemsHtml = d.items.map(function(it){ return '<span style="display:inline-flex;align-items:center;gap:4px;background:#f1f5f9;padding:3px 10px;border-radius:16px;font-size:.72rem;font-weight:600;color:#475569;">' + escHtml(it.name) + ' × ' + it.quantity + ' <span style="color:#94a3b8">(' + it.condition + ')</span></span>'; }).join(' ');
+
+        // Progress timeline
+        var timeline = '<div style="display:flex;align-items:center;gap:0;margin:14px 0 8px;">';
+        for (var si = 0; si < 5; si++) {
+          var done = si <= statusIdx;
+          var dotColor = done ? statusColors[si] : '#e2e8f0';
+          var lineColor = (si < statusIdx) ? statusColors[si] : '#e2e8f0';
+          timeline += '<div style="display:flex;flex-direction:column;align-items:center;flex:' + (si < 4 ? '1' : '0') + ';position:relative;">';
+          timeline += '<div style="width:' + (done ? '22px' : '16px') + ';height:' + (done ? '22px' : '16px') + ';border-radius:50%;background:' + dotColor + ';display:flex;align-items:center;justify-content:center;z-index:1;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.1);transition:all .3s;" title="' + statusLabels[si] + '">';
+          if (done && si <= statusIdx) timeline += '<span style="color:#fff;font-size:.55rem;font-weight:700;">✓</span>';
+          timeline += '</div>';
+          timeline += '<div style="font-size:.58rem;color:' + (done ? '#374151' : '#cbd5e1') + ';font-weight:' + (done ? '600' : '400') + ';margin-top:3px;white-space:nowrap;">' + statusLabels[si] + '</div>';
+          timeline += '</div>';
+          if (si < 4) timeline += '<div style="flex:1;height:3px;background:' + lineColor + ';margin:0 -2px;margin-top:-14px;border-radius:2px;"></div>';
+        }
+        timeline += '</div>';
+
+        var volInfo = '';
+        if (d.assignedVolunteerName) {
+          volInfo = '<div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding:8px 12px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:8px;"><div style="width:28px;height:28px;border-radius:50%;background:#10b981;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;">' + d.assignedVolunteerName.charAt(0) + '</div><div><div style="font-size:.78rem;font-weight:600;color:#065f46;">Volunteer: ' + escHtml(d.assignedVolunteerName) + '</div><div style="font-size:.68rem;color:#6b7280;">Assigned ' + (d.assignedAt ? new Date(d.assignedAt).toLocaleDateString('en-IN') : '') + '</div></div></div>';
+        }
+
+        return '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:22px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.04);transition:all .2s;" onmouseover="this.style.boxShadow=\'0 8px 28px rgba(0,0,0,.1)\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.boxShadow=\'0 2px 8px rgba(0,0,0,.04)\';this.style.transform=\'none\'">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">' +
+          '<div style="display:flex;align-items:center;gap:12px;"><div style="width:44px;height:44px;border-radius:12px;background:' + color + '15;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">' + icon + '</div>' +
+          '<div><div style="font-weight:700;font-size:.95rem;color:#1e293b;">' + escHtml(d.category) + '</div>' +
+          '<div style="font-size:.75rem;color:#94a3b8;">Donated ' + new Date(d.createdAt).toLocaleDateString('en-IN') + (d.programName ? ' • ' + escHtml(d.programName) : '') + '</div></div></div>' +
+          '<span style="background:' + currentColor + '18;color:' + currentColor + ';font-size:.72rem;padding:4px 12px;border-radius:20px;font-weight:600;border:1px solid ' + currentColor + '30;white-space:nowrap;">' + currentLabel + '</span></div>' +
+          '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;">' + itemsHtml + '</div>' +
+          '<div style="font-size:.8rem;color:#64748b;margin-bottom:4px;">📍 ' + escHtml(d.pickupAddress) + '</div>' +
+          '<div style="font-size:.75rem;color:#94a3b8;">📅 ' + d.pickupDate + ' • ⏰ ' + escHtml(d.pickupTimeSlot || '') + '</div>' +
+          timeline + volInfo + '</div>';
+      }).join('');
+    }
+
+    /* ── Resource Donation Modal ── */
+    function openResourceDonationModal() {
+      var modal = document.getElementById('resourceDonationModal');
+      if (!modal) return;
+      // Pre-fill donor info
+      try {
+        var sess = JSON.parse(sessionStorage.getItem('kindred_session'));
+        if (sess) {
+          document.getElementById('rd-name').value = sess.name || '';
+          document.getElementById('rd-phone').value = sess.phone || '';
+        }
+      } catch(e) {}
+      // Populate categories
+      var catSel = document.getElementById('rd-category');
+      if (catSel && catSel.options.length <= 1 && typeof RESOURCE_CATEGORIES !== 'undefined') {
+        RESOURCE_CATEGORIES.forEach(function(c) {
+          var opt = document.createElement('option'); opt.value = c; opt.textContent = c;
+          catSel.appendChild(opt);
+        });
+      }
+      // Populate programs
+      var progSel = document.getElementById('rd-program');
+      if (progSel && progSel.options.length <= 1 && typeof ProgDB !== 'undefined') {
+        ProgDB.getAll().filter(function(p){ return p.status === 'active'; }).forEach(function(p) {
+          var opt = document.createElement('option'); opt.value = p.id; opt.textContent = p.name;
+          progSel.appendChild(opt);
+        });
+      }
+      // Set min date
+      var dateInput = document.getElementById('rd-date');
+      if (dateInput) {
+        dateInput.min = new Date().toISOString().split('T')[0];
+        if (!dateInput.value) dateInput.value = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+      }
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeResourceDonationModal() {
+      var modal = document.getElementById('resourceDonationModal');
+      if (modal) modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function addDonationItem() {
+      var container = document.getElementById('rd-items-container');
+      var row = document.createElement('div');
+      row.className = 'rd-item-row';
+      row.style.cssText = 'display:grid;grid-template-columns:2fr 1fr 1fr 30px;gap:8px;align-items:start;margin-bottom:8px;';
+      row.innerHTML = '<input type="text" class="rd-item-name" placeholder="Item name" />' +
+        '<input type="number" class="rd-item-qty" placeholder="Qty" min="1" />' +
+        '<select class="rd-item-condition"><option value="New">New</option><option value="Good">Good</option><option value="Fair">Fair</option></select>' +
+        '<button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:#ef4444;font-size:1.1rem;cursor:pointer;padding:6px;" title="Remove">✕</button>';
+      container.appendChild(row);
+    }
+
+    function showRdError(id, msg) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.style.display = msg ? 'block' : 'none';
+      el.style.color = '#ef4444'; el.style.fontSize = '.75rem'; el.style.marginTop = '3px';
+    }
+
+    function submitResourceDonation(e) {
+      e.preventDefault();
+      var valid = true;
+      // Clear errors
+      ['rd-name-err','rd-phone-err','rd-category-err','rd-items-err','rd-desc-err','rd-address-err','rd-date-err','rd-timeslot-err'].forEach(function(id){ showRdError(id, ''); });
+
+      var name = document.getElementById('rd-name').value.trim();
+      var phone = document.getElementById('rd-phone').value.trim();
+      var category = document.getElementById('rd-category').value;
+      var desc = document.getElementById('rd-desc').value.trim();
+      var address = document.getElementById('rd-address').value.trim();
+      var date = document.getElementById('rd-date').value;
+      var timeslot = document.getElementById('rd-timeslot').value;
+      var progId = document.getElementById('rd-program').value;
+      var progName = ''; if (progId) { var pOpt = document.getElementById('rd-program'); progName = pOpt.options[pOpt.selectedIndex].textContent; }
+
+      // Name validation
+      if (!name || name.length < 2) { showRdError('rd-name-err', 'Full name is required (min 2 chars)'); document.getElementById('rd-name').style.borderColor = '#ef4444'; valid = false; } else { document.getElementById('rd-name').style.borderColor = ''; }
+
+      // Phone validation (10-digit Indian)
+      if (phone) {
+        var pDigits = phone.replace(/\D/g, '');
+        if (pDigits.length === 12 && pDigits.indexOf('91') === 0) pDigits = pDigits.slice(2);
+        if (pDigits.length !== 10 || !/^[6-9]\d{9}$/.test(pDigits)) {
+          showRdError('rd-phone-err', 'Valid 10-digit phone required (starts with 6-9)'); document.getElementById('rd-phone').style.borderColor = '#ef4444'; valid = false;
+        } else { document.getElementById('rd-phone').style.borderColor = ''; }
+      } else { showRdError('rd-phone-err', 'Phone number is required'); document.getElementById('rd-phone').style.borderColor = '#ef4444'; valid = false; }
+
+      // Category
+      if (!category) { showRdError('rd-category-err', 'Please select a category'); valid = false; }
+
+      // Items
+      var items = [];
+      document.querySelectorAll('.rd-item-row').forEach(function(row) {
+        var n = row.querySelector('.rd-item-name').value.trim();
+        var q = parseInt(row.querySelector('.rd-item-qty').value);
+        var c = row.querySelector('.rd-item-condition').value;
+        if (n && q > 0) items.push({ name: n, quantity: q, condition: c });
+      });
+      if (items.length === 0) { showRdError('rd-items-err', 'Add at least one item with name and quantity'); valid = false; }
+      // Validate each item row
+      document.querySelectorAll('.rd-item-row').forEach(function(row) {
+        var n = row.querySelector('.rd-item-name').value.trim();
+        var q = row.querySelector('.rd-item-qty').value;
+        if (!n || n.length < 2) { row.querySelector('.rd-item-name').style.borderColor = '#ef4444'; valid = false; } else { row.querySelector('.rd-item-name').style.borderColor = ''; }
+        if (!q || parseInt(q) <= 0) { row.querySelector('.rd-item-qty').style.borderColor = '#ef4444'; valid = false; } else { row.querySelector('.rd-item-qty').style.borderColor = ''; }
+      });
+
+      // Description
+      if (!desc || desc.length < 10) { showRdError('rd-desc-err', 'Description required (min 10 chars)'); document.getElementById('rd-desc').style.borderColor = '#ef4444'; valid = false; } else { document.getElementById('rd-desc').style.borderColor = ''; }
+
+      // Address
+      if (!address || address.length < 10) { showRdError('rd-address-err', 'Full pickup address required (min 10 chars)'); document.getElementById('rd-address').style.borderColor = '#ef4444'; valid = false; } else { document.getElementById('rd-address').style.borderColor = ''; }
+
+      // Date
+      var today = new Date().toISOString().split('T')[0];
+      if (!date) { showRdError('rd-date-err', 'Pickup date is required'); valid = false; }
+      else if (date < today) { showRdError('rd-date-err', 'Date must be today or in the future'); valid = false; }
+
+      // Time slot
+      if (!timeslot) { showRdError('rd-timeslot-err', 'Please select a time slot'); valid = false; }
+
+      if (!valid) return;
+
+      // Get donor email from session
+      var donorEmail = '';
+      try { donorEmail = JSON.parse(sessionStorage.getItem('kindred_session')).email; } catch(e) {}
+
+      if (typeof ResourceDonationDB !== 'undefined') {
+        ResourceDonationDB.create({
+          donorName: name, donorEmail: donorEmail, donorPhone: phone,
+          category: category, items: items, description: desc,
+          pickupAddress: address, pickupDate: date, pickupTimeSlot: timeslot,
+          programId: progId, programName: progName
+        });
+      }
+
+      closeResourceDonationModal();
+      renderDonorResourceDonations();
+      // Reset form
+      document.getElementById('resourceDonationForm').reset();
+      // Show toast
+      var toast = document.createElement('div');
+      toast.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;background:#0f1923;color:#fff;padding:14px 22px;border-radius:12px;border-left:3px solid #10b981;font-size:13.5px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.2);';
+      toast.textContent = '✓ Resource donation submitted! Our team will assign a volunteer for pickup.';
+      document.body.appendChild(toast);
+      setTimeout(function(){ toast.style.opacity='0'; toast.style.transition='opacity .3s'; setTimeout(function(){ toast.remove(); }, 300); }, 4000);
+    }
+  </script>
+</body>
+
+</html>

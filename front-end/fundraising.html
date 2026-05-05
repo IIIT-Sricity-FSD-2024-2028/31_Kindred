@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fundraising - Kindred India</title>
+  <meta name="description" content="Start a movement with Kindred. Create a fundraising campaign and track your impact securely.">
+  <link rel="stylesheet" href="style1.css">
+  <script src="auth.js"></script>
+  <script src="mock-data.js"></script>
+<script src="api.js"></script>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">?</span>
+    </div>
+  </nav>
+
+
+
+
+
+  <!-- FUNDRAISING HERO -->
+  <section class="page-hero bg-light-grey text-center" style="padding: 80px 20px;">
+    <h1 style="font-family: var(--brand-font); color: var(--brand-navy); font-size: 3rem; margin-bottom: 20px;">Start a Movement. Fund the Future.</h1>
+    <p style="color: #64748b; font-size: 1.1rem; max-width: 600px; margin: 0 auto 30px;">
+      Whether it's for medical emergencies, community education, or disaster relief, launch your campaign on Kindred and connect with millions of verified donors.
+    </p>
+    <a href="signin.html" class="btn-primary" style="padding: 16px 32px; font-size: 1.1rem;">Start a Campaign Today</a>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works" style="max-width: 1200px; margin: 60px auto; padding: 0 32px;">
+    <h2 class="section-title text-center" style="margin-bottom: 40px; color: var(--brand-navy);">How Fundraising on Kindred Works</h2>
+    <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; text-align: center;">
+      
+      <div class="step-card" style="padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        <div class="icon" style="font-size: 36px; margin-bottom: 16px;">??</div>
+        <h3 style="margin-bottom: 12px; color: #0f172a;">1. Tell Your Story</h3>
+        <p style="color: #64748b; font-size: 14px;">Set up your campaign in minutes. Share the problem, your goals, and add compelling photos.</p>
+      </div>
+
+      <div class="step-card" style="padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        <div class="icon" style="font-size: 36px; margin-bottom: 16px;">??</div>
+        <h3 style="margin-bottom: 12px; color: #0f172a;">2. Share with the Network</h3>
+        <p style="color: #64748b; font-size: 14px;">Leverage the Kindred platform and social media to reach donors and volunteers across India.</p>
+      </div>
+
+      <div class="step-card" style="padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        <div class="icon" style="font-size: 36px; margin-bottom: 16px;">??</div>
+        <h3 style="margin-bottom: 12px; color: #0f172a;">3. Deliver Direct Impact</h3>
+        <p style="color: #64748b; font-size: 14px;">Receive funds securely. Kindred handles the 80G tax receipt compliance automatically.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ACTIVE CAMPAIGNS -->
+  <section class="active-campaigns bg-light-grey" style="padding: 60px 32px;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <h2 class="section-title" style="margin-bottom: 30px; color: var(--brand-navy);">Featured Live Campaigns</h2>
+      
+      <div class="card-grid3" style="display: grid; gap: 30px;">
+        
+        <!-- Campaign Card 1 -->
+        <div class="campaign-card" style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+          <div style="height: 180px; background: url('https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&q=80&w=800') center/cover;"></div>
+          <div style="padding: 20px;">
+            <div style="font-size: 12px; font-weight: 600; color: #00c9a7; margin-bottom: 8px;">DISASTER RELIEF</div>
+            <h3 style="font-size: 18px; color: #0f172a; margin-bottom: 12px;">Kerala Flood Relief Fund 2028</h3>
+            <p style="color: #64748b; font-size: 13px; margin-bottom: 20px; line-height: 1.5;">Providing immediate food, shelter, and medical assistance to families affected by the severe flooding.</p>
+            
+            <div class="progress-stats" style="margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; font-weight: 600;">
+                <span style="color: var(--brand-navy);">?4.2L Raised</span>
+                <span style="color: #64748b;">Goal: ?5.0L</span>
+              </div>
+              <div class="progress-bar-bg" style="background: #e2e8f0; height: 6px; border-radius: 4px;">
+                <div class="progress-bar-fill" style="background: #10b981; width: 84%; height: 100%; border-radius: 4px;"></div>
+              </div>
+            </div>
+            
+            <a href="donate.html" class="btn-primary" style="display: block; width: 100%;">Donate to Campaign</a>
+          </div>
+        </div>
+
+        <!-- Campaign Card 2 -->
+        <div class="campaign-card" style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+          <div style="height: 180px; background: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=800') center/cover;"></div>
+          <div style="padding: 20px;">
+            <div style="font-size: 12px; font-weight: 600; color: #f59e0b; margin-bottom: 8px;">EDUCATION</div>
+            <h3 style="font-size: 18px; color: #0f172a; margin-bottom: 12px;">Tech Classrooms for Rural Kids</h3>
+            <p style="color: #64748b; font-size: 13px; margin-bottom: 20px; line-height: 1.5;">Equipping 5 government schools in MP with smart boards and solar routers for uninterrupted learning.</p>
+            
+            <div class="progress-stats" style="margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; font-weight: 600;">
+                <span style="color: var(--brand-navy);">?1.8L Raised</span>
+                <span style="color: #64748b;">Goal: ?3.0L</span>
+              </div>
+              <div class="progress-bar-bg" style="background: #e2e8f0; height: 6px; border-radius: 4px;">
+                <div class="progress-bar-fill" style="background: #10b981; width: 60%; height: 100%; border-radius: 4px;"></div>
+              </div>
+            </div>
+            
+            <a href="donate.html" class="btn-primary" style="display: block; width: 100%;">Donate to Campaign</a>
+          </div>
+        </div>
+
+        <!-- Campaign Card 3 -->
+        <div class="campaign-card" style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+          <div style="height: 180px; background: url('https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&q=80&w=800') center/cover;"></div>
+          <div style="padding: 20px;">
+            <div style="font-size: 12px; font-weight: 600; color: #ef4444; margin-bottom: 8px;">MEDICAL SUPPORT</div>
+            <h3 style="font-size: 18px; color: #0f172a; margin-bottom: 12px;">Heart Surgery for Little Aditya</h3>
+            <p style="color: #64748b; font-size: 13px; margin-bottom: 20px; line-height: 1.5;">3-year-old Aditya urgently needs open heart surgery. Help us support his parents with medical expenses.</p>
+            
+            <div class="progress-stats" style="margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; font-weight: 600;">
+                <span style="color: var(--brand-navy);">?3.5L Raised</span>
+                <span style="color: #64748b;">Goal: ?8.0L</span>
+              </div>
+              <div class="progress-bar-bg" style="background: #e2e8f0; height: 6px; border-radius: 4px;">
+                <div class="progress-bar-fill" style="background: #f59e0b; width: 44%; height: 100%; border-radius: 4px;"></div>
+              </div>
+            </div>
+            
+            <a href="donate.html" class="btn-primary" style="display: block; width: 100%;">Donate to Campaign</a>
+          </div>
+        </div>
+
+      </div>
+      
+      <div style="text-align: center; margin-top: 40px;">
+        <a href="organizations.html" class="btn-outline">View All Organizations & Campaigns</a>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">? contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">?? +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">?? New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+  <script src="script.js"></script>
+  <script src="nav-controller.js"></script>
+</body>
+</html>

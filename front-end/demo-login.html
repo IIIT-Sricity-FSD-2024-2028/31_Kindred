@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Kindred — Demo Credentials</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#f8fafc;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{background:#fff;border-radius:20px;box-shadow:0 8px 40px rgba(0,0,0,.1);max-width:700px;width:100%;overflow:hidden}
+.card-header{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;padding:32px 36px}
+.card-header h1{font-size:1.5rem;font-weight:700;margin-bottom:8px}
+.card-header p{color:#94a3b8;font-size:.9rem}
+.card-body{padding:32px 36px}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+.role-card{border:1.5px solid #e5e7eb;border-radius:14px;padding:18px 20px;cursor:pointer;transition:all .2s;text-decoration:none}
+.role-card:hover{border-color:var(--c);box-shadow:0 4px 20px rgba(0,0,0,.08);transform:translateY(-2px)}
+.role-badge{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:10px}
+.role-title{font-size:.95rem;font-weight:700;color:#0f172a;margin-bottom:4px}
+.role-desc{font-size:.78rem;color:#6b7280;margin-bottom:12px;line-height:1.4}
+.cred-row{display:flex;gap:8px;align-items:center;font-size:.78rem;color:#374151;margin-top:4px}
+.cred-label{font-weight:600;color:#9ca3af;width:62px;flex-shrink:0}
+.cred-val{background:#f3f4f6;padding:3px 8px;border-radius:5px;font-family:monospace;font-size:.77rem}
+.section-title{font-size:.8rem;font-weight:700;color:#9ca3af;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+.flow-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.flow-item{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:#f8fafc;border-radius:10px;border:1px solid #e5e7eb}
+.flow-num{width:26px;height:26px;border-radius:50%;background:#0f172a;color:#fff;font-size:.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.flow-text{font-size:.85rem;color:#374151;line-height:1.5}
+.flow-text strong{color:#0f172a}
+.btn-start{display:block;width:100%;padding:14px;background:#0f172a;color:#fff;border:none;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;text-decoration:none;transition:opacity .15s}
+.btn-start:hover{opacity:.85}
+@media(max-width:560px){.role-grid{grid-template-columns:1fr}}
+</style>
+  <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+<div class="card">
+  <div class="card-header">
+    <h1>🌐 Kindred — Demo Guide</h1>
+    <p>Click any role card below to auto-login, or use the credentials on the Sign In page.</p>
+  </div>
+  <div class="card-body">
+    <p class="section-title">Role-Based Access</p>
+    <div class="role-grid">
+
+      <a class="role-card" href="signin.html" style="--c:#6366f1" onclick="autoLogin('superuser')">
+        <div class="role-badge" style="background:#ede9fe;color:#6366f1">🛡 Super User</div>
+        <div class="role-title">Platform Administrator</div>
+        <div class="role-desc">Full CRUD — manages all organizations, requests, analytics, platform settings.</div>
+        <div class="cred-row"><span class="cred-label">Email</span><span class="cred-val">super@kindred.org</span></div>
+        <div class="cred-row"><span class="cred-label">Password</span><span class="cred-val">Super@123</span></div>
+        <div class="cred-row"><span class="cred-label">Dashboard</span><span class="cred-val">overview.html</span></div>
+      </a>
+
+      <a class="role-card" href="signin.html" style="--c:#3b82f6" onclick="autoLogin('admin')">
+        <div class="role-badge" style="background:#eff6ff;color:#3b82f6">🏢 Admin</div>
+        <div class="role-title">Organization Admin</div>
+        <div class="role-desc">Manages HopeConnect — volunteers, programs, resources, incoming requests. No delete.</div>
+        <div class="cred-row"><span class="cred-label">Email</span><span class="cred-val">admin@hopeconnect.org</span></div>
+        <div class="cred-row"><span class="cred-label">Password</span><span class="cred-val">Admin@123</span></div>
+        <div class="cred-row"><span class="cred-label">Dashboard</span><span class="cred-val">org-admin-overview.html</span></div>
+      </a>
+
+      <a class="role-card" href="signin.html" style="--c:#10b981" onclick="autoLogin('volunteer')">
+        <div class="role-badge" style="background:#ecfdf5;color:#10b981">🤝 Volunteer</div>
+        <div class="role-title">Volunteer</div>
+        <div class="role-desc">View assignments, log hours, receive notifications. Read-only on most modules.</div>
+        <div class="cred-row"><span class="cred-label">Email</span><span class="cred-val">volunteer@kindred.org</span></div>
+        <div class="cred-row"><span class="cred-label">Password</span><span class="cred-val">Vol@123</span></div>
+        <div class="cred-row"><span class="cred-label">Dashboard</span><span class="cred-val">volunteer-dashboard.html</span></div>
+      </a>
+
+      <a class="role-card" href="signin.html" style="--c:#f59e0b" onclick="autoLogin('donor')">
+        <div class="role-badge" style="background:#fffbeb;color:#d97706">💝 Donor</div>
+        <div class="role-title">Donor</div>
+        <div class="role-desc">Browse campaigns, make donations, view payment history and impact reports.</div>
+        <div class="cred-row"><span class="cred-label">Email</span><span class="cred-val">donor@kindred.org</span></div>
+        <div class="cred-row"><span class="cred-label">Password</span><span class="cred-val">Donor@123</span></div>
+        <div class="cred-row"><span class="cred-label">Dashboard</span><span class="cred-val">donor-dashboard.html</span></div>
+      </a>
+
+      <a class="role-card" href="signin.html" style="--c:#8b5cf6" onclick="autoLogin('beneficiary')">
+        <div class="role-badge" style="background:#f5f3ff;color:#7c3aed">🙏 Beneficiary</div>
+        <div class="role-title">Beneficiary</div>
+        <div class="role-desc">Submit assistance requests, track status, access emergency help.</div>
+        <div class="cred-row"><span class="cred-label">Email</span><span class="cred-val">beneficiary@kindred.org</span></div>
+        <div class="cred-row"><span class="cred-label">Password</span><span class="cred-val">Ben@123</span></div>
+        <div class="cred-row"><span class="cred-label">Dashboard</span><span class="cred-val">beneficiary-dashboard.html</span></div>
+      </a>
+
+    </div>
+
+    <p class="section-title">How It Works</p>
+    <div class="flow-list">
+      <div class="flow-item"><div class="flow-num">1</div><div class="flow-text"><strong>Select a role card above</strong> — credentials are auto-filled on the Sign In page.</div></div>
+      <div class="flow-item"><div class="flow-num">2</div><div class="flow-text"><strong>Click "Sign In"</strong> — you'll be routed to the correct dashboard based on your role.</div></div>
+      <div class="flow-item"><div class="flow-num">3</div><div class="flow-text"><strong>Super User:</strong> Add/Edit/Delete organizations, approve/reject requests, view analytics.<br><strong>Admin:</strong> Add/Edit volunteers & programs, accept/decline incoming requests.<br><strong>End Users:</strong> View dashboard, submit requests, browse campaigns.</div></div>
+      <div class="flow-item"><div class="flow-num">4</div><div class="flow-text"><strong>All data is in-memory</strong> — changes persist within the browser session. Refresh resets to initial data.</div></div>
+    </div>
+
+    <a href="index.html" class="btn-start">🏠 Go to Landing Page</a>
+  </div>
+</div>
+
+<script src="auth.js"></script>
+<script src="mock-data.js"></script>
+<script src="api.js"></script>
+<script>
+function autoLogin(role) {
+  // Pre-set the role on the signin page via sessionStorage hint
+  sessionStorage.setItem('kindred_preselect_role', role);
+}
+
+// If already logged in, show that info
+document.addEventListener('DOMContentLoaded', function() {
+  var session = getSession();
+  if (session) {
+    var banner = document.createElement('div');
+    banner.style.cssText = 'background:#ecfdf5;border:1px solid #a7f3d0;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:.85rem;color:#065f46;display:flex;justify-content:space-between;align-items:center;';
+    banner.innerHTML = '<span>✓ Logged in as <strong>' + session.name + '</strong> (' + session.role + ')</span>' +
+      '<a href="' + session.dashboard + '" style="color:#059669;font-weight:600;text-decoration:none">Go to Dashboard →</a>';
+    document.querySelector('.card-body').insertAdjacentElement('afterbegin', banner);
+  }
+});
+</script>
+<script src="nav-controller.js"></script>
+</body>
+</html>

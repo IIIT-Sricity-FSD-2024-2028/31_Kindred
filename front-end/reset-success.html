@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Password Reset Successful – Kindred</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+.success-card { text-align:center; }
+.success-circle {
+  width:64px; height:64px; border-radius:50%;
+  background:#ecfdf5; border:2px solid #a7f3d0;
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 20px; color:var(--green);
+  animation: popIn .4s cubic-bezier(.17,.67,.35,1.3);
+}
+@keyframes popIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+.rs-title { font-family:'Sora',sans-serif; font-size:1.35rem; font-weight:700; margin-bottom:10px; color:var(--dark); }
+.rs-sub   { font-size:.88rem; color:var(--mid); line-height:1.6; margin-bottom:22px; }
+.rs-bullets { background:#f8fafc; border-radius:12px; padding:16px 20px; margin-bottom:24px; text-align:left; }
+.rs-bullets ul { list-style:none; display:flex; flex-direction:column; gap:8px; }
+.rs-bullets li { display:flex; align-items:center; gap:10px; font-size:.86rem; color:var(--mid); }
+.rs-bullets li svg { color:var(--green); flex-shrink:0; }
+.btn-signin-now {
+  width:100%; padding:13px; border:none; border-radius:var(--rb);
+  font-family:inherit; font-size:.95rem; font-weight:700;
+  cursor:pointer; background:var(--btn-blue); color:#fff;
+  transition:opacity var(--t),transform var(--t);
+}
+.btn-signin-now:hover { opacity:.9; transform:translateY(-1px); }
+</style>
+  <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+<!-- ===== NAVBAR ===== -->
+  
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+<main>
+  <div class="page-wrap" style="max-width:460px">
+    <div class="card success-card">
+      <div class="success-circle">
+        <svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2 class="rs-title">Password Reset Successful!</h2>
+      <p class="rs-sub">Your password has been reset successfully. You can now sign in with your new password.</p>
+
+      <div class="rs-bullets">
+        <p style="font-size:.75rem;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Account secured</p>
+        <ul>
+          <li>
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Your new password is now active
+          </li>
+          <li>
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            All other sessions have been logged out
+          </li>
+          <li>
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Use the new password to sign in
+          </li>
+        </ul>
+      </div>
+
+      <button class="btn-signin-now" onclick="window.location='signin.html'">Sign In Now</button>
+    </div>
+  </div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+  
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+<script src="auth.js"></script>
+<script src="nav-controller.js"></script>
+</body>
+</html>

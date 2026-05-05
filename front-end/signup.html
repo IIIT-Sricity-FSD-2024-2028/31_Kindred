@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Sign Up – Kindred</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+  
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+<main>
+  <div class="page-wrap">
+    <img src="LOGO.jpeg" class="logo-pill-img" alt="Kindred Logo"/>
+    <h1 class="screen-title">Join Kindred</h1>
+
+    <div class="card" style="padding:32px;">
+
+      <!-- ROLE SELECTOR -->
+      <p class="role-label">I want to sign up as</p>
+      <div class="role-grid">
+        <button class="role-btn active" data-role="org" onclick="selectRole(this,'org')">
+          <svg width="22" height="22" fill="none" stroke="#3b82f6" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Organization Admin
+        </button>
+        <button class="role-btn" data-role="volunteer" onclick="selectRole(this,'volunteer')">
+          <svg width="22" height="22" fill="none" stroke="#10b981" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Volunteer
+        </button>
+        <button class="role-btn" data-role="donor" onclick="selectRole(this,'donor')">
+          <svg width="22" height="22" fill="none" stroke="#f59e0b" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Donor
+        </button>
+        <button class="role-btn" data-role="beneficiary" onclick="selectRole(this,'beneficiary')">
+          <svg width="22" height="22" fill="none" stroke="#8b5cf6" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Beneficiary
+        </button>
+      </div>
+
+      <!-- ORG FORM -->
+      <div id="form-org">
+        <div class="section-label">Register your NGO on Kindred</div>
+        <div class="field">
+          <label>NGO Name *</label>
+          <input type="text" id="org-name" placeholder="e.g. Helping Hands Foundation"/>
+        </div>
+        <div class="field-row">
+          <div class="field mb-0">
+            <label>Focus Area *</label>
+            <input type="text" id="org-focus" placeholder="e.g. Education"/>
+          </div>
+          <div class="field mb-0">
+            <label>Location *</label>
+            <input type="text" id="org-loc" placeholder="e.g. Mumbai"/>
+          </div>
+        </div>
+        <div class="field" style="margin-top:18px">
+          <label>NGO Description</label>
+          <textarea rows="3" id="org-desc" placeholder="Brief description of your organization…" style="resize:vertical"></textarea>
+        </div>
+        <div class="field">
+          <label>Admin Full Name *</label>
+          <input type="text" id="org-admin" placeholder="Full name"/>
+        </div>
+        <div class="field">
+          <label>Email *</label>
+          <input type="email" id="org-email" placeholder="admin@ngo.org"/>
+        </div>
+        <div class="field pass-wrap">
+          <label>Password *</label>
+          <input type="password" id="org-pass" placeholder="••••••••"/>
+          <button class="pass-eye" onclick="togglePass('org-pass',this)">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="field pass-wrap">
+          <label>Confirm Password *</label>
+          <input type="password" id="org-pass2" placeholder="••••••••"/>
+          <button class="pass-eye" onclick="togglePass('org-pass2',this)">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <button class="btn btn-primary" onclick="submitOrg()">Register NGO →</button>
+      </div>
+
+      <!-- VOLUNTEER FORM -->
+      <div id="form-volunteer" style="display:none">
+        <div class="field">
+          <label>Full Name *</label>
+          <input type="text" id="vol-name" placeholder="Your full name"/>
+        </div>
+        <div class="field">
+          <label>Email *</label>
+          <input type="email" id="vol-email" placeholder="you@email.com"/>
+        </div>
+        <div class="field">
+          <label>Phone Number *</label>
+          <div class="phone-wrap">
+            <span class="phone-prefix">+91</span>
+            <input type="tel" id="vol-phone" placeholder="98765 43210"/>
+          </div>
+          <p class="hint">Required for OTP verification</p>
+        </div>
+        <div class="field">
+          <label>Gender *</label>
+          <div class="gender-grid">
+            <button class="gender-btn" onclick="selectGender(this)">👨 Male</button>
+            <button class="gender-btn" onclick="selectGender(this)">👩 Female</button>
+            <button class="gender-btn" onclick="selectGender(this)">🧑 Other</button>
+          </div>
+          <p class="hint">Please select your gender to continue</p>
+        </div>
+        <div class="field pass-wrap">
+          <label>Password *</label>
+          <input type="password" id="vol-pass" placeholder="••••••••"/>
+          <button class="pass-eye" onclick="togglePass('vol-pass',this)">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="field pass-wrap">
+          <label>Confirm Password *</label>
+          <input type="password" id="vol-pass2" placeholder="••••••••"/>
+          <button class="pass-eye" onclick="togglePass('vol-pass2',this)">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="info-box">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <p>Your volunteer application will be reviewed by the Platform Administrator before access is granted. <a href="join-volunteer.html" style="color:#10b981;font-weight:700">Want to add skills & availability? Use the detailed form →</a></p>
+        </div>
+        <button class="btn btn-green-solid" onclick="submitVolunteer()">Continue to Verification →</button>
+      </div>
+
+      <!-- DONOR FORM -->
+      <div id="form-donor" style="display:none">
+        <div class="field">
+          <label>Full Name *</label>
+          <input type="text" id="don-name" placeholder="Your full name"/>
+        </div>
+        <div class="field">
+          <label>Email *</label>
+          <input type="email" id="don-email" placeholder="you@email.com"/>
+        </div>
+        <div class="field">
+          <label>Phone Number *</label>
+          <div class="phone-wrap">
+            <span class="phone-prefix">+91</span>
+            <input type="tel" id="don-phone" placeholder="98765 43210"/>
+          </div>
+          <p class="hint">Required for OTP verification</p>
+        </div>
+        <div class="field pass-wrap">
+          <label>Password *</label>
+          <input type="password" id="don-pass" placeholder="••••••••"/>
+          <button class="pass-eye" onclick="togglePass('don-pass',this)">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="field pass-wrap">
+          <label>Confirm Password *</label>
+          <input type="password" id="don-pass2" placeholder="••••••••"/>
+          <button class="pass-eye" onclick="togglePass('don-pass2',this)">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="info-box">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <p>After phone verification, you'll go directly to your Donor Dashboard</p>
+        </div>
+        <button class="btn btn-green-solid" onclick="submitDonor()">Continue to Verification →</button>
+      </div>
+
+      <!-- BENEFICIARY FORM -->
+      <div id="form-beneficiary" style="display:none">
+        <div class="field">
+          <label>Full Name *</label>
+          <input type="text" id="ben-name" placeholder="Your full name"/>
+        </div>
+        <div class="field">
+          <label>Email *</label>
+          <input type="email" id="ben-email" placeholder="you@email.com"/>
+        </div>
+        <div class="field">
+          <label>Phone Number *</label>
+          <div class="phone-wrap">
+            <span class="phone-prefix">+91</span>
+            <input type="tel" id="ben-phone" placeholder="98765 43210"/>
+          </div>
+          <p class="hint">Required for OTP verification</p>
+        </div>
+        <div class="field pass-wrap">
+          <label>Password *</label>
+          <input type="password" id="ben-pass" placeholder="••••••••"/>
+          <button class="pass-eye" onclick="togglePass('ben-pass',this)">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="field pass-wrap">
+          <label>Confirm Password *</label>
+          <input type="password" id="ben-pass2" placeholder="••••••••"/>
+          <button class="pass-eye" onclick="togglePass('ben-pass2',this)">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="info-box">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <p>After phone verification, you'll go directly to your Beneficiary Dashboard</p>
+        </div>
+        <button class="btn btn-green-solid" onclick="submitBeneficiary()">Continue to Verification →</button>
+      </div>
+
+    </div><!-- /card -->
+
+    <p style="margin-top:16px;font-size:.85rem;color:rgba(255,255,255,.75);text-align:center">
+      Already have an account? <a href="signin.html" style="color:#fff;font-weight:700;text-decoration:none">Sign In</a>
+    </p>
+  </div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+  
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+<script src="mock-data.js"></script>
+<script src="api.js"></script>
+<script src="signup.js"></script>
+<script src="auth.js"></script>
+<script src="nav-controller.js"></script>
+</body>
+</html>

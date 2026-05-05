@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Sign In - Kindred</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+.si-tabs{display:flex;border-bottom:2px solid #e5e9f0;margin-bottom:24px}
+.si-tab{flex:1;background:none;border:none;cursor:pointer;font-family:inherit;font-size:.92rem;font-weight:500;color:var(--light);padding:13px 0;position:relative;transition:color var(--t)}
+.si-tab.active{color:var(--blue);font-weight:700}
+.si-tab.active::after{content:"";position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--blue);border-radius:2px}
+.role-list{display:flex;flex-direction:column;gap:6px;margin-bottom:22px}
+.role-list-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-family:inherit;font-size:.9rem;font-weight:500;color:var(--dark);transition:all var(--t);text-align:left;width:100%}
+.role-list-item:hover{border-color:var(--blue);background:var(--role-bg)}
+.role-list-item.active{border-color:var(--blue);background:var(--role-bg);color:var(--blue)}
+.role-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon-platform{background:#ede9fe}
+.icon-org{background:#eff6ff}
+.icon-vol{background:#ecfdf5}
+.icon-donor{background:#fffbeb}
+.icon-ben{background:#f5f3ff}
+.forgot-link{display:block;text-align:right;font-size:.82rem;color:var(--blue);text-decoration:none;margin-top:6px;margin-bottom:20px;font-weight:500;transition:opacity var(--t)}
+.forgot-link:hover{opacity:.75}
+.btn-signin-main{width:100%;padding:13px;border:none;border-radius:var(--rb);font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;background:var(--btn-blue);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity var(--t),transform var(--t)}
+.btn-signin-main:hover{opacity:.92;transform:translateY(-1px)}
+.btn-signin-main:active{transform:translateY(0)}
+.role-list-label{font-size:.82rem;font-weight:600;color:var(--mid);margin-bottom:10px}
+</style>
+  <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+  
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+<main>
+  <div class="page-wrap" style="max-width:480px">
+    <img src="LOGO.jpeg" class="logo-pill-img" alt="Kindred"/>
+    <h1 class="screen-title">Welcome Back</h1>
+
+    <div class="card">
+
+      <div class="si-tabs">
+        <button class="si-tab active" id="tab-signin">Sign In</button>
+        <button class="si-tab" onclick="window.location='signup.html'">Sign Up</button>
+      </div>
+
+      <p class="role-list-label">Role</p>
+      <div class="role-list">
+        <button class="role-list-item" data-role="platform" onclick="selectSignInRole(this)">
+          <span class="role-icon icon-platform">
+            <svg width="16" height="16" fill="none" stroke="#7c3aed" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          </span>
+          Platform Administrator
+        </button>
+        <button class="role-list-item" data-role="org" onclick="selectSignInRole(this)">
+          <span class="role-icon icon-org">
+            <svg width="16" height="16" fill="none" stroke="#3b82f6" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          </span>
+          Organization Admin
+        </button>
+        <button class="role-list-item" data-role="volunteer" onclick="selectSignInRole(this)">
+          <span class="role-icon icon-vol">
+            <svg width="16" height="16" fill="none" stroke="#10b981" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          </span>
+          Volunteer
+        </button>
+        <button class="role-list-item" data-role="donor" onclick="selectSignInRole(this)">
+          <span class="role-icon icon-donor">
+            <svg width="16" height="16" fill="none" stroke="#f59e0b" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </span>
+          Donor
+        </button>
+        <button class="role-list-item" data-role="beneficiary" onclick="selectSignInRole(this)">
+          <span class="role-icon icon-ben">
+            <svg width="16" height="16" fill="none" stroke="#8b5cf6" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </span>
+          Beneficiary
+        </button>
+      </div>
+
+      <p id="si-role-error" style="display:none;color:#ef4444;font-size:.75rem;margin-top:-14px;margin-bottom:14px">Please select your role</p>
+
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="si-email" placeholder="you@example.com"/>
+        <p id="si-email-error" style="display:none;color:#ef4444;font-size:.75rem;margin-top:4px"></p>
+      </div>
+
+      <div class="field pass-wrap" style="margin-bottom:0">
+        <label>Password</label>
+        <input type="password" id="si-pass" placeholder="........"/>
+        <button class="pass-eye" onclick="togglePass('si-pass', this)">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <p id="si-pass-error" style="display:none;color:#ef4444;font-size:.75rem;margin-top:4px"></p>
+      </div>
+
+      <a href="forgot-password.html" class="forgot-link">Forgot Password?</a>
+
+      <button class="btn-signin-main" onclick="signIn()">
+        Sign In
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+
+    </div>
+  </div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+  
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+<script src="auth.js"></script>
+<script src="mock-data.js"></script>
+<script src="api.js"></script>
+<script src="signin.js"></script>
+
+<script>
+// Auto-preselect role from demo-login.html hint
+document.addEventListener('DOMContentLoaded', function() {
+  var preselect = sessionStorage.getItem('kindred_preselect_role');
+  if (preselect) {
+    sessionStorage.removeItem('kindred_preselect_role');
+    var roleMap = { superuser:'platform', admin:'org', volunteer:'volunteer', donor:'donor', beneficiary:'beneficiary' };
+    var uiRole = roleMap[preselect] || preselect;
+    var btn = document.querySelector('.role-list-item[data-role="' + uiRole + '"]');
+    if (btn) { btn.click(); btn.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+  }
+});
+</script>
+<script src="nav-controller.js"></script>
+</body>
+</html>

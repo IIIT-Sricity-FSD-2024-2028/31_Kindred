@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HopeConnect — Dashboard | Kindred</title>
+  <link rel="stylesheet" href="styles1.css" />
+  <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+
+
+
+
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+  <!-- ========== MAIN ========== -->
+  <main>
+    <!-- Page header -->
+    <div class="page-header fade-in">
+      <div>
+        <h1 class="page-title" id="orgAdminTitle">My Organization</h1>
+        <p class="page-subtitle">Organization Admin Dashboard</p>
+      </div>
+      <div class="header-actions">
+        <a href="profile.html"
+          style="display:inline-flex;align-items:center;gap:7px;padding:9px 18px;background:#f1f5f9;color:#374151;border:1px solid #e2e8f0;border-radius:8px;font-size:.84rem;font-weight:600;text-decoration:none;transition:all .15s;"
+          onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">👤 Edit Profile</a>
+
+        <a href="#" onclick="window.location.href='org-admin-programs.html'" class="btn btn-primary">+ New Program</a>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs fade-in">
+      <a class="tab-btn active" href="org-admin-overview.html">Overview</a>
+      <a class="tab-btn" href="volunteers.html">Volunteers</a>
+      <a class="tab-btn" href="org-admin-programs.html">Programs</a>
+      <a class="tab-btn" href="resources.html">Resources</a>
+      <a class="tab-btn" href="org-admin-requests.html">Requests</a>
+
+    </div>
+
+    <!-- Stats -->
+    <div id="orgOverviewStats" class="stats-grid stagger">
+      <div class="stat-card volunteers">
+        <div class="stat-card-header">
+          <div class="stat-icon green">👥</div>
+          <button class="stat-more">⋯</button>
+        </div>
+        <div class="stat-value">1,240</div>
+        <div class="stat-label">Active Volunteers</div>
+      </div>
+      <div class="stat-card programs">
+        <div class="stat-card-header">
+          <div class="stat-icon blue">📋</div>
+          <button class="stat-more">⋯</button>
+        </div>
+        <div class="stat-value">2</div>
+        <div class="stat-label">Active Programs</div>
+      </div>
+      <div class="stat-card resources">
+        <div class="stat-card-header">
+          <div class="stat-icon orange">📦</div>
+          <button class="stat-more">⋯</button>
+        </div>
+        <div class="stat-value">5,910</div>
+        <div class="stat-label">Resources Allocated</div>
+      </div>
+      <div class="stat-card requests">
+        <div class="stat-card-header">
+          <div class="stat-icon red">⚠️</div>
+          <button class="stat-more">⋯</button>
+        </div>
+        <div class="stat-value">23</div>
+        <div class="stat-label">Pending Requests</div>
+      </div>
+    </div>
+
+    <!-- Removed Incoming Requests section in favor of tracking beneficiary requests directly below -->
+
+    <!-- Volunteers -->
+    <div class="volunteers-section fade-in">
+      <div class="volunteers-header">
+        <div class="section-title">👤 Volunteers</div>
+        <div style="display:flex; gap:15px; align-items:center;">
+          <button class="btn btn-primary btn-sm" onclick="openGlobalTaskModal()"
+            style="background:#059669; border-color:#059669">+ Assign Task</button>
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="volunteerSearch" placeholder="Search volunteers..." />
+          </div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Hours</th>
+              <th>Tasks</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="volTableBody">
+            <!-- Populated by org-admin-crud.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Programs -->
+    <div class="programs-section fade-in">
+      <div class="section-header">
+        <div class="section-title">📋 Programs</div>
+        <button class="btn btn-outline btn-sm" onclick="openProgModal()">+ Add New Program</button>
+      </div>
+      <div class="programs-grid" id="programsGrid">
+        <!-- Populated by org-admin-crud.js -->
+      </div>
+    </div>
+
+    <!-- Resources -->
+    <div class="resources-section fade-in">
+      <div class="section-header">
+        <div class="section-title">📦 Resource Inventory</div>
+      </div>
+      <div class="resources-grid">
+        <div class="resource-card">
+          <div class="resource-name">Emergency Tents</div>
+          <div class="resource-count">320 / 450 units</div>
+          <div class="resource-bar">
+            <div class="resource-fill" style="width:71%"></div>
+          </div>
+          <div class="resource-pct">71% allocated</div>
+        </div>
+        <div class="resource-card">
+          <div class="resource-name">Medical Kits</div>
+          <div class="resource-count">890 / 1,200 kits</div>
+          <div class="resource-bar">
+            <div class="resource-fill" style="width:74%"></div>
+          </div>
+          <div class="resource-pct">74% allocated</div>
+        </div>
+        <div class="resource-card">
+          <div class="resource-name">Food Packages</div>
+          <div class="resource-count">3,200 / 5,000 packages</div>
+          <div class="resource-bar">
+            <div class="resource-fill" style="width:64%"></div>
+          </div>
+          <div class="resource-pct">64% allocated</div>
+        </div>
+        <div class="resource-card">
+          <div class="resource-name">Blankets</div>
+          <div class="resource-count">1,500 / 2,000 pieces</div>
+          <div class="resource-bar">
+            <div class="resource-fill" style="width:75%"></div>
+          </div>
+          <div class="resource-pct">75% allocated</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overview Charts -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;" class="fade-in">
+      <!-- Volunteer Activity Chart -->
+      <div
+        style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.04);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <div style="font-weight:700;font-size:.95rem;color:#1e293b;">📈 Volunteer Growth</div>
+          <span
+            style="font-size:.72rem;background:#ecfdf5;color:#059669;padding:3px 10px;border-radius:20px;font-weight:600;">Last
+            6 Months</span>
+        </div>
+        <canvas id="orgVolChart" style="width:100%;display:block;"></canvas>
+      </div>
+      <!-- Program Status Donut -->
+      <div
+        style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.04);">
+        <div style="font-weight:700;font-size:.95rem;color:#1e293b;margin-bottom:14px;">📋 Program Status</div>
+        <div style="display:flex;align-items:center;gap:20px;">
+          <canvas id="orgProgDonut" width="140" height="140" style="flex-shrink:0;"></canvas>
+          <div id="orgProgLegend" style="display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Beneficiary Requests -->
+    <div class="beneficiary-section fade-in">
+      <div class="section-header">
+        <div class="section-title">📝 Beneficiary Requests</div>
+      </div>
+      <div id="beneficiaryReqList">
+        <!-- Populated dynamically by org-admin-crud.js from IncomingDB -->
+      </div>
+    </div>
+
+    <!-- Hour Log Verification Section -->
+    <div class="volunteer-logs-section fade-in" style="margin-top:24px;">
+      <div class="section-header">
+        <div class="section-title">⏱️ Pending Hour Verification</div>
+      </div>
+      <div id="hourVerificationList">
+        <!-- Populated by org-admin-crud.js -->
+        <div
+          style="text-align:center;padding:40px;color:#9ca3af;background:#fff;border-radius:12px;border:1px solid #f1f5f9;">
+          No pending hour logs to verify.</div>
+      </div>
+    </div>
+
+    <!-- Volunteer Applications Section -->
+    <div class="volunteer-apps-section fade-in" style="margin-top:24px;">
+      <div class="section-header">
+        <div class="section-title">📬 Volunteer Applications</div>
+      </div>
+      <div id="volAppReviewList">
+        <div style="text-align:center;padding:30px;color:#9ca3af;background:#fff;border-radius:12px;border:1px solid #f1f5f9;">No pending volunteer applications.</div>
+      </div>
+    </div>
+
+    <!-- Resource Donations Section -->
+    <div class="resources-section fade-in" style="margin-top:24px;">
+      <div class="section-header">
+        <div class="section-title">📦 Resource Donations</div>
+        <a href="resources.html" style="font-size:.82rem;font-weight:600;color:#6366f1;text-decoration:none;">View All →</a>
+      </div>
+      <div id="resOverviewList">
+        <div style="text-align:center;padding:30px;color:#9ca3af;background:#fff;border-radius:12px;border:1px solid #f1f5f9;">No pending resource donations.</div>
+      </div>
+    </div>
+
+
+    <!-- ===== FOOTER ===== -->
+
+
+
+    <footer class="premium-footer">
+      <div class="footer-container">
+        <div class="footer-brand">
+          <span class="footer-logo">Kindred</span>
+          <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across
+            India.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Explore</h4>
+          <ul class="footer-links">
+            <li><a href="programs.html">Active Programs</a></li>
+            <li><a href="organizations.html">Our Partners</a></li>
+            <li><a href="donate.html">Donation Portal</a></li>
+            <li><a href="signup.html">Join Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Information</h4>
+          <ul class="footer-links">
+            <li><a href="about.html">About Kindred</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="emergency-request.html">Emergency Help</a></li>
+            <li><a href="feedback.html">Give Feedback</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Contact</h4>
+          <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+            <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+            <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+            <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 Kindred Platform. All rights reserved.</p>
+        <div style="display:flex; gap: 20px;">
+          <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+          <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+        </div>
+      </div>
+    </footer>
+
+
+
+
+
+    <script src="auth.js"></script>
+    <script src="mock-data.js"></script>
+<script src="api.js"></script>
+    <script src="shared.js"></script>
+    <script src="org-admin-crud.js"></script>
+    <script src="nav-controller.js"></script>
+    <script>
+      /* ── Personalize org admin overview from session ── */
+      document.addEventListener('DOMContentLoaded', function () {
+        var session = (typeof requireAuth === 'function') ? requireAuth(['admin']) : (typeof getSession === 'function' ? getSession() : null);
+        if (!session) return;
+
+        // Set org title
+        var titleEl = document.getElementById('orgAdminTitle');
+        if (titleEl) {
+          var orgName = session.org || session.name || 'My Organization';
+          titleEl.textContent = orgName;
+          document.title = orgName + ' — Dashboard | Kindred';
+        }
+
+        // Render volunteer applications
+        if (typeof renderVolAppReview === 'function') {
+          renderVolAppReview();
+        }
+      });
+
+      /* ── Beneficiary Request Actions ── */
+      function approveBenReq(rowId, reqId) {
+        if (typeof IncomingDB !== 'undefined') IncomingDB.accept(reqId);
+        if (typeof renderIncomingList === 'function') renderIncomingList();
+
+        // Also update stat badge if it exists
+        var badge = document.getElementById('incomingBadge');
+        if (badge && typeof IncomingDB !== 'undefined') {
+          var pending = IncomingDB.getAll().filter(function (r) { return r.status === 'pending'; });
+          badge.textContent = pending.length;
+        }
+
+        if (typeof showToastMsg === 'function') showToastMsg(reqId + ' approved successfully.', 'success');
+      }
+
+      function rejectBenReq(rowId, reqId) {
+        if (!confirm('Reject ' + reqId + '? This cannot be undone.')) return;
+        if (typeof IncomingDB !== 'undefined') IncomingDB.decline(reqId);
+        if (typeof renderIncomingList === 'function') renderIncomingList();
+
+        // Also update stat badge if it exists
+        var badge = document.getElementById('incomingBadge');
+        if (badge && typeof IncomingDB !== 'undefined') {
+          var pending = IncomingDB.getAll().filter(function (r) { return r.status === 'pending'; });
+          badge.textContent = pending.length;
+        }
+
+        if (typeof showToastMsg === 'function') showToastMsg(reqId + ' rejected.', 'error');
+      }
+
+      function viewBenReq(reqId, title, person, date, desc) {
+        if (typeof showInfoModal === 'function') {
+          showInfoModal('Beneficiary Request — ' + reqId,
+            '<div style="display:grid;gap:12px;font-size:.9rem;">' +
+            '<div><strong style="color:#64748b;font-size:.78rem;display:block;margin-bottom:2px">REQUEST TYPE</strong><span style="font-weight:600">' + title + '</span></div>' +
+            '<div><strong style="color:#64748b;font-size:.78rem;display:block;margin-bottom:2px">SUBMITTED BY</strong><span>' + person + '</span></div>' +
+            '<div><strong style="color:#64748b;font-size:.78rem;display:block;margin-bottom:2px">DATE</strong><span>' + date + '</span></div>' +
+            '<div><strong style="color:#64748b;font-size:.78rem;display:block;margin-bottom:4px">DETAILS</strong><p style="margin:0;color:#374151;line-height:1.6">' + desc + '</p></div>' +
+            '</div>'
+          );
+        }
+      }
+    </script>
+</body>
+
+</html>

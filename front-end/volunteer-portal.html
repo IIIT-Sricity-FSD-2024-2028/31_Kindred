@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Volunteer Portal — Browse Programs | Kindred</title>
+  <meta name="description" content="Browse open volunteer programs, find skill-matched opportunities, and apply to make a difference." />
+  <link rel="stylesheet" href="shared.css" />
+  <link rel="stylesheet" href="style1.css" />
+  <style>
+    .portal-hero {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%);
+      padding: 60px 32px 48px;
+      text-align: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .portal-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 30 L30 0 L60 30 L30 60 Z' fill='none' stroke='%23ffffff08' stroke-width='1'/%3E%3C/svg%3E");
+      opacity: .4;
+    }
+    .portal-hero h1 {
+      font-family: 'Sora', 'Segoe UI', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .portal-hero p {
+      font-size: 1rem;
+      color: #c7d2fe;
+      max-width: 560px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .portal-filters {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 24px;
+      position: relative;
+    }
+    .portal-filters input, .portal-filters select {
+      padding: 10px 16px;
+      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(255,255,255,.1);
+      color: #fff;
+      border-radius: 10px;
+      font-size: .88rem;
+      backdrop-filter: blur(8px);
+      outline: none;
+      transition: all .15s;
+    }
+    .portal-filters input::placeholder { color: #a5b4fc; }
+    .portal-filters input:focus, .portal-filters select:focus {
+      border-color: #818cf8;
+      background: rgba(255,255,255,.15);
+    }
+    .portal-filters select option { background: #1e1b4b; color: #fff; }
+
+    .portal-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 20px;
+    }
+    .portal-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+      transition: all .25s;
+      position: relative;
+    }
+    .portal-card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,.1);
+      transform: translateY(-4px);
+    }
+    .skill-match-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+    .match-high { background: #dcfce7; color: #16a34a; border: 1px solid #86efac; }
+    .match-medium { background: #fef9c3; color: #ca8a04; border: 1px solid #fde68a; }
+    .match-low { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+
+    .portal-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: #94a3b8;
+    }
+    .portal-empty .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+
+    @media (max-width: 480px) {
+      .portal-grid { grid-template-columns: 1fr; padding: 16px; }
+      .portal-hero { padding: 40px 16px 32px; }
+      .portal-hero h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html">Home</a>
+      <a href="organizations.html">Organizations</a>
+      <a href="programs.html">Programs</a>
+      <a href="donate.html">Donate</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar" id="navUserInitials">U</div>
+      <div class="user-info">
+        <span class="user-name" id="navUserName">User</span>
+        <span class="user-role" id="navUserRole">Volunteer</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="portal-hero">
+    <h1>🌐 Volunteer Program Portal</h1>
+    <p>Find programs that match your skills and make a real impact. Browse, apply, and start contributing today.</p>
+    <div class="portal-filters">
+      <input type="text" id="portal-search" placeholder="🔍 Search programs..." />
+      <select id="portal-skill-filter">
+        <option value="">All Skills</option>
+      </select>
+      <select id="portal-category-filter">
+        <option value="">All Categories</option>
+        <option>Disaster Relief</option>
+        <option>Healthcare</option>
+        <option>Education</option>
+        <option>Food Security</option>
+        <option>Housing</option>
+        <option>Environment</option>
+        <option>Youth Empowerment</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- Programs Grid -->
+  <div class="portal-grid" id="portalGrid">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- Application Modal -->
+  <div id="applyModal" class="modal-overlay" style="display:none;">
+    <div class="modal-box" style="width:460px;max-width:95vw;">
+      <div class="modal-header">
+        <h3>📝 Apply to Program</h3>
+        <button class="modal-close-btn" onclick="closeApplyModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div id="apply-prog-info" style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:14px;margin-bottom:16px;">
+          <!-- Filled by JS -->
+        </div>
+        <div class="field">
+          <label>Your Relevant Skills</label>
+          <div id="apply-skills-display" style="display:flex;gap:4px;flex-wrap:wrap;padding:8px 0;">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+        <div class="field">
+          <label>Why do you want to join? <span style="font-weight:400;color:#94a3b8">(optional)</span></label>
+          <textarea id="apply-message" rows="3" placeholder="Tell the org admin why you're a great fit for this program..."></textarea>
+        </div>
+        <input type="hidden" id="apply-prog-id" />
+        <div class="modal-actions">
+          <button class="btn-modal-cancel" onclick="closeApplyModal()">Cancel</button>
+          <button class="btn-modal-save" onclick="submitApplication()">🚀 Submit Application</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script src="mock-data.js"></script>
+<script src="api.js"></script>
+  <script src="nav-controller.js"></script>
+  <script>
+    function escHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // Auth guard — volunteer only
+      var session = (typeof requireAuth === 'function') ? requireAuth(['volunteer']) : null;
+      if (!session) return;
+
+      // Populate skill filter
+      var skillSelect = document.getElementById('portal-skill-filter');
+      if (typeof SKILL_OPTIONS !== 'undefined') {
+        SKILL_OPTIONS.forEach(function(sk) {
+          var opt = document.createElement('option');
+          opt.value = sk;
+          opt.textContent = sk;
+          skillSelect.appendChild(opt);
+        });
+      }
+
+      // Get volunteer's skills
+      var mySkills = [];
+      if (typeof VolDB !== 'undefined') {
+        var myVol = VolDB.getAll().find(function(v) { return v.email === session.email; });
+        if (myVol && myVol.skills) mySkills = myVol.skills;
+      }
+
+      // Render programs
+      renderPortalPrograms(mySkills, session);
+
+      // Search & filter listeners
+      document.getElementById('portal-search').addEventListener('input', function() {
+        renderPortalPrograms(mySkills, session);
+      });
+      document.getElementById('portal-skill-filter').addEventListener('change', function() {
+        renderPortalPrograms(mySkills, session);
+      });
+      document.getElementById('portal-category-filter').addEventListener('change', function() {
+        renderPortalPrograms(mySkills, session);
+      });
+    });
+
+    function renderPortalPrograms(mySkills, session) {
+      var grid = document.getElementById('portalGrid');
+      var searchQ = (document.getElementById('portal-search').value || '').toLowerCase();
+      var skillFilter = document.getElementById('portal-skill-filter').value;
+      var catFilter = document.getElementById('portal-category-filter').value;
+
+      var programs = (typeof ProgDB !== 'undefined') ? ProgDB.getAll() : [];
+      
+      // Filter only active and open for applications
+      var filtered = programs.filter(function(p) {
+        if (p.status !== 'active') return false;
+        if (p.openForApplications === false) return false;
+        if (searchQ && p.name.toLowerCase().indexOf(searchQ) === -1 && (p.description || '').toLowerCase().indexOf(searchQ) === -1 && (p.location || '').toLowerCase().indexOf(searchQ) === -1) return false;
+        var focusLabel = Array.isArray(p.focus) ? p.focus.join(', ') : (p.focus || '');
+        if (catFilter && (Array.isArray(p.focus) ? p.focus.indexOf(catFilter) === -1 : p.focus !== catFilter)) return false;
+        if (skillFilter && p.requiredSkills && p.requiredSkills.indexOf(skillFilter) === -1) return false;
+        return true;
+      });
+
+      // Sort by skill match (highest first)
+      filtered.sort(function(a, b) {
+        var matchA = calcSkillMatch(a.requiredSkills, mySkills);
+        var matchB = calcSkillMatch(b.requiredSkills, mySkills);
+        return matchB - matchA;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="portal-empty"><div class="empty-icon">🔍</div>' +
+          '<p style="font-weight:600;color:#1e293b;margin-bottom:6px">No programs found</p>' +
+          '<p style="font-size:.88rem">Try adjusting your filters or check back later for new opportunities.</p></div>';
+        return;
+      }
+
+      var html = '';
+      filtered.forEach(function(p) {
+        var skillMatch = calcSkillMatch(p.requiredSkills, mySkills);
+        var matchClass = skillMatch >= 70 ? 'match-high' : (skillMatch >= 30 ? 'match-medium' : 'match-low');
+        var matchText = skillMatch >= 70 ? '✓ Great Match' : (skillMatch >= 30 ? 'Partial Match' : 'Low Match');
+        
+        var assigned = (typeof ProgramAssignmentDB !== 'undefined') ? ProgramAssignmentDB.getByProgram(p.id) : [];
+        var alreadyAssigned = (typeof ProgramAssignmentDB !== 'undefined') ? ProgramAssignmentDB.exists(p.id, session.email) : false;
+        var alreadyApplied = (typeof ProgramApplicationDB !== 'undefined') ? ProgramApplicationDB.hasApplied(p.id, session.email) : false;
+        var taskProgress = (typeof SubtaskDB !== 'undefined') ? SubtaskDB.getProgramProgress(p.id) : 0;
+        var progressColor = taskProgress >= 80 ? '#10b981' : (taskProgress >= 40 ? '#f59e0b' : '#6366f1');
+        
+        html += '<div class="portal-card">';
+        
+        // Skill match badge
+        if (mySkills.length > 0) {
+          html += '<div class="skill-match-badge ' + matchClass + '">' + matchText + ' (' + skillMatch + '%)</div>';
+        }
+        
+        // Header
+        html += '<div style="margin-bottom:12px;padding-right:' + (mySkills.length > 0 ? '100px' : '0') + '">';
+        html += '<div style="font-weight:700;font-size:1rem;color:#1e293b;margin-bottom:4px">' + escHtml(p.name) + '</div>';
+        var focusLabel = Array.isArray(p.focus) ? p.focus.join(', ') : (p.focus || '');
+        html += '<div style="font-size:.82rem;color:#64748b">' + escHtml(p.org || '') + ' • ' + escHtml(focusLabel) + '</div>';
+        if (p.location) html += '<div style="font-size:.78rem;color:#94a3b8;margin-top:2px">📍 ' + escHtml(p.location) + '</div>';
+        html += '</div>';
+        
+        // Description
+        html += '<p style="font-size:.85rem;color:#4b5563;line-height:1.6;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">' + escHtml(p.description) + '</p>';
+        
+        // Required Skills
+        if (p.requiredSkills && p.requiredSkills.length > 0) {
+          html += '<div style="margin-bottom:12px"><div style="font-size:.72rem;font-weight:600;color:#94a3b8;margin-bottom:6px">REQUIRED SKILLS</div>';
+          html += '<div style="display:flex;gap:4px;flex-wrap:wrap">';
+          p.requiredSkills.forEach(function(sk) {
+            var isMySkill = mySkills.indexOf(sk) !== -1;
+            html += '<span style="font-size:.7rem;padding:3px 10px;border-radius:20px;font-weight:600;' +
+              (isMySkill ? 'background:#dcfce7;color:#16a34a;border:1px solid #86efac' : 'background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0') +
+              '">' + (isMySkill ? '✓ ' : '') + escHtml(sk) + '</span>';
+          });
+          html += '</div></div>';
+        }
+        
+        // Progress & volunteers
+        html += '<div style="display:flex;gap:16px;margin-bottom:14px;font-size:.78rem;color:#64748b">';
+        html += '<span>👥 ' + assigned.length + ' / ' + (p.volunteerGoal || '∞') + ' volunteers</span>';
+        html += '<span>📊 ' + taskProgress + '% progress</span>';
+        html += '</div>';
+        
+        // Progress bar
+        html += '<div style="background:#f3f4f6;border-radius:6px;height:6px;margin-bottom:16px;overflow:hidden">';
+        html += '<div style="background:' + progressColor + ';height:6px;border-radius:6px;width:' + taskProgress + '%;transition:width .5s"></div></div>';
+        
+        // Action button
+        if (alreadyAssigned) {
+          html += '<button disabled style="width:100%;padding:10px;background:#f0fdf4;color:#059669;border:1px solid #a7f3d0;border-radius:10px;font-size:.85rem;font-weight:600;cursor:default">✓ Already Assigned</button>';
+        } else if (alreadyApplied) {
+          html += '<button disabled style="width:100%;padding:10px;background:#fef9c3;color:#ca8a04;border:1px solid #fde68a;border-radius:10px;font-size:.85rem;font-weight:600;cursor:default">⏳ Application Pending</button>';
+        } else {
+          html += '<button onclick="openApplyModal(\'' + p.id + '\')" style="width:100%;padding:10px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border:none;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .15s" onmouseover="this.style.transform=\'scale(1.02)\'" onmouseout="this.style.transform=\'none\'">🚀 Apply to Join</button>';
+        }
+        
+        html += '</div>';
+      });
+      grid.innerHTML = html;
+    }
+
+    function calcSkillMatch(requiredSkills, mySkills) {
+      if (!requiredSkills || requiredSkills.length === 0 || !mySkills || mySkills.length === 0) return 0;
+      var matched = requiredSkills.filter(function(s) { return mySkills.indexOf(s) !== -1; }).length;
+      return Math.round((matched / requiredSkills.length) * 100);
+    }
+
+    // ── Apply Modal ──────────────────────────────────────────
+    function openApplyModal(progId) {
+      var session = (typeof getSession === 'function') ? getSession() : null;
+      if (!session) return;
+      
+      var prog = (typeof ProgDB !== 'undefined') ? ProgDB.getById(progId) : null;
+      if (!prog) return;
+      
+      document.getElementById('apply-prog-id').value = progId;
+      
+      // Fill program info
+      document.getElementById('apply-prog-info').innerHTML = 
+        '<div style="font-weight:700;font-size:.95rem;color:#0c4a6e;margin-bottom:4px">' + escHtml(prog.name) + '</div>' +
+        '<div style="font-size:.82rem;color:#0369a1">' + escHtml(Array.isArray(prog.focus) ? prog.focus.join(', ') : (prog.focus || '')) + (prog.location ? ' • 📍 ' + escHtml(prog.location) : '') + '</div>';
+      
+      // Fill skills
+      var mySkills = [];
+      if (typeof VolDB !== 'undefined') {
+        var myVol = VolDB.getAll().find(function(v) { return v.email === session.email; });
+        if (myVol && myVol.skills) mySkills = myVol.skills;
+      }
+      
+      var skillsHtml = '';
+      if (mySkills.length > 0) {
+        mySkills.forEach(function(sk) {
+          var isReq = prog.requiredSkills && prog.requiredSkills.indexOf(sk) !== -1;
+          skillsHtml += '<span style="font-size:.75rem;padding:4px 12px;border-radius:20px;font-weight:600;' +
+            (isReq ? 'background:#dcfce7;color:#16a34a;border:1px solid #86efac' : 'background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0') +
+            '">' + (isReq ? '✓ ' : '') + escHtml(sk) + '</span>';
+        });
+      } else {
+        skillsHtml = '<span style="font-size:.82rem;color:#94a3b8">No skills set. Update your profile to get better matches.</span>';
+      }
+      document.getElementById('apply-skills-display').innerHTML = skillsHtml;
+      
+      document.getElementById('apply-message').value = '';
+      document.getElementById('applyModal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeApplyModal() {
+      document.getElementById('applyModal').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function submitApplication() {
+      var session = (typeof getSession === 'function') ? getSession() : null;
+      if (!session) return;
+      
+      var progId = document.getElementById('apply-prog-id').value;
+      var message = document.getElementById('apply-message').value.trim();
+      var prog = (typeof ProgDB !== 'undefined') ? ProgDB.getById(progId) : null;
+      
+      // Get volunteer skills
+      var mySkills = [];
+      if (typeof VolDB !== 'undefined') {
+        var myVol = VolDB.getAll().find(function(v) { return v.email === session.email; });
+        if (myVol && myVol.skills) mySkills = myVol.skills;
+      }
+      
+      if (typeof ProgramApplicationDB !== 'undefined') {
+        ProgramApplicationDB.create({
+          programId: progId,
+          programName: prog ? prog.name : 'Program',
+          volunteerEmail: session.email,
+          volunteerName: session.name,
+          skills: mySkills,
+          message: message,
+          status: 'pending'
+        });
+      }
+      
+      closeApplyModal();
+      
+      // Re-render
+      renderPortalPrograms(mySkills, session);
+      
+      // Show toast
+      var toast = document.createElement('div');
+      toast.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;background:#0f1923;color:#fff;padding:14px 24px;border-radius:12px;border-left:3px solid #10b981;font-size:14px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.25);';
+      toast.textContent = '🚀 Application submitted! The org admin will review it shortly.';
+      document.body.appendChild(toast);
+      setTimeout(function() { toast.style.opacity = '0'; toast.style.transition = 'opacity .3s'; setTimeout(function() { toast.remove(); }, 300); }, 4000);
+    }
+  </script>
+</body>
+
+</html>

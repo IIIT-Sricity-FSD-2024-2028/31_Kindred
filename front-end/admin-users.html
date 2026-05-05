@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kindred - User Management | Platform Administrator</title>
+  <meta name="description" content="Manage all platform users — approve, reject, edit, and delete user accounts across the Kindred platform.">
+  <link rel="stylesheet" href="style1.css">
+  <style>
+    /* ── User Management Page Styles ─────────────────────── */
+    .user-filters {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 8px 18px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 100px;
+      background: #fff;
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .filter-btn:hover { border-color: #6366f1; color: #6366f1; }
+    .filter-btn.active { background: #6366f1; color: #fff; border-color: #6366f1; }
+    .filter-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 100px;
+      background: rgba(255,255,255,.2);
+      font-size: .72rem;
+      font-weight: 700;
+      margin-left: 6px;
+    }
+    .filter-btn:not(.active) .filter-count {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+    .user-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .88rem;
+    }
+    .user-table thead th {
+      text-align: left;
+      padding: 14px 16px;
+      font-size: .78rem;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      border-bottom: 2px solid #f1f5f9;
+    }
+    .user-table tbody tr {
+      border-bottom: 1px solid #f8fafc;
+      transition: background .15s;
+    }
+    .user-table tbody tr:hover { background: #fafbfe; }
+    .user-table tbody td { padding: 14px 16px; vertical-align: middle; }
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .user-cell-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: .78rem;
+      flex-shrink: 0;
+    }
+    .user-cell-name { font-weight: 600; color: #1e293b; }
+    .user-cell-email { font-size: .78rem; color: #64748b; }
+    .user-cell-date { font-size: .78rem; color: #94a3b8; }
+    .role-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: .75rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .role-pill.superuser { background: #ede9fe; color: #6d28d9; }
+    .role-pill.admin { background: #dbeafe; color: #1d4ed8; }
+    .role-pill.volunteer { background: #d1fae5; color: #065f46; }
+    .role-pill.donor { background: #fef3c7; color: #92400e; }
+    .role-pill.beneficiary { background: #ede9fe; color: #6d28d9; }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 100px;
+      font-size: .75rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .status-pill .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+    }
+    .status-pill.pending { background: #fffbeb; color: #92400e; }
+    .status-pill.pending .dot { background: #f59e0b; }
+    .status-pill.approved { background: #ecfdf5; color: #065f46; }
+    .status-pill.approved .dot { background: #10b981; }
+    .status-pill.rejected { background: #fef2f2; color: #991b1b; }
+    .status-pill.rejected .dot { background: #ef4444; }
+    .user-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .user-action-btn {
+      width: 34px; height: 34px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem;
+      transition: all .15s;
+    }
+    .user-action-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
+    .user-action-btn.approve { border-color: #a7f3d0; }
+    .user-action-btn.approve:hover { background: #ecfdf5; }
+    .user-action-btn.reject { border-color: #fecaca; }
+    .user-action-btn.reject:hover { background: #fef2f2; }
+    .user-action-btn.delete { border-color: #fecaca; }
+    .user-action-btn.delete:hover { background: #fef2f2; }
+    .user-stats-bar {
+      display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .user-stat-chip {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 18px;
+      background: #fff;
+      border: 1px solid #f1f5f9;
+      border-radius: 12px;
+      font-size: .84rem;
+      font-weight: 600;
+      color: #475569;
+    }
+    .user-stat-chip .num {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: #94a3b8;
+    }
+    .empty-state-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+    .empty-state-text { font-size: .95rem; }
+    /* Modal overrides for user edit */
+    .user-edit-modal .field { margin-bottom: 16px; }
+    .user-edit-modal .field label { display: block; font-size: .82rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    .user-edit-modal .field input,
+    .user-edit-modal .field select {
+      width: 100%; padding: 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-family: inherit; font-size: .88rem;
+      transition: border-color .15s;
+    }
+    .user-edit-modal .field input:focus,
+    .user-edit-modal .field select:focus { border-color: #6366f1; outline: none; }
+    .source-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: .68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .source-badge.system { background: #f5f3ff; color: #7c3aed; }
+    .source-badge.registered { background: #ecfdf5; color: #059669; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;">
+      <div class="page-header-text">
+        <h1>User Management</h1>
+        <p>Manage all platform users — approve, reject, edit roles, and control access</p>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <a href="overview.html" class="tab">Overview</a>
+      <a href="organizations.html" class="tab">Organizations</a>
+      <a href="requests.html" class="tab">Requests</a>
+      <a href="admin-users.html" class="tab active">User Management</a>
+      <a href="admin-inbox.html" class="tab">Inbox</a>
+      <a href="analytics.html" class="tab">Analytics</a>
+    </div>
+
+    <!-- User Stats -->
+    <div class="user-stats-bar" id="userStatsBar">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Filters & Search -->
+    <div class="section-card">
+      <div class="section-card-header" style="flex-wrap:wrap;gap:12px">
+        <div class="user-filters" id="userFilters">
+          <button class="filter-btn active" data-filter="all" onclick="filterUsers('all', this)">All Users <span class="filter-count" id="count-all">0</span></button>
+          <button class="filter-btn" data-filter="pending" onclick="filterUsers('pending', this)">Pending <span class="filter-count" id="count-pending">0</span></button>
+          <button class="filter-btn" data-filter="approved" onclick="filterUsers('approved', this)">Approved <span class="filter-count" id="count-approved">0</span></button>
+          <button class="filter-btn" data-filter="rejected" onclick="filterUsers('rejected', this)">Rejected <span class="filter-count" id="count-rejected">0</span></button>
+        </div>
+        <div class="search-bar">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Search users..." id="searchUsers" oninput="searchUsersHandler()">
+          <span style="cursor:pointer;color:#9ca3af;padding:0 6px" onclick="document.getElementById('searchUsers').value='';searchUsersHandler()">×</span>
+        </div>
+      </div>
+
+      <!-- Users Table -->
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Source</th>
+            <th>Registered</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+<script src="auth.js"></script>
+<script src="mock-data.js"></script>
+<script src="api.js"></script>
+<script src="shared.js"></script>
+<script src="admin-users.js"></script>
+<script src="nav-controller.js"></script>
+</body>
+</html>

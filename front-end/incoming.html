@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Incoming Requests — HopeConnect | Kindred</title>
+  <link rel="stylesheet" href="styles1.css" />
+  <link rel="stylesheet" href="style1.css" />
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand">
+    <div class="navbar-logo">
+      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    </div>
+    <span class="navbar-brand-name">Kindred</span>
+  </a>
+  <ul class="navbar-nav">
+    <li><a href="org-admin-overview.html">Overview</a></li>
+    <li><a href="org-admin-programs.html">Programs</a></li>
+    <li><a href="incoming.html" class="active">Requests</a></li>
+    <li><a href="volunteers.html">Volunteers</a></li>
+    <li><a href="resources.html">Resources</a></li>
+  </ul>
+  <div class="navbar-right">
+    <div class="user-btn">
+      <div class="user-avatar">HC</div>
+      <div class="user-info">
+        <div class="user-name">HopeConnect Admin</div>
+        <div class="user-role">Organization Admin</div>
+      </div>
+      <span class="user-chevron">?</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main>
+  <div class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">Incoming Requests</h1>
+      <p class="page-subtitle">Manage assistance requests broadcasted to your organization.</p>
+    </div>
+    <div class="header-actions">
+      <div class="search-box">
+        <span class="search-icon">??</span>
+        <input type="text" placeholder="Search requests..." id="requestSearch">
+      </div>
+      <button class="btn btn-outline">
+        <span>??</span> Export CSV
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabs/Filters -->
+  <div class="tabs">
+    <button class="tab-btn active">New Requests <span class="tab-badge">4</span></button>
+    <button class="tab-btn">Accepted</button>
+    <button class="tab-btn">Declined</button>
+  </div>
+
+  <!-- Requests Feed -->
+  <div class="requests-section">
+    <div class="request-item priority-critical" id="req-001">
+      <div class="request-header">
+        <span class="request-id">#REQ-1004</span>
+        <span class="priority-badge critical">Critical</span>
+      </div>
+      <div class="request-meta">
+        <span class="request-location">?? Okhla Phase III, New Delhi</span>
+        <span class="request-category">Medical Aid</span>
+        <span class="request-date">2 hours ago</span>
+      </div>
+      <p class="request-desc">Elderly patient requires immediate oxygen cylinder refill and basic medical supplies. Situation is urgent as current supply is nearly exhausted.</p>
+      <div class="request-actions">
+        <button class="btn btn-primary btn-sm" onclick="acceptRequest('req-001')">Accept Request</button>
+        <button class="btn btn-ghost btn-sm" onclick="declineRequest('req-001')">Decline</button>
+        <button class="btn btn-outline btn-sm">View Details</button>
+      </div>
+    </div>
+
+    <div class="request-item priority-high" id="req-002">
+      <div class="request-header">
+        <span class="request-id">#REQ-1005</span>
+        <span class="priority-badge high">High Priority</span>
+      </div>
+      <div class="request-meta">
+        <span class="request-location">?? Rohini Sector 15, Delhi</span>
+        <span class="request-category">Food Distribution</span>
+        <span class="request-date">5 hours ago</span>
+      </div>
+      <p class="request-desc">Family of five requires basic dry ration kit for the next 15 days. Currently out of work and facing severe shortage.</p>
+      <div class="request-actions">
+        <button class="btn btn-primary btn-sm" onclick="acceptRequest('req-002')">Accept Request</button>
+        <button class="btn btn-ghost btn-sm" onclick="declineRequest('req-002')">Decline</button>
+        <button class="btn btn-outline btn-sm">View Details</button>
+      </div>
+    </div>
+
+    <div class="request-item priority-medium" id="req-003">
+      <div class="request-header">
+        <span class="request-id">#REQ-1006</span>
+        <span class="priority-badge medium">Medium</span>
+      </div>
+      <div class="request-meta">
+        <span class="request-location">?? Gurugram Sector 45</span>
+        <span class="request-category">Education Support</span>
+        <span class="request-date">Yesterday</span>
+      </div>
+      <p class="request-desc">Students looking for used textbooks and stationary for the upcoming academic session. Mostly looking for Grade 8-10 science books.</p>
+      <div class="request-actions">
+        <button class="btn btn-primary btn-sm" onclick="acceptRequest('req-003')">Accept Request</button>
+        <button class="btn btn-ghost btn-sm" onclick="declineRequest('req-003')">Decline</button>
+        <button class="btn btn-outline btn-sm">View Details</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Kindred</div>
+        <p class="footer-desc">Connecting individuals, volunteers, donors, and beneficiaries to create meaningful impact across communities in India.</p>
+      </div>
+      <div>
+        <div class="footer-links-title">Quick Links</div>
+        <ul class="footer-links">
+          <li><a href="organizations.html">All Organizations</a></li>
+          <li><a href="beneficiary-dashboard.html">Beneficiary Portal</a></li>
+          <li><a href="donate.html">Donations Portal</a></li>
+          <li><a href="register-ngo.html">Register NGO</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-links-title">For Users</div>
+        <ul class="footer-links">
+          <li><a href="donor-dashboard.html">Donor Dashboard</a></li>
+          <li><a href="programs.html">All Programs</a></li>
+          <li><a href="org-admin-overview.html">Organization Portal</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-links-title">Contact</div>
+        <ul class="footer-links">
+          <li><a href="contact.html">contact@kindred.org.in</a></li>
+          <li><a href="contact.html">+91 912 345 6789</a></li>
+          <li><a href="contact.html">Connaught Place, New Delhi 110001</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Kindred Platform. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="auth.js"></script>
+<script src="mock-data.js"></script>
+<script src="api.js"></script>
+<script src="org-admin-crud.js"></script>
+<script src="nav-controller.js"></script>
+
+<script>
+function acceptRequest(id) {
+  const req = document.getElementById(id);
+  req.style.opacity = '0';
+  setTimeout(() => {
+    req.remove();
+    alert('Request has been successfully accepted and moved to your "Accepted" list.');
+  }, 300);
+}
+
+function declineRequest(id) {
+  if (confirm('Are you sure you want to decline this request?')) {
+    const req = document.getElementById(id);
+    req.style.opacity = '0';
+    setTimeout(() => {
+      req.remove();
+    }, 300);
+  }
+}
+</script>
+
+</body>
+</html>

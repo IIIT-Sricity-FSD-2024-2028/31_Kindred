@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kindred — Dashboard</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .navbar-wrapper {
+      position: relative;
+    }
+  </style>
+  <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+
+
+
+
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+  <!-- ===== MAIN ===== -->
+  <main class="page-wrapper">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-header-text">
+        <h1 id="ben-welcome">Welcome, Friend!</h1>
+        <p>Track your assistance requests and manage your support activities here.</p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <a href="profile.html"
+          style="display:inline-flex;align-items:center;gap:7px;padding:10px 18px;background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;border-radius:10px;font-size:.85rem;font-weight:600;text-decoration:none;transition:all .15s;"
+          onmouseover="this.style.background='#ffedd5'" onmouseout="this.style.background='#fff7ed'">
+          👤 Edit Profile
+        </a>
+        <button class="btn-new-request">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          New Request
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="overview">Overview</button>
+      <button class="tab-btn" data-tab="requests">Requests</button>
+      <button class="tab-btn" data-tab="myrequests">My Requests</button>
+    </div>
+
+    <!-- Onboarding (shown for new beneficiaries with no requests) -->
+    <div id="ben-onboarding" style="display:none;margin-bottom:24px;">
+      <div
+        style="background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1px solid #fed7aa;border-radius:16px;padding:32px 28px;">
+        <h3 style="font-size:1.1rem;font-weight:700;color:#7c2d12;margin-bottom:6px;">👋 Getting Started</h3>
+        <p style="color:#9a3412;font-size:.88rem;margin-bottom:20px;">You haven't requested any assistance yet. We're
+          here to help — take your first step:</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;">
+          <div onclick="document.getElementById('request-modal').style.display='flex'"
+            style="background:#fff;border:1px solid #fed7aa;border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;"
+            onmouseover="this.style.borderColor='#f97316'" onmouseout="this.style.borderColor='#fed7aa'">
+            <div style="font-size:1.8rem;margin-bottom:8px;">📝</div>
+            <div style="font-size:.82rem;font-weight:700;color:#7c2d12;">Submit a Request</div>
+            <div style="font-size:.74rem;color:#64748b;margin-top:4px;">Ask for food, shelter, medical aid</div>
+          </div>
+          <div onclick="window.location.href='emergency-request.html'"
+            style="background:#fff;border:1px solid #fed7aa;border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;"
+            onmouseover="this.style.borderColor='#f97316'" onmouseout="this.style.borderColor='#fed7aa'">
+            <div style="font-size:1.8rem;margin-bottom:8px;">🚨</div>
+            <div style="font-size:.82rem;font-weight:700;color:#7c2d12;">Emergency Help</div>
+            <div style="font-size:.74rem;color:#64748b;margin-top:4px;">Urgent 24/7 support</div>
+          </div>
+          <div onclick="window.location.href='contact.html'"
+            style="background:#fff;border:1px solid #fed7aa;border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;"
+            onmouseover="this.style.borderColor='#f97316'" onmouseout="this.style.borderColor='#fed7aa'">
+            <div style="font-size:1.8rem;margin-bottom:8px;">📞</div>
+            <div style="font-size:.82rem;font-weight:700;color:#7c2d12;">Contact Us</div>
+            <div style="font-size:.74rem;color:#64748b;margin-top:4px;">Speak to a support advisor</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+        </div>
+        <div class="stat-value">4</div>
+        <div class="stat-label">Total Requests</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 8v4l3 3" />
+          </svg>
+        </div>
+        <div class="stat-value">2</div>
+        <div class="stat-label">In Progress</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon purple">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+        </div>
+        <div class="stat-value">1</div>
+        <div class="stat-label">Submitted</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+        </div>
+        <div class="stat-value">1</div>
+        <div class="stat-label">Completed</div>
+      </div>
+    </div>
+
+    <!-- My Requests -->
+    <div class="section-title">My Requests</div>
+    <div class="requests-list">
+
+      <div class="request-card">
+        <div class="request-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <path d="M9 9h6M9 13h4" />
+          </svg>
+        </div>
+        <div class="request-info">
+          <div class="request-id">REQ-2028-001</div>
+          <div class="request-title">Food Assistance</div>
+          <div class="request-meta">
+            <span>Oct 5, 2028</span>
+            <span>St Andrews • 12 similar volunteers assigned</span>
+          </div>
+        </div>
+        <div class="request-badges">
+          <span class="badge badge-emergency">Emergency</span>
+          <button class="btn-action view" onclick="viewBeneficiaryReq('REQ-2028-001')">View</button>
+        </div>
+      </div>
+
+      <div class="request-card">
+        <div class="request-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+        </div>
+        <div class="request-info">
+          <div class="request-id">REQ-2028-002</div>
+          <div class="request-title">Housing Referral</div>
+          <div class="request-meta">
+            <span>Oct 3, 2028</span>
+            <span>Care India • No similar volunteers found</span>
+          </div>
+        </div>
+        <div class="request-badges">
+          <span class="badge badge-submitted">Submitted</span>
+          <button class="btn-action cancel" onclick="cancelBeneficiaryReq(this, 'REQ-2028-002')">Cancel</button>
+        </div>
+      </div>
+
+      <div class="request-card">
+        <div class="request-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.63a19.79 19.79 0 01-3.07-8.63A2 2 0 012 0h3.08a2 2 0 012 1.72c.12 1 .36 1.97.72 2.9a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.18-1.18a2 2 0 012.11-.45c.93.36 1.9.6 2.9.72A2 2 0 0122 14.82z" />
+          </svg>
+        </div>
+        <div class="request-info">
+          <div class="request-id">REQ-2028-003</div>
+          <div class="request-title">Medical Support</div>
+          <div class="request-meta">
+            <span>Oct 1, 2028</span>
+            <span>1 offer • 1 similar volunteers assigned</span>
+          </div>
+        </div>
+        <div class="request-badges">
+          <span class="badge badge-inprogress">Submitted</span>
+          <button class="btn-action cancel" onclick="cancelBeneficiaryReq(this, 'REQ-2028-003')">Cancel</button>
+        </div>
+      </div>
+
+      <div class="request-card">
+        <div class="request-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+        </div>
+        <div class="request-info">
+          <div class="request-id">REQ-2028-004</div>
+          <div class="request-title">Education Aid</div>
+          <div class="request-meta">
+            <span>Sep 28, 2028</span>
+            <span>SOS Village • 4 similar assignments</span>
+          </div>
+        </div>
+        <div class="request-badges">
+          <span class="badge badge-completed">Completed</span>
+          <button class="btn-action view" onclick="viewBeneficiaryReq('REQ-2028-004')">View</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Emergency Banner -->
+    <div class="emergency-banner">
+      <div class="emergency-banner-text">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+          <line x1="12" y1="9" x2="12" y2="13" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+        <div>
+          <strong>Need Immediate Help?</strong>
+          <p>Our emergency response team is available 24/7. Call now for urgent support required.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ===== NEW REQUEST MODAL ===== -->
+  <div class="modal-overlay" id="request-modal" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Submit New Assistance Request</div>
+          <div class="modal-subtitle">Your request will be shared to all organizations in the Kindred platform.</div>
+        </div>
+        <button class="modal-close" data-close-modal="request-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-notice">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            style="flex-shrink:0;margin-top:1px">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 8v4m0 4h.01" />
+          </svg>
+          By sharing a request with us, you are allowing all Kindred organizations to view this request to find
+          volunteers to help you. We will not share any personal data with these organizations.
+        </div>
+        <form id="request-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Full Name <span class="required">*</span></label>
+              <input type="text" class="form-control" name="fullName" placeholder="Your full name" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number <span class="required">*</span></label>
+              <input type="tel" class="form-control" name="phone" placeholder="+91 98765 43210" required />
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Location <span class="required">*</span></label>
+              <input type="text" class="form-control" name="location" placeholder="e.g. Sanjay Gandhi Nagar, Delhi"
+                required />
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Type of Assistance <span class="required">*</span></label>
+              <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="type" value="food" /> Food</label>
+                <label class="radio-label"><input type="radio" name="type" value="shelter" /> Shelter</label>
+                <label class="radio-label"><input type="radio" name="type" value="medical" /> Medical</label>
+                <label class="radio-label"><input type="radio" name="type" value="education" /> Education</label>
+                <label class="radio-label"><input type="radio" name="type" value="other" /> Other Need</label>
+              </div>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Urgency Level</label>
+              <div class="urgency-group">
+                <button type="button" class="urgency-btn low">Low</button>
+                <button type="button" class="urgency-btn medium selected">Medium</button>
+                <button type="button" class="urgency-btn high">High</button>
+                <button type="button" class="urgency-btn critical">Critical</button>
+              </div>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" name="description"
+                placeholder="Describe the situation and what kind of help is needed..."></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" data-close-modal="request-modal">Cancel</button>
+            <button type="submit" class="btn-primary">Submit Request</button>
+          </div>
+          <button type="button" class="btn-broadcast" id="broadcast-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+            Broadcast Request to All Organizations
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== BROADCAST SENT MODAL ===== -->
+  <div class="modal-overlay" id="broadcast-modal" style="display:none">
+    <div class="modal" style="max-width:460px">
+      <div class="confirmation-modal">
+        <div class="confirmation-icon">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+          </svg>
+        </div>
+        <div class="confirmation-title">Request Broadcast Sent</div>
+        <div class="confirmation-body">
+          Your assistance request has been broadcast to all organizations on the Kindred platform. You will be notified
+          when an organization responds. Your reference number is:
+        </div>
+        <div class="confirmation-code">3008</div>
+        <br />
+        <button class="btn-back" data-close-modal="broadcast-modal">Back to Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+
+
+
+
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across
+          India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+  <script src="auth.js"></script>
+  <script src="mock-data.js"></script>
+<script src="api.js"></script>
+  <script src="shared.js"></script>
+  <script src="end-user-init.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Personalise welcome
+      var raw = sessionStorage.getItem('kindred_session');
+      if (raw) {
+        try {
+          var user = JSON.parse(raw);
+          var el = document.getElementById('ben-welcome');
+          if (el && user.name) el.textContent = 'Welcome, ' + user.name.split(' ')[0] + '!';
+        } catch (e) { }
+      }
+      // Show onboarding if no requests yet (stat-card value still at 4 hardcoded — check localStorage)
+      var storedReqs = JSON.parse(localStorage.getItem('kindred_my_requests') || '[]');
+      if (storedReqs.length === 0) {
+        var ob = document.getElementById('ben-onboarding');
+        if (ob) ob.style.display = 'block';
+      }
+    });
+  </script>
+  <script src="nav-controller.js"></script>
+</body>
+
+</html>

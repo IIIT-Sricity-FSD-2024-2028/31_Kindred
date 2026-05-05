@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Join as Volunteer – Kindred</title>
+  <meta name="description"
+    content="Join Kindred as a volunteer. Submit your skills and availability to start making an impact in communities across India." />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Sora:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .vol-hero {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .vol-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border: 1.5px solid #a7f3d0;
+      border-radius: 100px;
+      padding: 8px 20px;
+      font-size: .82rem;
+      font-weight: 600;
+      color: #065f46;
+      margin-bottom: 16px;
+    }
+
+    .vol-hero h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .vol-hero p {
+      color: rgba(255, 255, 255, .8);
+      font-size: .9rem;
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .vol-card {
+      padding: 32px !important;
+    }
+
+    .section-divider {
+      font-family: 'Sora', sans-serif;
+      font-size: .88rem;
+      font-weight: 700;
+      color: #334155;
+      margin: 28px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-divider:first-of-type {
+      margin-top: 0;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .skill-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: .85rem;
+      color: #475569;
+      transition: all .2s;
+      user-select: none;
+    }
+
+    .skill-check:hover {
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+
+    .skill-check.selected {
+      border-color: #10b981;
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      color: #065f46;
+      font-weight: 600;
+    }
+
+    .skill-check input[type="checkbox"] {
+      accent-color: #10b981;
+      width: 16px;
+      height: 16px;
+    }
+
+    .avail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .avail-btn {
+      padding: 11px 16px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: .85rem;
+      font-weight: 500;
+      color: #475569;
+      transition: all .2s;
+      text-align: center;
+    }
+
+    .avail-btn:hover {
+      border-color: #6366f1;
+      background: #f5f3ff;
+    }
+
+    .avail-btn.active {
+      border-color: #6366f1;
+      background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+      color: #4338ca;
+      font-weight: 600;
+    }
+
+    .btn-vol-submit {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: .95rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all .2s;
+      margin-top: 24px;
+    }
+
+    .btn-vol-submit:hover {
+      opacity: .9;
+      transform: translateY(-1px);
+    }
+
+    .btn-vol-submit:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .approval-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-top: 16px;
+      font-size: .82rem;
+      color: #92400e;
+      line-height: 1.55;
+    }
+
+    .approval-note svg {
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    #jv-general-error {
+      display: none;
+      color: #ef4444;
+      font-size: .82rem;
+      padding: 10px 14px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+  </style>
+  <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+
+
+
+
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+  <main>
+    <div class="page-wrap" style="max-width:640px">
+      <div class="vol-hero">
+        <div class="vol-hero-badge">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          Volunteer Registration
+        </div>
+        <h1>Join as a Volunteer</h1>
+        <p>Make a difference in communities across India. Tell us about your skills and availability.</p>
+      </div>
+
+      <div class="card vol-card">
+
+        <div id="jv-general-error"></div>
+
+        <!-- Personal Details -->
+        <div class="section-divider">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          Personal Details
+        </div>
+
+        <div class="field">
+          <label>Full Name *</label>
+          <input type="text" id="jv-name" placeholder="Your full name" />
+        </div>
+        <div class="field">
+          <label>Email *</label>
+          <input type="email" id="jv-email" placeholder="you@email.com" />
+        </div>
+        <div class="field">
+          <label>Phone Number *</label>
+          <div class="phone-wrap">
+            <span class="phone-prefix">+91</span>
+            <input type="tel" id="jv-phone" placeholder="98765 43210" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Gender *</label>
+          <div class="gender-grid">
+            <button type="button" class="gender-btn" onclick="selectGender(this)">👨 Male</button>
+            <button type="button" class="gender-btn" onclick="selectGender(this)">👩 Female</button>
+            <button type="button" class="gender-btn" onclick="selectGender(this)">🧑 Other</button>
+          </div>
+        </div>
+
+        <!-- Skills -->
+        <div class="section-divider">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+          Skills & Expertise
+        </div>
+        <p style="font-size:.82rem;color:#64748b;margin-bottom:14px">Select all skills that apply to you</p>
+        <div class="skills-grid" id="skillsGrid">
+          <label class="skill-check"><input type="checkbox" name="skill" value="teaching" /> Teaching</label>
+          <label class="skill-check"><input type="checkbox" name="skill" value="medical" /> Medical Aid</label>
+          <label class="skill-check"><input type="checkbox" name="skill" value="logistics" /> Logistics</label>
+          <label class="skill-check"><input type="checkbox" name="skill" value="cooking" /> Cooking</label>
+          <label class="skill-check"><input type="checkbox" name="skill" value="translation" /> Translation</label>
+          <label class="skill-check"><input type="checkbox" name="skill" value="technology" /> Technology</label>
+          <label class="skill-check"><input type="checkbox" name="skill" value="counseling" /> Counseling</label>
+          <label class="skill-check"><input type="checkbox" name="skill" value="driving" /> Driving</label>
+          <label class="skill-check"><input type="checkbox" name="skill" value="construction" /> Construction</label>
+          <label class="skill-check"><input type="checkbox" name="skill" value="first-aid" /> First Aid</label>
+          <label class="skill-check"><input type="checkbox" name="skill" value="fundraising" /> Fundraising</label>
+          <label class="skill-check"><input type="checkbox" name="skill" value="photography" /> Photography</label>
+        </div>
+
+        <!-- Custom Skill Input -->
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+          <input type="text" id="jv-custom-skill" placeholder="Add a custom skill…"
+            style="flex:1;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:inherit;font-size:.85rem;color:#1e293b;outline:none;transition:border-color .2s;"
+            onfocus="this.style.borderColor='#10b981'" onblur="this.style.borderColor='#e2e8f0'"
+            onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomSkillJV()}" />
+          <button type="button" onclick="addCustomSkillJV()"
+            style="padding:10px 18px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s;"
+            onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">+ Add</button>
+        </div>
+        <div id="customSkillTags" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;"></div>
+
+        <!-- Availability -->
+        <div class="section-divider">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          Availability
+        </div>
+        <p style="font-size:.82rem;color:#64748b;margin-bottom:14px">When are you available to volunteer?</p>
+        <div class="avail-grid" id="availGrid">
+          <button type="button" class="avail-btn" onclick="selectAvailability(this)" data-value="fulltime">🕐
+            Full-Time</button>
+          <button type="button" class="avail-btn" onclick="selectAvailability(this)" data-value="parttime">🕑
+            Part-Time</button>
+          <button type="button" class="avail-btn" onclick="selectAvailability(this)" data-value="weekends">📅 Weekends
+            Only</button>
+          <button type="button" class="avail-btn" onclick="selectAvailability(this)" data-value="flexible">✨
+            Flexible</button>
+        </div>
+
+        <!-- Password -->
+        <div class="section-divider">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          Account Security
+        </div>
+
+        <div class="field pass-wrap">
+          <label>Password *</label>
+          <input type="password" id="jv-pass" placeholder="••••••••" />
+          <button type="button" class="pass-eye" onclick="togglePass('jv-pass',this)">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </button>
+        </div>
+        <div class="field pass-wrap">
+          <label>Confirm Password *</label>
+          <input type="password" id="jv-pass2" placeholder="••••••••" />
+          <button type="button" class="pass-eye" onclick="togglePass('jv-pass2',this)">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="approval-note">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <span>Your volunteer application will be reviewed by the Platform Administrator before you can access the
+            platform.</span>
+        </div>
+
+        <button class="btn-vol-submit" id="btnVolSubmit" onclick="submitVolunteerForm()">
+          Submit Volunteer Application
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </button>
+
+      </div>
+
+      <p style="margin-top:16px;font-size:.85rem;color:rgba(255,255,255,.75);text-align:center">
+        Already have an account? <a href="signin.html" style="color:#fff;font-weight:700;text-decoration:none">Sign
+          In</a>
+        &nbsp;·&nbsp;
+        <a href="signup.html" style="color:#fff;font-weight:700;text-decoration:none">Other Roles</a>
+      </p>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+
+
+
+
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across
+          India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+  <script src="auth.js"></script>
+  <script src="mock-data.js"></script>
+<script src="api.js"></script>
+  <script src="join-volunteer.js"></script>
+  <script src="nav-controller.js"></script>
+</body>
+
+</html>

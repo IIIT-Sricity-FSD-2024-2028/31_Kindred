@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Registration Under Review – Kindred</title>
+<meta name="description" content="Your Kindred account registration is under review by the Platform Administrator."/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+  .pending-hero {
+    text-align: center;
+    padding: 56px 32px 40px;
+  }
+  .pending-icon-wrap {
+    width: 96px; height: 96px;
+    margin: 0 auto 28px;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fbbf24 100%);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 32px rgba(251,191,36,.25);
+    animation: pendingPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes pendingPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 8px 32px rgba(251,191,36,.25); }
+    50% { transform: scale(1.06); box-shadow: 0 12px 40px rgba(251,191,36,.35); }
+  }
+  .pending-icon-wrap svg {
+    width: 44px; height: 44px;
+    color: #92400e;
+  }
+  .pending-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 12px;
+  }
+  .pending-subtitle {
+    color: #64748b;
+    font-size: .95rem;
+    line-height: 1.7;
+    max-width: 420px;
+    margin: 0 auto 32px;
+  }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fffbeb;
+    border: 1.5px solid #fde68a;
+    border-radius: 100px;
+    padding: 10px 22px;
+    font-size: .88rem;
+    font-weight: 600;
+    color: #92400e;
+    margin-bottom: 32px;
+  }
+  .status-dot {
+    width: 10px; height: 10px;
+    background: #f59e0b;
+    border-radius: 50%;
+    animation: dotBlink 1.5s ease-in-out infinite;
+  }
+  @keyframes dotBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .3; }
+  }
+  .steps-section {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin: 0 32px 32px;
+    text-align: left;
+  }
+  .steps-section h4 {
+    font-family: 'Sora', sans-serif;
+    font-size: .95rem;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 20px;
+  }
+  .step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .step-row:last-child { margin-bottom: 0; }
+  .step-num {
+    width: 30px; height: 30px;
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .78rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step-text {
+    padding-top: 4px;
+    font-size: .88rem;
+    color: #475569;
+    line-height: 1.55;
+  }
+  .step-text strong {
+    color: #1e293b;
+  }
+  .pending-actions {
+    padding: 0 32px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+  .btn-go-signin {
+    width: 100%;
+    max-width: 320px;
+    padding: 13px;
+    border: none;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: .93rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all .2s;
+  }
+  .btn-go-signin:hover { opacity: .9; transform: translateY(-1px); }
+  .btn-go-home {
+    width: 100%;
+    max-width: 320px;
+    padding: 12px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: .88rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: #fff;
+    color: #64748b;
+    transition: all .2s;
+  }
+  .btn-go-home:hover { border-color: #cbd5e1; background: #f8fafc; }
+  .info-note {
+    font-size: .8rem;
+    color: #94a3b8;
+    text-align: center;
+    padding: 0 32px 24px;
+    line-height: 1.6;
+  }
+  .info-note a { color: #6366f1; text-decoration: none; font-weight: 600; }
+</style>
+  <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+  
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+<main>
+  <div class="page-wrap">
+    <div class="card" style="padding:0;overflow:hidden;">
+
+      <div class="pending-hero">
+        <div class="pending-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <h1 class="pending-title">Account Under Review</h1>
+        <p class="pending-subtitle">Your registration has been submitted successfully! The Platform Administrator will review your application and verify your details.</p>
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          Pending Admin Approval
+        </div>
+      </div>
+
+      <div class="steps-section">
+        <h4>What happens next?</h4>
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>Admin reviews your application</strong> — The Platform Administrator will verify your submitted details and credentials.</div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>Approval notification</strong> — You will be notified via email once your account has been approved or if additional information is needed.</div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>Access granted</strong> — Once approved, log in with your credentials to access the full Kindred platform and start contributing.</div>
+        </div>
+      </div>
+
+      <div class="pending-actions">
+        <button class="btn-go-signin" onclick="window.location='signin.html'">
+          Go to Sign In
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+        <button class="btn-go-home" onclick="window.location='index.html'">Back to Home</button>
+      </div>
+
+      <p class="info-note">
+        Need help? Contact us at <a href="mailto:hello@kindred.org.in">hello@kindred.org.in</a> or call <strong>+91 1800 200 3000</strong>
+      </p>
+
+    </div>
+  </div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+  
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+<script src="auth.js"></script>
+<script src="mock-data.js"></script>
+<script src="api.js"></script>
+<script src="nav-controller.js"></script>
+</body>
+</html>

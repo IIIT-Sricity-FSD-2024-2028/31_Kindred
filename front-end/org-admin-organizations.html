@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizations - Kindred Donor Dashboard</title>
+    <meta name="description" content="Browse and support organizations making a difference across India.">
+    <link rel="stylesheet" href="styles1.css">
+  <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+  
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Donor Dashboard</h1>
+            <p class="page-subtitle">Track your donations and see your impact</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs" id="dashboard-tabs">
+            <a href="dashboard.html" class="tab-btn">Dashboard</a>
+            <a href="org-admin-organizations.html" class="tab-btn active">Organizations</a>
+            <a href="donations.html" class="tab-btn">Donations</a>
+            <a href="impact.html" class="tab-btn">Impact</a>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="stats-grid">
+            <div class="stat-card" id="stat-total-donated">
+                <div class="stat-icon rupee">₹</div>
+                <div class="stat-value">₹94,300</div>
+                <div class="stat-label">Total Donated</div>
+            </div>
+            <div class="stat-card" id="stat-orgs-supported">
+                <div class="stat-icon org">🏛</div>
+                <div class="stat-value">4</div>
+                <div class="stat-label">Organizations Supported</div>
+            </div>
+            <div class="stat-card" id="stat-people-impacted">
+                <div class="stat-icon people">👥</div>
+                <div class="stat-value">1,453</div>
+                <div class="stat-label">People Impacted</div>
+            </div>
+            <div class="stat-card" id="stat-impact-score">
+                <div class="stat-icon impact">📈</div>
+                <div class="stat-value">92%</div>
+                <div class="stat-label">Impact Score</div>
+            </div>
+        </div>
+
+        <!-- Choose an Organization -->
+        <h2 class="section-header">Choose an Organization to Support</h2>
+        <div class="org-grid" id="org-grid">
+
+            <!-- HopeConnect -->
+            <div class="org-card" id="org-hope" data-org="hope">
+                <div class="org-card-header">
+                    <div class="org-avatar hope">H</div>
+                    <div>
+                        <div class="org-name">HopeConnect</div>
+                        <div class="org-category">Disaster Relief</div>
+                    </div>
+                </div>
+                <div class="org-stats">
+                    <span>Raised: ₹1.9 Cr</span>
+                    <span>15,400 beneficiaries</span>
+                    <span><span class="star">⭐</span> 4.8 Rating</span>
+                </div>
+                <div class="org-actions">
+                    <a href="organization-details.html?id=org_001" class="btn btn-outline btn-full btn-sm">View Details</a>
+                </div>
+            </div>
+
+            <!-- EduBridge -->
+            <div class="org-card" id="org-edu" data-org="edu">
+                <div class="org-card-header">
+                    <div class="org-avatar edu">E</div>
+                    <div>
+                        <div class="org-name">EduBridge</div>
+                        <div class="org-category">Education</div>
+                    </div>
+                </div>
+                <div class="org-stats">
+                    <span>Raised: ₹4.2 Cr</span>
+                    <span>32,000 students</span>
+                    <span><span class="star">⭐</span> 4.9 Rating</span>
+                </div>
+                <div class="org-actions">
+                    <a href="organization-details.html?id=org_002" class="btn btn-outline btn-full btn-sm">View Details</a>
+                </div>
+            </div>
+
+            <!-- GreenEarth Initiative -->
+            <div class="org-card" id="org-green" data-org="green">
+                <div class="org-card-header">
+                    <div class="org-avatar green">G</div>
+                    <div>
+                        <div class="org-name">GreenEarth Initiative</div>
+                        <div class="org-category">Environment</div>
+                    </div>
+                </div>
+                <div class="org-stats">
+                    <span>Raised: ₹1.5 Cr</span>
+                    <span>120 communities</span>
+                    <span><span class="star">⭐</span> 4.6 Rating</span>
+                </div>
+                <div class="org-actions">
+                    <a href="organization-details.html?id=org_003" class="btn btn-outline btn-full btn-sm">View Details</a>
+                </div>
+            </div>
+
+            <!-- MedReach -->
+            <div class="org-card" id="org-med" data-org="med">
+                <div class="org-card-header">
+                    <div class="org-avatar med">M</div>
+                    <div>
+                        <div class="org-name">MedReach</div>
+                        <div class="org-category">Healthcare</div>
+                    </div>
+                </div>
+                <div class="org-stats">
+                    <span>Raised: ₹2.6 Cr</span>
+                    <span>6,800 patients</span>
+                    <span><span class="star">⭐</span> 4.5 Rating</span>
+                </div>
+                <div class="org-actions">
+                    <a href="organization-details.html?id=org_004" class="btn btn-outline btn-full btn-sm">View Details</a>
+                </div>
+            </div>
+
+            <!-- MyTrust Foundation -->
+            <div class="org-card" id="org-trust" data-org="trust">
+                <div class="org-card-header">
+                    <div class="org-avatar trust">M</div>
+                    <div>
+                        <div class="org-name">MyTrust Foundation</div>
+                        <div class="org-category">Community Development</div>
+                    </div>
+                </div>
+                <div class="org-stats">
+                    <span>Raised: ₹2.3 Cr</span>
+                    <span>18,200 families</span>
+                    <span><span class="star">⭐</span> 4.7 Rating</span>
+                </div>
+                <div class="org-actions">
+                    <a href="organization-details.html?id=org_005" class="btn btn-outline btn-full btn-sm">View Details</a>
+                </div>
+            </div>
+
+            <!-- FoodFirst Alliance -->
+            <div class="org-card" id="org-food" data-org="food">
+                <div class="org-card-header">
+                    <div class="org-avatar food">F</div>
+                    <div>
+                        <div class="org-name">FoodFirst Alliance</div>
+                        <div class="org-category">Food Security</div>
+                    </div>
+                </div>
+                <div class="org-stats">
+                    <span>Raised: ₹1.8 Cr</span>
+                    <span>22,000 meals/month</span>
+                    <span><span class="star">⭐</span> 4.6 Rating</span>
+                </div>
+                <div class="org-actions">
+                    <a href="organization-details.html?id=org_006" class="btn btn-outline btn-full btn-sm">View Details</a>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+  
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+    
+<script src="auth.js"></script>
+<script src="mock-data.js"></script>
+<script src="api.js"></script>
+<script src="org-admin-crud.js"></script>
+<script src="nav-controller.js"></script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Program Created — HopeConnect | Kindred</title>
+  <link rel="stylesheet" href="style1.css" />
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+  
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">?</span>
+    </div>
+  </nav>
+
+
+
+
+
+<main>
+  <div class="success-page fade-in">
+    <a href="overview.html" class="back-link">? Back to Dashboard</a>
+
+    <div class="success-card">
+      <div class="success-icon">?</div>
+      <h2 class="success-title">Program Created!</h2>
+      <p class="success-sub"><strong id="programNameDisplay">Your program</strong> has been successfully added to your programs list and is now active.</p>
+
+      <div class="next-steps">
+        <div class="next-steps-title">Next Steps</div>
+        <div class="next-step">
+          <div class="step-num">1</div>
+          <div class="step-text">Assign volunteers to this program</div>
+        </div>
+        <div class="next-step">
+          <div class="step-num">2</div>
+          <div class="step-text">Allocate resources as needed</div>
+        </div>
+        <div class="next-step">
+          <div class="step-num">3</div>
+          <div class="step-text">Track progress in the Programs tab</div>
+        </div>
+      </div>
+
+      <a href="overview.html" class="btn btn-primary btn-full btn-lg">Return to Dashboard</a>
+    </div>
+  </div>
+</main>
+
+
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">? contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">?? +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">?? New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+<script src="app.js"></script>
+<script>
+// Show program name from session if available
+const name = sessionStorage.getItem('newProgramName');
+if (name) {
+  document.getElementById('programNameDisplay').textContent = `"${name}"`;
+  sessionStorage.removeItem('newProgramName');
+}
+</script>
+
+    <footer class="footer" style="background: #1a3b5c; color: #fff; padding: 60px 0 24px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin-top: auto;">
+    <div class="footer-content" style="max-width: 1200px; margin: 0 auto; padding: 0 32px; display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 40px; margin-bottom: 40px;">
+      <div class="footer-brand">
+        <div class="footer-logo" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 24px; margin-bottom: 16px;">
+          Kindred
+        </div>
+        <p style="color: #e2e8f0; font-size: 14px; line-height: 1.6; padding-right: 20px;">Connecting individuals, volunteers, donors, and beneficiaries to create meaningful impact across communities in India.</p>
+      </div>
+      <div class="footer-col">
+        <h4 style="color: #94a3b8; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">Quick Links</h4>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+          <li style="margin-bottom: 12px;"><a href="organizations.html" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">All Organizations</a></li>
+          <li style="margin-bottom: 12px;"><a href="beneficiary-dashboard.html" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">Beneficiary Portal</a></li>
+          <li style="margin-bottom: 12px;"><a href="donate.html" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">Donations Portal</a></li>
+          <li style="margin-bottom: 12px;"><a href="register-ngo.html" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">Register NGO</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 style="color: #94a3b8; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">For Users</h4>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+          <li style="margin-bottom: 12px;"><a href="signin.html" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">Donor Dashboard</a></li>
+          <li style="margin-bottom: 12px;"><a href="programs.html" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">All Programs</a></li>
+          <li style="margin-bottom: 12px;"><a href="org-admin-overview.html" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">Organization Portal</a></li>
+          <li style="margin-bottom: 12px;"><a href="#" style="color: #e2e8f0; text-decoration: none; font-size: 14px;">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 style="color: #94a3b8; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">Contact</h4>
+        <div class="footer-contact-item" style="color: #e2e8f0; font-size: 14px; margin-bottom: 12px; display: flex; gap: 10px;">
+          <span style="flex-shrink: 0;">?</span> contact@kindred.org.in
+        </div>
+        <div class="footer-contact-item" style="color: #e2e8f0; font-size: 14px; margin-bottom: 12px; display: flex; gap: 10px;">
+          <span style="flex-shrink: 0;">??</span> +91 998 765 3210
+        </div>
+        <div class="footer-contact-item" style="color: #e2e8f0; font-size: 14px; margin-bottom: 12px; display: flex; gap: 10px;">
+          <span style="flex-shrink: 0;">??</span> Connaught Place, New Delhi 110001
+        </div>
+        <div class="footer-contact-item" style="color: #e2e8f0; font-size: 14px; margin-bottom: 12px; display: flex; gap: 10px;">
+          <span style="flex-shrink: 0;">?</span> <a href="emergency-request.html" style="color: #ffcccc; text-decoration: none; font-weight: 600;">Emergency Help</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom" style="max-width: 1200px; margin: 0 auto; padding: 24px 32px 0; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #94a3b8; flex-wrap: wrap; gap: 16px;">
+      <span>© 2028 Kindred India. All rights reserved. Registered under Societies Registration Act, 1st year.</span>
+      <div class="footer-bottom-links" style="display: flex; gap: 20px;">
+        <a href="#" style="color: #94a3b8; text-decoration: none;">Privacy Policy</a>
+        <a href="#" style="color: #94a3b8; text-decoration: none;">Terms of Service</a>
+        <a href="#" style="color: #94a3b8; text-decoration: none;">Cookie Policy</a>
+      </div>
+    </div>
+  </footer>
+<script src="auth.js"></script>
+<script src="nav-controller.js"></script>
+
+  <!-- ===== FOOTER ===== -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Kindred</div>
+        <p class="footer-desc">Connecting individuals, volunteers, donors, and beneficiaries to create meaningful impact across communities in India.</p>
+      </div>
+      <div>
+        <div class="footer-links-title">Quick Links</div>
+        <ul class="footer-links">
+          <li><a href="organizations.html">All Organizations</a></li>
+          <li><a href="beneficiary-dashboard.html">Beneficiary Portal</a></li>
+          <li><a href="donate.html">Donations Portal</a></li>
+          <li><a href="register-ngo.html">Register NGO</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-links-title">For Users</div>
+        <ul class="footer-links">
+          <li><a href="signin.html">Donor Dashboard</a></li>
+          <li><a href="programs.html">All Programs</a></li>
+          <li><a href="org-admin-overview.html">Organization Portal</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-links-title">Contact</div>
+        <ul class="footer-links">
+          <li><a href="contact.html">contact@kindred.org.in</a></li>
+          <li><a href="contact.html">+91 998 765 3210</a></li>
+          <li><a href="contact.html">Connaught Place, New Delhi 110001</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2028 Kindred India. All rights reserved. Registered under Societies Registration Act, 1st year.</span>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
+

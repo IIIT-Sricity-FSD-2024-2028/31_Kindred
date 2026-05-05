@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner With Kindred - NGO Registration</title>
+  <meta name="description" content="Register your NGO with Kindred to access thousands of volunteers, securely manage funds, and amplify your impact.">
+  <link rel="stylesheet" href="style1.css">
+  <script src="auth.js"></script>
+  <script src="mock-data.js"></script>
+<script src="api.js"></script>
+</head>
+<body class="bg-light-grey">
+
+  <!-- ===== NAVBAR ===== -->
+  
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+  <!-- NGO REGISTER HERO -->
+  <section class="page-hero text-center" style="padding: 80px 20px; background: #fff; border-bottom: 1px solid #e2e8f0;">
+    <h1 style="font-family: var(--brand-font); color: var(--brand-navy); font-size: 2.5rem; margin-bottom: 20px;">Partner With Kindred: Amplify Your Impact</h1>
+    <p style="color: #64748b; font-size: 1.1rem; max-width: 700px; margin: 0 auto;">
+      Join India's fastest-growing social impact network. By verifying your NGO with Kindred, you gain immediate access to volunteers, secure fundraising metrics, and beneficiary management tools.
+    </p>
+  </section>
+
+  <!-- REGISTRATION FORM SECTION -->
+  <section style="max-width: 800px; margin: 60px auto; padding: 0 20px;">
+    
+    <div style="background: #fff; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+      <h2 style="font-size: 22px; color: var(--brand-navy); margin-bottom: 8px;">Organization Registration</h2>
+      <p style="color: #64748b; font-size: 14px; margin-bottom: 30px;">Complete the form below. Our verification team will review your application within 48 hours.</p>
+
+      <form id="ngo-register-form">
+        
+        <!-- Org Details -->
+        <h3 style="font-size: 16px; color: #0f172a; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0;">Organization Details</h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 30px;">
+          <div>
+            <label style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px;">Official NGO Name *</label>
+            <input type="text" required placeholder="e.g. HopeConnect Foundation" style="width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px;">Primary Focus Area *</label>
+            <select required style="width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; background: #fff;">
+              <option value="">Select a Category</option>
+              <option value="education">Education & Literacy</option>
+              <option value="healthcare">Healthcare & Medical</option>
+              <option value="disaster">Disaster Relief</option>
+              <option value="environment">Environment & Sustainability</option>
+              <option value="women">Women Empowerment</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Compliance & Verification -->
+        <h3 style="font-size: 16px; color: #0f172a; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0;">Compliance & Registration</h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+          <div>
+            <label style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px;">Society Registration No. *</label>
+            <input type="text" required placeholder="e.g. S/12345/2010" style="width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px;">NGO Darpan ID (Optional)</label>
+            <input type="text" placeholder="e.g. DL/2015/0000000" style="width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none;">
+          </div>
+          
+          <div style="grid-column: 1 / -1; display: flex; gap: 20px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #334155; cursor: pointer;">
+              <input type="checkbox" style="width: 16px; height: 16px;"> We have 80G Tax Exemption Status
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #334155; cursor: pointer;">
+              <input type="checkbox" style="width: 16px; height: 16px;"> We have FCRA Registration
+            </label>
+          </div>
+        </div>
+
+        <!-- Contact details -->
+        <h3 style="font-size: 16px; color: #0f172a; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0;">Contact Information</h3>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+          <div>
+            <label style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px;">Contact Person Name *</label>
+            <input type="text" required placeholder="Full Name" style="width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px;">Official Email *</label>
+            <input type="email" required placeholder="name@ngo.org" style="width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none;">
+          </div>
+          <div style="grid-column: 1 / -1;">
+            <label style="display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px;">Headquarters Address *</label>
+            <textarea required rows="3" placeholder="Full Postal Address" style="width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; resize: vertical;"></textarea>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 24px; font-size: 13px; color: #64748b;">
+          By submitting this form, you agree to Kindred's Terms of Service and Privacy Policy. Our verification team will reach out to your official email to request uploaded copies of your registration certificates.
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%; padding: 16px; font-size: 16px;">Submit Application for Verification</button>
+
+      </form>
+      
+      <!-- Success Message (Hidden) -->
+      <div id="ngo-success-msg" style="display: none; text-align: center; padding: 40px 20px;">
+        <div style="width: 64px; height: 64px; background: #10b981; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px;">✓</div>
+        <h2 style="font-size: 24px; color: #0f172a; margin-bottom: 12px;">Application Received!</h2>
+        <p style="color: #64748b; font-size: 15px; max-width: 400px; margin: 0 auto;">Thank you for your interest in partnering with Kindred. Our team will review your application and contact you within 48 hours for the next steps.</p>
+        <button onclick="window.location.href='index.html'" class="btn-outline" style="margin-top: 30px;">Return to Home</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+  <script src="script.js"></script>
+  <script>
+    document.getElementById('ngo-register-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      this.style.display = 'none';
+      document.getElementById('ngo-success-msg').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+  <script src="nav-controller.js"></script>
+</body>
+</html>

@@ -1,0 +1,5702 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/users": {
+      "get": {
+        "description": "Returns the complete list of registered users. Requires admin or superuser role.",
+        "operationId": "UsersController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC (superuser, admin, volunteer, donor, beneficiary)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users retrieved successfully"
+          },
+          "403": {
+            "description": "Access denied — requires admin or superuser role"
+          }
+        },
+        "summary": "Get all users",
+        "tags": [
+          "Users"
+        ]
+      },
+      "post": {
+        "description": "Admin/superuser creates a user directly. For public registration, use POST /users/register instead.",
+        "operationId": "UsersController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC (superuser, admin, volunteer, donor, beneficiary)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully"
+          },
+          "400": {
+            "description": "Validation failed or duplicate email"
+          },
+          "403": {
+            "description": "Access denied — requires admin or superuser role"
+          }
+        },
+        "summary": "Create a new user (admin-only)",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/search": {
+      "get": {
+        "operationId": "UsersController_search",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC (superuser, admin, volunteer, donor, beneficiary)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Search query string",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search completed successfully"
+          },
+          "403": {
+            "description": "Access denied — requires admin or superuser role"
+          }
+        },
+        "summary": "Search users by name, email, or role",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/pending": {
+      "get": {
+        "description": "Returns users awaiting approval (status=pending)",
+        "operationId": "UsersController_getPending",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC (superuser, admin, volunteer, donor, beneficiary)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pending users retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get pending users",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/approved": {
+      "get": {
+        "operationId": "UsersController_getApproved",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC (superuser, admin, volunteer, donor, beneficiary)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Approved users retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get approved users",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/rejected": {
+      "get": {
+        "operationId": "UsersController_getRejected",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC (superuser, admin, volunteer, donor, beneficiary)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rejected users retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get rejected users",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "operationId": "UsersController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC (superuser, admin, volunteer, donor, beneficiary)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User retrieved successfully"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Get user by ID",
+        "tags": [
+          "Users"
+        ]
+      },
+      "patch": {
+        "operationId": "UsersController_update",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC (superuser, admin, volunteer, donor, beneficiary)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Update a user",
+        "tags": [
+          "Users"
+        ]
+      },
+      "delete": {
+        "description": "Permanently removes a user from the system. Superuser only.",
+        "operationId": "UsersController_remove",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC (superuser, admin, volunteer, donor, beneficiary)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully"
+          },
+          "403": {
+            "description": "Access denied — requires superuser role"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Delete a user",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/register": {
+      "post": {
+        "description": "Anyone can register. Donors and beneficiaries get instant approval. Volunteers and admins go to pending status.",
+        "operationId": "UsersController_register",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC (superuser, admin, volunteer, donor, beneficiary)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully"
+          },
+          "400": {
+            "description": "Validation failed or duplicate email"
+          }
+        },
+        "summary": "Public registration (no role header required)",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/signin": {
+      "post": {
+        "description": "Authenticates a user with email, password, and role. Returns user data on success.",
+        "operationId": "UsersController_signIn",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC (superuser, admin, volunteer, donor, beneficiary)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sign-in failed — invalid credentials or account not approved\n\nSigned in successfully"
+          }
+        },
+        "summary": "Sign in a user",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/{id}/approve": {
+      "patch": {
+        "description": "Changes user status from pending to approved. Superuser only.",
+        "operationId": "UsersController_approve",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC (superuser, admin, volunteer, donor, beneficiary)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User approved successfully"
+          },
+          "403": {
+            "description": "Access denied — requires superuser role"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Approve a user",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/users/{id}/reject": {
+      "patch": {
+        "description": "Changes user status to rejected. Superuser only.",
+        "operationId": "UsersController_reject",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC (superuser, admin, volunteer, donor, beneficiary)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User rejected"
+          },
+          "403": {
+            "description": "Access denied — requires superuser role"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Reject a user",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/organizations": {
+      "get": {
+        "description": "Public endpoint — returns all registered NGOs",
+        "operationId": "OrganizationsController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Organizations retrieved successfully"
+          }
+        },
+        "summary": "Get all organizations",
+        "tags": [
+          "Organizations"
+        ]
+      },
+      "post": {
+        "description": "Register a new NGO on the platform",
+        "operationId": "OrganizationsController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrganizationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Organization created successfully"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "403": {
+            "description": "Access denied — requires admin or superuser role"
+          }
+        },
+        "summary": "Create a new organization",
+        "tags": [
+          "Organizations"
+        ]
+      }
+    },
+    "/organizations/search": {
+      "get": {
+        "operationId": "OrganizationsController_search",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Search query string",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search completed"
+          }
+        },
+        "summary": "Search organizations by name, city, or focus",
+        "tags": [
+          "Organizations"
+        ]
+      }
+    },
+    "/organizations/{id}": {
+      "get": {
+        "operationId": "OrganizationsController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Organization retrieved"
+          },
+          "404": {
+            "description": "Organization not found"
+          }
+        },
+        "summary": "Get organization by ID",
+        "tags": [
+          "Organizations"
+        ]
+      },
+      "patch": {
+        "operationId": "OrganizationsController_update",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrganizationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Organization updated"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Organization not found"
+          }
+        },
+        "summary": "Update an organization",
+        "tags": [
+          "Organizations"
+        ]
+      },
+      "delete": {
+        "operationId": "OrganizationsController_remove",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Organization deleted"
+          },
+          "403": {
+            "description": "Access denied — requires superuser role"
+          },
+          "404": {
+            "description": "Organization not found"
+          }
+        },
+        "summary": "Delete an organization",
+        "tags": [
+          "Organizations"
+        ]
+      }
+    },
+    "/volunteers": {
+      "get": {
+        "operationId": "VolunteersController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Volunteers retrieved successfully"
+          },
+          "403": {
+            "description": "Access denied — requires admin or superuser role"
+          }
+        },
+        "summary": "Get all volunteers",
+        "tags": [
+          "Volunteers"
+        ]
+      },
+      "post": {
+        "operationId": "VolunteersController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVolunteerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Volunteer created successfully"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Create a new volunteer",
+        "tags": [
+          "Volunteers"
+        ]
+      }
+    },
+    "/volunteers/by-email/{email}": {
+      "get": {
+        "operationId": "VolunteersController_findByEmail",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Volunteer retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Volunteer not found"
+          }
+        },
+        "summary": "Get volunteer by email",
+        "tags": [
+          "Volunteers"
+        ]
+      }
+    },
+    "/volunteers/by-org/{org}": {
+      "get": {
+        "operationId": "VolunteersController_findByOrg",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "org",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Volunteers retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get volunteers by organization",
+        "tags": [
+          "Volunteers"
+        ]
+      }
+    },
+    "/volunteers/{id}": {
+      "get": {
+        "operationId": "VolunteersController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Volunteer retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Volunteer not found"
+          }
+        },
+        "summary": "Get volunteer by ID",
+        "tags": [
+          "Volunteers"
+        ]
+      },
+      "patch": {
+        "operationId": "VolunteersController_update",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVolunteerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Volunteer updated"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Volunteer not found"
+          }
+        },
+        "summary": "Update a volunteer",
+        "tags": [
+          "Volunteers"
+        ]
+      },
+      "delete": {
+        "operationId": "VolunteersController_remove",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Volunteer deleted"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Volunteer not found"
+          }
+        },
+        "summary": "Delete a volunteer",
+        "tags": [
+          "Volunteers"
+        ]
+      }
+    },
+    "/programs": {
+      "get": {
+        "description": "Public — returns all active programs",
+        "operationId": "ProgramsController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Programs retrieved successfully"
+          }
+        },
+        "summary": "Get all programs",
+        "tags": [
+          "Programs"
+        ]
+      },
+      "post": {
+        "description": "Org admins and superusers can create programs",
+        "operationId": "ProgramsController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProgramDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Program created successfully"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "403": {
+            "description": "Access denied — requires admin or superuser role"
+          }
+        },
+        "summary": "Create a new program",
+        "tags": [
+          "Programs"
+        ]
+      }
+    },
+    "/programs/by-org/{org}": {
+      "get": {
+        "operationId": "ProgramsController_findByOrg",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "org",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Programs retrieved"
+          }
+        },
+        "summary": "Get programs by organization name",
+        "tags": [
+          "Programs"
+        ]
+      }
+    },
+    "/programs/{id}": {
+      "get": {
+        "operationId": "ProgramsController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Program retrieved"
+          },
+          "404": {
+            "description": "Program not found"
+          }
+        },
+        "summary": "Get program by ID",
+        "tags": [
+          "Programs"
+        ]
+      },
+      "patch": {
+        "operationId": "ProgramsController_update",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProgramDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Program updated"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Program not found"
+          }
+        },
+        "summary": "Update a program",
+        "tags": [
+          "Programs"
+        ]
+      },
+      "delete": {
+        "operationId": "ProgramsController_remove",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Program deleted"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Program not found"
+          }
+        },
+        "summary": "Delete a program",
+        "tags": [
+          "Programs"
+        ]
+      }
+    },
+    "/requests": {
+      "get": {
+        "description": "Returns all org registration, budget increase, and other requests",
+        "operationId": "RequestsController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requests retrieved successfully"
+          },
+          "403": {
+            "description": "Access denied — requires admin or superuser role"
+          }
+        },
+        "summary": "Get all platform requests",
+        "tags": [
+          "Requests"
+        ]
+      },
+      "post": {
+        "operationId": "RequestsController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Request created successfully"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Create a new platform request",
+        "tags": [
+          "Requests"
+        ]
+      }
+    },
+    "/requests/pending": {
+      "get": {
+        "operationId": "RequestsController_getPending",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pending requests retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get pending requests",
+        "tags": [
+          "Requests"
+        ]
+      }
+    },
+    "/requests/{id}": {
+      "get": {
+        "operationId": "RequestsController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Request not found"
+          }
+        },
+        "summary": "Get request by ID",
+        "tags": [
+          "Requests"
+        ]
+      },
+      "patch": {
+        "operationId": "RequestsController_update",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request updated"
+          },
+          "403": {
+            "description": "Access denied — requires superuser role"
+          },
+          "404": {
+            "description": "Request not found"
+          }
+        },
+        "summary": "Update a request",
+        "tags": [
+          "Requests"
+        ]
+      },
+      "delete": {
+        "operationId": "RequestsController_remove",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request deleted"
+          },
+          "403": {
+            "description": "Access denied — requires superuser role"
+          },
+          "404": {
+            "description": "Request not found"
+          }
+        },
+        "summary": "Delete a request",
+        "tags": [
+          "Requests"
+        ]
+      }
+    },
+    "/requests/{id}/approve": {
+      "patch": {
+        "operationId": "RequestsController_approve",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request approved"
+          },
+          "403": {
+            "description": "Access denied — requires superuser role"
+          },
+          "404": {
+            "description": "Request not found"
+          }
+        },
+        "summary": "Approve a request",
+        "tags": [
+          "Requests"
+        ]
+      }
+    },
+    "/requests/{id}/reject": {
+      "patch": {
+        "operationId": "RequestsController_reject",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request rejected"
+          },
+          "403": {
+            "description": "Access denied — requires superuser role"
+          },
+          "404": {
+            "description": "Request not found"
+          }
+        },
+        "summary": "Reject a request",
+        "tags": [
+          "Requests"
+        ]
+      }
+    },
+    "/incoming": {
+      "get": {
+        "description": "Returns all submissions — emergency requests, contact forms, and feedback",
+        "operationId": "IncomingController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Incoming requests retrieved"
+          },
+          "403": {
+            "description": "Access denied — requires admin or superuser role"
+          }
+        },
+        "summary": "Get all incoming requests",
+        "tags": [
+          "Incoming Requests"
+        ]
+      },
+      "post": {
+        "description": "Used by Contact Us, Emergency Help, and Feedback forms",
+        "operationId": "IncomingController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateIncomingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Incoming request created successfully"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Create a new incoming request",
+        "tags": [
+          "Incoming Requests"
+        ]
+      }
+    },
+    "/incoming/pending": {
+      "get": {
+        "operationId": "IncomingController_getPending",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pending requests retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get pending incoming requests",
+        "tags": [
+          "Incoming Requests"
+        ]
+      }
+    },
+    "/incoming/{id}": {
+      "get": {
+        "operationId": "IncomingController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Incoming request retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Request not found"
+          }
+        },
+        "summary": "Get incoming request by ID",
+        "tags": [
+          "Incoming Requests"
+        ]
+      },
+      "delete": {
+        "operationId": "IncomingController_remove",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request deleted"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Request not found"
+          }
+        },
+        "summary": "Delete an incoming request",
+        "tags": [
+          "Incoming Requests"
+        ]
+      }
+    },
+    "/incoming/{id}/accept": {
+      "patch": {
+        "operationId": "IncomingController_accept",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request accepted"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Request not found"
+          }
+        },
+        "summary": "Accept an incoming request",
+        "tags": [
+          "Incoming Requests"
+        ]
+      }
+    },
+    "/incoming/{id}/decline": {
+      "patch": {
+        "operationId": "IncomingController_decline",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request declined"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Request not found"
+          }
+        },
+        "summary": "Decline an incoming request",
+        "tags": [
+          "Incoming Requests"
+        ]
+      }
+    },
+    "/tasks": {
+      "get": {
+        "operationId": "TasksController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tasks retrieved successfully"
+          },
+          "403": {
+            "description": "Access denied — requires admin or superuser role"
+          }
+        },
+        "summary": "Get all tasks",
+        "tags": [
+          "Tasks"
+        ]
+      },
+      "post": {
+        "description": "Assign a task to a volunteer",
+        "operationId": "TasksController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTaskDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Task created successfully"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Create a new task",
+        "tags": [
+          "Tasks"
+        ]
+      }
+    },
+    "/tasks/by-volunteer/{email}": {
+      "get": {
+        "operationId": "TasksController_findByVolunteer",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tasks retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get tasks assigned to a volunteer",
+        "tags": [
+          "Tasks"
+        ]
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "operationId": "TasksController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Task not found"
+          }
+        },
+        "summary": "Get task by ID",
+        "tags": [
+          "Tasks"
+        ]
+      },
+      "patch": {
+        "description": "Update task details or mark as completed",
+        "operationId": "TasksController_update",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTaskDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task updated"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Task not found"
+          }
+        },
+        "summary": "Update a task",
+        "tags": [
+          "Tasks"
+        ]
+      },
+      "delete": {
+        "operationId": "TasksController_remove",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task deleted"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Task not found"
+          }
+        },
+        "summary": "Delete a task",
+        "tags": [
+          "Tasks"
+        ]
+      }
+    },
+    "/hour-logs": {
+      "get": {
+        "operationId": "HourLogsController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hour logs retrieved"
+          },
+          "403": {
+            "description": "Access denied — requires admin or superuser role"
+          }
+        },
+        "summary": "Get all hour logs",
+        "tags": [
+          "Hour Logs"
+        ]
+      },
+      "post": {
+        "description": "Volunteer submits hours for approval",
+        "operationId": "HourLogsController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateHourLogDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Hour log submitted successfully"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Submit a new hour log",
+        "tags": [
+          "Hour Logs"
+        ]
+      }
+    },
+    "/hour-logs/pending": {
+      "get": {
+        "operationId": "HourLogsController_getPending",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pending hour logs retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get pending hour logs awaiting approval",
+        "tags": [
+          "Hour Logs"
+        ]
+      }
+    },
+    "/hour-logs/by-volunteer/{email}": {
+      "get": {
+        "operationId": "HourLogsController_findByVolunteer",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hour logs retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get hour logs by volunteer email",
+        "tags": [
+          "Hour Logs"
+        ]
+      }
+    },
+    "/hour-logs/{id}": {
+      "get": {
+        "operationId": "HourLogsController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hour log retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Hour log not found"
+          }
+        },
+        "summary": "Get hour log by ID",
+        "tags": [
+          "Hour Logs"
+        ]
+      },
+      "patch": {
+        "operationId": "HourLogsController_update",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateHourLogDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Hour log updated"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Hour log not found"
+          }
+        },
+        "summary": "Update an hour log",
+        "tags": [
+          "Hour Logs"
+        ]
+      },
+      "delete": {
+        "operationId": "HourLogsController_remove",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hour log deleted"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Hour log not found"
+          }
+        },
+        "summary": "Delete an hour log",
+        "tags": [
+          "Hour Logs"
+        ]
+      }
+    },
+    "/hour-logs/{id}/approve": {
+      "patch": {
+        "operationId": "HourLogsController_approve",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hour log approved"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Hour log not found"
+          }
+        },
+        "summary": "Approve an hour log",
+        "tags": [
+          "Hour Logs"
+        ]
+      }
+    },
+    "/hour-logs/{id}/reject": {
+      "patch": {
+        "operationId": "HourLogsController_reject",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hour log rejected"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Hour log not found"
+          }
+        },
+        "summary": "Reject an hour log",
+        "tags": [
+          "Hour Logs"
+        ]
+      }
+    },
+    "/resource-donations": {
+      "get": {
+        "operationId": "ResourceDonationsController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource donations retrieved"
+          },
+          "403": {
+            "description": "Access denied — requires admin or superuser role"
+          }
+        },
+        "summary": "Get all resource donations",
+        "tags": [
+          "Resource Donations"
+        ]
+      },
+      "post": {
+        "description": "Donor submits a resource donation with pickup details",
+        "operationId": "ResourceDonationsController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateResourceDonationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Resource donation submitted successfully"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "403": {
+            "description": "Access denied — requires donor, admin, or superuser role"
+          }
+        },
+        "summary": "Create a new resource donation",
+        "tags": [
+          "Resource Donations"
+        ]
+      }
+    },
+    "/resource-donations/pending": {
+      "get": {
+        "operationId": "ResourceDonationsController_getPending",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pending donations retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get pending (submitted) donations",
+        "tags": [
+          "Resource Donations"
+        ]
+      }
+    },
+    "/resource-donations/active-pickups": {
+      "get": {
+        "operationId": "ResourceDonationsController_getActivePickups",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Active pickups retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get active pickups assigned to volunteers",
+        "tags": [
+          "Resource Donations"
+        ]
+      }
+    },
+    "/resource-donations/by-donor/{email}": {
+      "get": {
+        "operationId": "ResourceDonationsController_findByDonor",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Donations retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get donations by donor email",
+        "tags": [
+          "Resource Donations"
+        ]
+      }
+    },
+    "/resource-donations/by-volunteer/{email}": {
+      "get": {
+        "operationId": "ResourceDonationsController_findByVolunteer",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Donations retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get donations assigned to volunteer for pickup",
+        "tags": [
+          "Resource Donations"
+        ]
+      }
+    },
+    "/resource-donations/by-program/{programId}": {
+      "get": {
+        "operationId": "ResourceDonationsController_findByProgram",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "programId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Donations retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get donations allocated to a program",
+        "tags": [
+          "Resource Donations"
+        ]
+      }
+    },
+    "/resource-donations/by-status/{status}": {
+      "get": {
+        "operationId": "ResourceDonationsController_findByStatus",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Donations retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get donations by status",
+        "tags": [
+          "Resource Donations"
+        ]
+      }
+    },
+    "/resource-donations/{id}": {
+      "get": {
+        "operationId": "ResourceDonationsController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Donation retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Donation not found"
+          }
+        },
+        "summary": "Get resource donation by ID",
+        "tags": [
+          "Resource Donations"
+        ]
+      },
+      "patch": {
+        "operationId": "ResourceDonationsController_update",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateResourceDonationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Donation updated"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Donation not found"
+          }
+        },
+        "summary": "Update a resource donation",
+        "tags": [
+          "Resource Donations"
+        ]
+      },
+      "delete": {
+        "operationId": "ResourceDonationsController_remove",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Donation deleted"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Donation not found"
+          }
+        },
+        "summary": "Delete a resource donation",
+        "tags": [
+          "Resource Donations"
+        ]
+      }
+    },
+    "/resource-donations/{id}/assign-volunteer": {
+      "patch": {
+        "operationId": "ResourceDonationsController_assignVolunteer",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Volunteer assigned for pickup"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Donation not found"
+          }
+        },
+        "summary": "Assign a volunteer for pickup",
+        "tags": [
+          "Resource Donations"
+        ]
+      }
+    },
+    "/resource-donations/{id}/start-pickup": {
+      "patch": {
+        "operationId": "ResourceDonationsController_startPickup",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pickup started"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Donation not found"
+          }
+        },
+        "summary": "Start pickup process",
+        "tags": [
+          "Resource Donations"
+        ]
+      }
+    },
+    "/resource-donations/{id}/mark-delivered": {
+      "patch": {
+        "operationId": "ResourceDonationsController_markDelivered",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Marked as delivered"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Donation not found"
+          }
+        },
+        "summary": "Mark donation as delivered",
+        "tags": [
+          "Resource Donations"
+        ]
+      }
+    },
+    "/resource-donations/{id}/mark-completed": {
+      "patch": {
+        "operationId": "ResourceDonationsController_markCompleted",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Marked as completed"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Donation not found"
+          }
+        },
+        "summary": "Mark donation as completed",
+        "tags": [
+          "Resource Donations"
+        ]
+      }
+    },
+    "/resource-donations/{id}/allocate-program": {
+      "patch": {
+        "operationId": "ResourceDonationsController_allocateToProgram",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Allocated to program"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Donation not found"
+          }
+        },
+        "summary": "Allocate donation to a program",
+        "tags": [
+          "Resource Donations"
+        ]
+      }
+    },
+    "/program-assignments": {
+      "get": {
+        "operationId": "ProgramAssignmentsController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Assignments retrieved"
+          },
+          "403": {
+            "description": "Access denied — requires admin or superuser role"
+          }
+        },
+        "summary": "Get all program assignments",
+        "tags": [
+          "Program Assignments"
+        ]
+      },
+      "post": {
+        "description": "Assign a volunteer to a program",
+        "operationId": "ProgramAssignmentsController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProgramAssignmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Assignment created successfully"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Create a program assignment",
+        "tags": [
+          "Program Assignments"
+        ]
+      }
+    },
+    "/program-assignments/by-program/{programId}": {
+      "get": {
+        "operationId": "ProgramAssignmentsController_findByProgram",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "programId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Assignments retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get assignments by program ID",
+        "tags": [
+          "Program Assignments"
+        ]
+      }
+    },
+    "/program-assignments/by-volunteer/{email}": {
+      "get": {
+        "operationId": "ProgramAssignmentsController_findByVolunteer",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Assignments retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get assignments by volunteer email",
+        "tags": [
+          "Program Assignments"
+        ]
+      }
+    },
+    "/program-assignments/{id}": {
+      "get": {
+        "operationId": "ProgramAssignmentsController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Assignment retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Assignment not found"
+          }
+        },
+        "summary": "Get assignment by ID",
+        "tags": [
+          "Program Assignments"
+        ]
+      },
+      "patch": {
+        "operationId": "ProgramAssignmentsController_update",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProgramAssignmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Assignment updated"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Assignment not found"
+          }
+        },
+        "summary": "Update a program assignment",
+        "tags": [
+          "Program Assignments"
+        ]
+      },
+      "delete": {
+        "operationId": "ProgramAssignmentsController_remove",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Assignment deleted"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Assignment not found"
+          }
+        },
+        "summary": "Delete a program assignment",
+        "tags": [
+          "Program Assignments"
+        ]
+      }
+    },
+    "/program-applications": {
+      "get": {
+        "operationId": "ProgramApplicationsController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Applications retrieved"
+          },
+          "403": {
+            "description": "Access denied — requires admin or superuser role"
+          }
+        },
+        "summary": "Get all program applications",
+        "tags": [
+          "Program Applications"
+        ]
+      },
+      "post": {
+        "description": "Volunteer applies to join a program",
+        "operationId": "ProgramApplicationsController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProgramApplicationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Application submitted successfully"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "403": {
+            "description": "Access denied — requires volunteer, admin, or superuser role"
+          }
+        },
+        "summary": "Submit a program application",
+        "tags": [
+          "Program Applications"
+        ]
+      }
+    },
+    "/program-applications/pending": {
+      "get": {
+        "operationId": "ProgramApplicationsController_getPending",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pending applications retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get pending applications awaiting review",
+        "tags": [
+          "Program Applications"
+        ]
+      }
+    },
+    "/program-applications/by-program/{programId}": {
+      "get": {
+        "operationId": "ProgramApplicationsController_findByProgram",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "programId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Applications retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get applications for a specific program",
+        "tags": [
+          "Program Applications"
+        ]
+      }
+    },
+    "/program-applications/by-volunteer/{email}": {
+      "get": {
+        "operationId": "ProgramApplicationsController_findByVolunteer",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Applications retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get applications submitted by a volunteer",
+        "tags": [
+          "Program Applications"
+        ]
+      }
+    },
+    "/program-applications/has-applied/{programId}/{email}": {
+      "get": {
+        "operationId": "ProgramApplicationsController_hasApplied",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "programId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Check completed — returns true/false"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Check if volunteer has already applied to a program",
+        "tags": [
+          "Program Applications"
+        ]
+      }
+    },
+    "/program-applications/{id}": {
+      "get": {
+        "operationId": "ProgramApplicationsController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Application retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Application not found"
+          }
+        },
+        "summary": "Get application by ID",
+        "tags": [
+          "Program Applications"
+        ]
+      },
+      "delete": {
+        "operationId": "ProgramApplicationsController_remove",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Application deleted"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Application not found"
+          }
+        },
+        "summary": "Delete a program application",
+        "tags": [
+          "Program Applications"
+        ]
+      }
+    },
+    "/program-applications/{id}/approve": {
+      "patch": {
+        "operationId": "ProgramApplicationsController_approve",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Application approved"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Application not found"
+          }
+        },
+        "summary": "Approve a program application",
+        "tags": [
+          "Program Applications"
+        ]
+      }
+    },
+    "/program-applications/{id}/reject": {
+      "patch": {
+        "operationId": "ProgramApplicationsController_reject",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Application rejected"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Application not found"
+          }
+        },
+        "summary": "Reject a program application",
+        "tags": [
+          "Program Applications"
+        ]
+      }
+    },
+    "/subtasks": {
+      "get": {
+        "operationId": "SubtasksController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Subtasks retrieved"
+          },
+          "403": {
+            "description": "Access denied — requires admin or superuser role"
+          }
+        },
+        "summary": "Get all subtasks",
+        "tags": [
+          "Subtasks"
+        ]
+      },
+      "post": {
+        "description": "Assign a subtask within a program",
+        "operationId": "SubtasksController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSubtaskDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Subtask created successfully"
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Create a new subtask",
+        "tags": [
+          "Subtasks"
+        ]
+      }
+    },
+    "/subtasks/by-program/{programId}": {
+      "get": {
+        "operationId": "SubtasksController_findByProgram",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "programId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Subtasks retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get subtasks for a program",
+        "tags": [
+          "Subtasks"
+        ]
+      }
+    },
+    "/subtasks/by-volunteer/{email}": {
+      "get": {
+        "operationId": "SubtasksController_findByVolunteer",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Subtasks retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get subtasks assigned to a volunteer",
+        "tags": [
+          "Subtasks"
+        ]
+      }
+    },
+    "/subtasks/by-program-and-volunteer/{programId}/{email}": {
+      "get": {
+        "operationId": "SubtasksController_findByProgramAndVolunteer",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "programId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Subtasks retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get subtasks by program and volunteer",
+        "tags": [
+          "Subtasks"
+        ]
+      }
+    },
+    "/subtasks/program-progress/{programId}": {
+      "get": {
+        "operationId": "SubtasksController_getProgramProgress",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "programId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Progress calculated"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "summary": "Get overall program progress percentage",
+        "tags": [
+          "Subtasks"
+        ]
+      }
+    },
+    "/subtasks/{id}": {
+      "get": {
+        "operationId": "SubtasksController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Subtask retrieved"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Subtask not found"
+          }
+        },
+        "summary": "Get subtask by ID",
+        "tags": [
+          "Subtasks"
+        ]
+      },
+      "patch": {
+        "description": "Update subtask details or mark as completed",
+        "operationId": "SubtasksController_update",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSubtaskDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Subtask updated"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Subtask not found"
+          }
+        },
+        "summary": "Update a subtask",
+        "tags": [
+          "Subtasks"
+        ]
+      },
+      "delete": {
+        "operationId": "SubtasksController_remove",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Subtask deleted"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Subtask not found"
+          }
+        },
+        "summary": "Delete a subtask",
+        "tags": [
+          "Subtasks"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Kindred Platform API",
+    "description": "Backend REST API for Kindred — India's Volunteer Platform. Supports Users, Organizations, Volunteers, Programs, Requests, Tasks, Hour Logs, Resource Donations, Program Assignments, Program Applications, and Subtasks. Role-based access control via the \"role\" header.",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the user",
+            "example": "Aarav Mehta"
+          },
+          "email": {
+            "type": "string",
+            "description": "Valid email address",
+            "example": "aarav.mehta@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "Account password (min 6 chars)",
+            "example": "Secure@456"
+          },
+          "role": {
+            "type": "string",
+            "description": "User role on the platform",
+            "example": "volunteer",
+            "enum": [
+              "superuser",
+              "admin",
+              "volunteer",
+              "donor",
+              "beneficiary"
+            ]
+          },
+          "org": {
+            "type": "string",
+            "description": "Organization name (required for admin role)",
+            "example": "GreenFuture Foundation"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number with country code",
+            "example": "+91 98765 43210"
+          },
+          "bio": {
+            "type": "string",
+            "description": "Short bio or introduction",
+            "example": "Passionate about rural education and healthcare access"
+          },
+          "skills": {
+            "description": "List of skills",
+            "example": [
+              "Teaching",
+              "First Aid",
+              "Logistics"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "password",
+          "role"
+        ]
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the user",
+            "example": "Aarav Mehta"
+          },
+          "email": {
+            "type": "string",
+            "description": "Valid email address",
+            "example": "aarav.mehta@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "Account password (min 6 chars)",
+            "example": "Secure@456"
+          },
+          "role": {
+            "type": "string",
+            "description": "User role on the platform",
+            "example": "volunteer",
+            "enum": [
+              "superuser",
+              "admin",
+              "volunteer",
+              "donor",
+              "beneficiary"
+            ]
+          },
+          "org": {
+            "type": "string",
+            "description": "Organization name (required for admin role)",
+            "example": "GreenFuture Foundation"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number with country code",
+            "example": "+91 98765 43210"
+          },
+          "bio": {
+            "type": "string",
+            "description": "Short bio or introduction",
+            "example": "Passionate about rural education and healthcare access"
+          },
+          "skills": {
+            "description": "List of skills",
+            "example": [
+              "Teaching",
+              "First Aid",
+              "Logistics"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "example": "approved",
+            "enum": [
+              "pending",
+              "approved",
+              "rejected"
+            ]
+          }
+        }
+      },
+      "CreateOrganizationDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Organization name",
+            "example": "GreenFuture Foundation"
+          },
+          "focus": {
+            "type": "string",
+            "description": "Primary focus area",
+            "example": "Rural Education"
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact email",
+            "example": "info@greenfuture.org"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact phone",
+            "example": "+91 98123 45678"
+          },
+          "city": {
+            "type": "string",
+            "description": "City of operation",
+            "example": "Bengaluru"
+          },
+          "status": {
+            "type": "string",
+            "description": "Organization status",
+            "example": "active"
+          }
+        },
+        "required": [
+          "name",
+          "focus",
+          "email",
+          "phone",
+          "city"
+        ]
+      },
+      "UpdateOrganizationDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Organization name",
+            "example": "GreenFuture Foundation"
+          },
+          "focus": {
+            "type": "string",
+            "description": "Primary focus area",
+            "example": "Rural Education"
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact email",
+            "example": "info@greenfuture.org"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact phone",
+            "example": "+91 98123 45678"
+          },
+          "city": {
+            "type": "string",
+            "description": "City of operation",
+            "example": "Bengaluru"
+          },
+          "status": {
+            "type": "string",
+            "description": "Organization status",
+            "example": "active"
+          }
+        }
+      },
+      "CreateVolunteerDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the volunteer",
+            "example": "Neha Kapoor"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address",
+            "example": "neha.kapoor@gmail.com"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number",
+            "example": "+91 87654 32109"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role within the organization",
+            "example": "Field Coordinator"
+          },
+          "org": {
+            "type": "string",
+            "description": "Assigned organization",
+            "example": "HopeConnect"
+          },
+          "skills": {
+            "description": "List of skills",
+            "example": [
+              "Medical Aid",
+              "Community Outreach",
+              "Data Entry"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "phone",
+          "role",
+          "org"
+        ]
+      },
+      "UpdateVolunteerDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the volunteer",
+            "example": "Neha Kapoor"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address",
+            "example": "neha.kapoor@gmail.com"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number",
+            "example": "+91 87654 32109"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role within the organization",
+            "example": "Field Coordinator"
+          },
+          "org": {
+            "type": "string",
+            "description": "Assigned organization",
+            "example": "HopeConnect"
+          },
+          "skills": {
+            "description": "List of skills",
+            "example": [
+              "Medical Aid",
+              "Community Outreach",
+              "Data Entry"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "example": "active"
+          },
+          "hours": {
+            "type": "number",
+            "example": 120
+          }
+        }
+      },
+      "CreateProgramDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Program name",
+            "example": "Rural Literacy Drive 2025"
+          },
+          "org": {
+            "type": "string",
+            "description": "Organizing NGO",
+            "example": "GreenFuture Foundation"
+          },
+          "focus": {
+            "type": "string",
+            "description": "Focus area",
+            "example": "Education"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date (YYYY-MM-DD)",
+            "example": "2025-02-01"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "End date (YYYY-MM-DD)",
+            "example": "2025-08-31"
+          },
+          "budget": {
+            "type": "number",
+            "description": "Total budget in INR",
+            "example": 850000
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the program",
+            "example": "Providing free education materials and tutoring to 500 children in remote villages of Jharkhand"
+          },
+          "requiredSkills": {
+            "description": "Skills needed from volunteers",
+            "example": [
+              "Teaching",
+              "Hindi Translation",
+              "Logistics"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "volunteerGoal": {
+            "type": "number",
+            "description": "Target number of volunteers",
+            "example": 80
+          },
+          "openForApplications": {
+            "type": "boolean",
+            "description": "Whether volunteers can apply",
+            "example": true
+          },
+          "location": {
+            "type": "string",
+            "description": "Geographic location",
+            "example": "Ranchi, Jharkhand"
+          }
+        },
+        "required": [
+          "name",
+          "org",
+          "focus",
+          "startDate",
+          "endDate",
+          "budget",
+          "description"
+        ]
+      },
+      "UpdateProgramDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Program name",
+            "example": "Rural Literacy Drive 2025"
+          },
+          "org": {
+            "type": "string",
+            "description": "Organizing NGO",
+            "example": "GreenFuture Foundation"
+          },
+          "focus": {
+            "type": "string",
+            "description": "Focus area",
+            "example": "Education"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date (YYYY-MM-DD)",
+            "example": "2025-02-01"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "End date (YYYY-MM-DD)",
+            "example": "2025-08-31"
+          },
+          "budget": {
+            "type": "number",
+            "description": "Total budget in INR",
+            "example": 850000
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the program",
+            "example": "Providing free education materials and tutoring to 500 children in remote villages of Jharkhand"
+          },
+          "requiredSkills": {
+            "description": "Skills needed from volunteers",
+            "example": [
+              "Teaching",
+              "Hindi Translation",
+              "Logistics"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "volunteerGoal": {
+            "type": "number",
+            "description": "Target number of volunteers",
+            "example": 80
+          },
+          "openForApplications": {
+            "type": "boolean",
+            "description": "Whether volunteers can apply",
+            "example": true
+          },
+          "location": {
+            "type": "string",
+            "description": "Geographic location",
+            "example": "Ranchi, Jharkhand"
+          },
+          "status": {
+            "type": "string",
+            "example": "active"
+          },
+          "raised": {
+            "type": "number",
+            "example": 850000
+          },
+          "beneficiaries": {
+            "type": "number",
+            "example": 1500
+          },
+          "volunteers": {
+            "type": "number",
+            "example": 120
+          }
+        }
+      },
+      "CreateRequestDto": {
+        "type": "object",
+        "properties": {
+          "org": {
+            "type": "string",
+            "description": "Organization name",
+            "example": "PathFinders NGO"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of request",
+            "example": "Organization Registration"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description",
+            "example": "New NGO registration for youth empowerment programs in rural Tamil Nadu"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Priority level",
+            "example": "high"
+          },
+          "contact": {
+            "type": "string",
+            "description": "Contact email",
+            "example": "admin@pathfinders.org"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact phone",
+            "example": "9876543210"
+          },
+          "city": {
+            "type": "string",
+            "description": "City",
+            "example": "Chennai"
+          }
+        },
+        "required": [
+          "org",
+          "type",
+          "description"
+        ]
+      },
+      "UpdateRequestDto": {
+        "type": "object",
+        "properties": {
+          "org": {
+            "type": "string",
+            "description": "Organization name",
+            "example": "PathFinders NGO"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of request",
+            "example": "Organization Registration"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description",
+            "example": "New NGO registration for youth empowerment programs in rural Tamil Nadu"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Priority level",
+            "example": "high"
+          },
+          "contact": {
+            "type": "string",
+            "description": "Contact email",
+            "example": "admin@pathfinders.org"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact phone",
+            "example": "9876543210"
+          },
+          "city": {
+            "type": "string",
+            "description": "City",
+            "example": "Chennai"
+          }
+        }
+      },
+      "CreateIncomingDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the person submitting",
+            "example": "Sunita Devi"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of request (e.g. Medical Assistance, Emergency: Flood, Contact: General Enquiry)",
+            "example": "Emergency: Flood Rescue"
+          },
+          "desc": {
+            "type": "string",
+            "description": "Detailed description of the request",
+            "example": "Family of 5 stranded due to rising water levels in Patna east district. Need immediate rescue and temporary shelter."
+          },
+          "urgency": {
+            "type": "string",
+            "description": "Urgency level (low, medium, high)",
+            "example": "high"
+          },
+          "location": {
+            "type": "string",
+            "description": "Location or address",
+            "example": "Kankarbagh, Patna, Bihar"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "desc"
+        ]
+      },
+      "CreateTaskDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Task title",
+            "example": "Distribute relief kits at Zone B"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description",
+            "example": "Deliver 100 food and hygiene kits to families in the flood-affected Zone B area"
+          },
+          "assignedToEmail": {
+            "type": "string",
+            "description": "Email of the assigned volunteer",
+            "example": "neha.kapoor@gmail.com"
+          },
+          "assignedToName": {
+            "type": "string",
+            "description": "Name of the assigned volunteer",
+            "example": "Neha Kapoor"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Priority level (low, medium, high)",
+            "example": "high"
+          },
+          "dueDate": {
+            "type": "string",
+            "description": "Due date (YYYY-MM-DD)",
+            "example": "2025-06-15"
+          },
+          "programId": {
+            "type": "string",
+            "description": "Associated program ID",
+            "example": "prog_001"
+          },
+          "programName": {
+            "type": "string",
+            "description": "Associated program name",
+            "example": "Cyclone Relief Fund"
+          }
+        },
+        "required": [
+          "title",
+          "assignedToEmail"
+        ]
+      },
+      "UpdateTaskDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Task title",
+            "example": "Distribute relief kits at Zone B"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description",
+            "example": "Deliver 100 food and hygiene kits to families in the flood-affected Zone B area"
+          },
+          "assignedToEmail": {
+            "type": "string",
+            "description": "Email of the assigned volunteer",
+            "example": "neha.kapoor@gmail.com"
+          },
+          "assignedToName": {
+            "type": "string",
+            "description": "Name of the assigned volunteer",
+            "example": "Neha Kapoor"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Priority level (low, medium, high)",
+            "example": "high"
+          },
+          "dueDate": {
+            "type": "string",
+            "description": "Due date (YYYY-MM-DD)",
+            "example": "2025-06-15"
+          },
+          "programId": {
+            "type": "string",
+            "description": "Associated program ID",
+            "example": "prog_001"
+          },
+          "programName": {
+            "type": "string",
+            "description": "Associated program name",
+            "example": "Cyclone Relief Fund"
+          },
+          "status": {
+            "type": "string",
+            "example": "in-progress"
+          }
+        }
+      },
+      "CreateHourLogDto": {
+        "type": "object",
+        "properties": {
+          "volunteerEmail": {
+            "type": "string",
+            "description": "Email of the volunteer",
+            "example": "neha.kapoor@gmail.com"
+          },
+          "volunteerName": {
+            "type": "string",
+            "description": "Name of the volunteer",
+            "example": "Neha Kapoor"
+          },
+          "hours": {
+            "type": "number",
+            "description": "Number of hours worked",
+            "example": 6
+          },
+          "date": {
+            "type": "string",
+            "description": "Date of the work (YYYY-MM-DD)",
+            "example": "2025-05-01"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of work performed",
+            "example": "Conducted health checkup camp for 120 beneficiaries in Zone C"
+          },
+          "programId": {
+            "type": "string",
+            "description": "Associated program ID",
+            "example": "prog_002"
+          },
+          "programName": {
+            "type": "string",
+            "description": "Associated program name",
+            "example": "Rural Literacy Drive 2025"
+          }
+        },
+        "required": [
+          "volunteerEmail",
+          "hours"
+        ]
+      },
+      "UpdateHourLogDto": {
+        "type": "object",
+        "properties": {
+          "volunteerEmail": {
+            "type": "string",
+            "description": "Email of the volunteer",
+            "example": "neha.kapoor@gmail.com"
+          },
+          "volunteerName": {
+            "type": "string",
+            "description": "Name of the volunteer",
+            "example": "Neha Kapoor"
+          },
+          "hours": {
+            "type": "number",
+            "description": "Number of hours worked",
+            "example": 6
+          },
+          "date": {
+            "type": "string",
+            "description": "Date of the work (YYYY-MM-DD)",
+            "example": "2025-05-01"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of work performed",
+            "example": "Conducted health checkup camp for 120 beneficiaries in Zone C"
+          },
+          "programId": {
+            "type": "string",
+            "description": "Associated program ID",
+            "example": "prog_002"
+          },
+          "programName": {
+            "type": "string",
+            "description": "Associated program name",
+            "example": "Rural Literacy Drive 2025"
+          },
+          "status": {
+            "type": "string",
+            "example": "approved"
+          }
+        }
+      },
+      "DonationItemDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Item name",
+            "example": "Rice Bags (25kg)"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantity",
+            "example": 10
+          },
+          "condition": {
+            "type": "string",
+            "description": "Condition of items",
+            "example": "New"
+          }
+        },
+        "required": [
+          "name",
+          "quantity",
+          "condition"
+        ]
+      },
+      "CreateResourceDonationDto": {
+        "type": "object",
+        "properties": {
+          "donorName": {
+            "type": "string",
+            "description": "Donor full name",
+            "example": "Vikram Malhotra"
+          },
+          "donorEmail": {
+            "type": "string",
+            "description": "Donor email",
+            "example": "vikram.malhotra@gmail.com"
+          },
+          "donorPhone": {
+            "type": "string",
+            "description": "Donor phone",
+            "example": "9812345678"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of donation",
+            "example": "Food & Essentials"
+          },
+          "items": {
+            "description": "List of donated items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DonationItemDto"
+            }
+          },
+          "description": {
+            "type": "string",
+            "description": "Brief description",
+            "example": "Bulk food supplies for flood relief camps in Bihar"
+          },
+          "pickupAddress": {
+            "type": "string",
+            "description": "Pickup address",
+            "example": "42, MG Road, Sector 18, Noida, UP"
+          },
+          "pickupDate": {
+            "type": "string",
+            "description": "Pickup date (YYYY-MM-DD)",
+            "example": "2025-05-10"
+          },
+          "pickupTimeSlot": {
+            "type": "string",
+            "description": "Preferred time slot",
+            "example": "Morning (9AM-12PM)"
+          },
+          "programId": {
+            "type": "string",
+            "description": "Target program ID",
+            "example": "prog_001"
+          },
+          "programName": {
+            "type": "string",
+            "description": "Target program name",
+            "example": "Cyclone Relief Fund"
+          }
+        },
+        "required": [
+          "donorName",
+          "donorEmail",
+          "donorPhone",
+          "category",
+          "items",
+          "description",
+          "pickupAddress",
+          "pickupDate",
+          "pickupTimeSlot"
+        ]
+      },
+      "UpdateResourceDonationDto": {
+        "type": "object",
+        "properties": {
+          "donorName": {
+            "type": "string",
+            "description": "Donor full name",
+            "example": "Vikram Malhotra"
+          },
+          "donorEmail": {
+            "type": "string",
+            "description": "Donor email",
+            "example": "vikram.malhotra@gmail.com"
+          },
+          "donorPhone": {
+            "type": "string",
+            "description": "Donor phone",
+            "example": "9812345678"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of donation",
+            "example": "Food & Essentials"
+          },
+          "items": {
+            "description": "List of donated items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DonationItemDto"
+            }
+          },
+          "description": {
+            "type": "string",
+            "description": "Brief description",
+            "example": "Bulk food supplies for flood relief camps in Bihar"
+          },
+          "pickupAddress": {
+            "type": "string",
+            "description": "Pickup address",
+            "example": "42, MG Road, Sector 18, Noida, UP"
+          },
+          "pickupDate": {
+            "type": "string",
+            "description": "Pickup date (YYYY-MM-DD)",
+            "example": "2025-05-10"
+          },
+          "pickupTimeSlot": {
+            "type": "string",
+            "description": "Preferred time slot",
+            "example": "Morning (9AM-12PM)"
+          },
+          "programId": {
+            "type": "string",
+            "description": "Target program ID",
+            "example": "prog_001"
+          },
+          "programName": {
+            "type": "string",
+            "description": "Target program name",
+            "example": "Cyclone Relief Fund"
+          },
+          "status": {
+            "type": "string",
+            "example": "pending_pickup"
+          },
+          "assignedVolunteerEmail": {
+            "type": "string",
+            "example": "volunteer@kindred.org"
+          },
+          "assignedVolunteerName": {
+            "type": "string",
+            "example": "Priya Singh"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Notes about delivery"
+          }
+        }
+      },
+      "CreateProgramAssignmentDto": {
+        "type": "object",
+        "properties": {
+          "programId": {
+            "type": "string",
+            "description": "Program ID",
+            "example": "prog_001"
+          },
+          "programName": {
+            "type": "string",
+            "description": "Program name",
+            "example": "Cyclone Relief Fund"
+          },
+          "volunteerEmail": {
+            "type": "string",
+            "description": "Volunteer email",
+            "example": "neha.kapoor@gmail.com"
+          },
+          "volunteerName": {
+            "type": "string",
+            "description": "Volunteer name",
+            "example": "Neha Kapoor"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role in the program",
+            "example": "Field Coordinator"
+          }
+        },
+        "required": [
+          "programId",
+          "programName",
+          "volunteerEmail",
+          "volunteerName"
+        ]
+      },
+      "UpdateProgramAssignmentDto": {
+        "type": "object",
+        "properties": {
+          "programId": {
+            "type": "string",
+            "description": "Program ID",
+            "example": "prog_001"
+          },
+          "programName": {
+            "type": "string",
+            "description": "Program name",
+            "example": "Cyclone Relief Fund"
+          },
+          "volunteerEmail": {
+            "type": "string",
+            "description": "Volunteer email",
+            "example": "neha.kapoor@gmail.com"
+          },
+          "volunteerName": {
+            "type": "string",
+            "description": "Volunteer name",
+            "example": "Neha Kapoor"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role in the program",
+            "example": "Field Coordinator"
+          }
+        }
+      },
+      "CreateProgramApplicationDto": {
+        "type": "object",
+        "properties": {
+          "programId": {
+            "type": "string",
+            "description": "Program ID to apply for",
+            "example": "prog_002"
+          },
+          "programName": {
+            "type": "string",
+            "description": "Program name",
+            "example": "Rural Literacy Drive 2025"
+          },
+          "volunteerEmail": {
+            "type": "string",
+            "description": "Applicant volunteer email",
+            "example": "neha.kapoor@gmail.com"
+          },
+          "volunteerName": {
+            "type": "string",
+            "description": "Applicant volunteer name",
+            "example": "Neha Kapoor"
+          },
+          "message": {
+            "type": "string",
+            "description": "Cover message from volunteer",
+            "example": "I have 3 years of teaching experience in rural schools and would love to contribute to this program."
+          }
+        },
+        "required": [
+          "programId",
+          "programName",
+          "volunteerEmail",
+          "volunteerName"
+        ]
+      },
+      "CreateSubtaskDto": {
+        "type": "object",
+        "properties": {
+          "programId": {
+            "type": "string",
+            "description": "Parent program ID",
+            "example": "prog_001"
+          },
+          "title": {
+            "type": "string",
+            "description": "Subtask title",
+            "example": "Set up emergency medical camp"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description",
+            "example": "Coordinate with local hospitals to set up a 3-day medical camp for 200 beneficiaries"
+          },
+          "assignedToEmail": {
+            "type": "string",
+            "description": "Email of assigned volunteer",
+            "example": "neha.kapoor@gmail.com"
+          },
+          "assignedToName": {
+            "type": "string",
+            "description": "Name of assigned volunteer",
+            "example": "Neha Kapoor"
+          }
+        },
+        "required": [
+          "programId",
+          "title",
+          "assignedToEmail"
+        ]
+      },
+      "UpdateSubtaskDto": {
+        "type": "object",
+        "properties": {
+          "programId": {
+            "type": "string",
+            "description": "Parent program ID",
+            "example": "prog_001"
+          },
+          "title": {
+            "type": "string",
+            "description": "Subtask title",
+            "example": "Set up emergency medical camp"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description",
+            "example": "Coordinate with local hospitals to set up a 3-day medical camp for 200 beneficiaries"
+          },
+          "assignedToEmail": {
+            "type": "string",
+            "description": "Email of assigned volunteer",
+            "example": "neha.kapoor@gmail.com"
+          },
+          "assignedToName": {
+            "type": "string",
+            "description": "Name of assigned volunteer",
+            "example": "Neha Kapoor"
+          },
+          "status": {
+            "type": "string",
+            "example": "in-progress"
+          },
+          "progress": {
+            "type": "number",
+            "example": 65
+          }
+        }
+      }
+    }
+  }
+}

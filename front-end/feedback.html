@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback - Kindred India</title>
+  <meta name="description"
+    content="Share your feedback to help improve Kindred's platform and better serve the NGO community across India.">
+  <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+  <!-- FEEDBACK HERO -->
+  <section class="feedback-hero">
+    <div class="feedback-hero-icon">💬</div>
+    <h1 class="feedback-hero-title">We Value Your Feedback</h1>
+    <p class="feedback-hero-desc">Your insights help us improve Kindred's platform. Share your experience, suggestions,
+      or report any issues you've encountered.</p>
+  </section>
+
+  <!-- FEEDBACK FORM -->
+  <section class="feedback-form-section">
+    <div class="feedback-container">
+      <form class="feedback-form" id="feedbackForm">
+        <!-- Full Name -->
+        <div class="form-group">
+          <label class="form-label" for="feedbackName">Full Name <span class="required">*</span></label>
+          <input type="text" id="feedbackName" class="form-input" placeholder="Priya Sharma" required>
+        </div>
+
+        <!-- Email & Phone Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="feedbackEmail">Email Address <span class="required">*</span></label>
+            <input type="email" id="feedbackEmail" class="form-input" placeholder="priya.sharma@example.in" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="feedbackPhone">Mobile Number</label>
+            <input type="tel" id="feedbackPhone" class="form-input" placeholder="9876543210">
+            <span class="form-hint">10-digit mobile number (without +91)</span>
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div class="form-group">
+          <label class="form-label" for="feedbackCategory">Feedback Category <span class="required">*</span></label>
+          <select id="feedbackCategory" class="form-select" required>
+            <option value="" disabled selected>Select a category</option>
+            <option value="general">General Feedback</option>
+            <option value="bug">Bug Report</option>
+            <option value="feature">Feature Request</option>
+            <option value="complaint">Complaint</option>
+            <option value="appreciation">Appreciation</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <!-- Star Rating -->
+        <div class="form-group">
+          <label class="form-label">How would you rate your overall experience? <span class="required">*</span></label>
+          <div class="star-rating" id="starRating">
+            <span class="star" data-value="1">☆</span>
+            <span class="star" data-value="2">☆</span>
+            <span class="star" data-value="3">☆</span>
+            <span class="star" data-value="4">☆</span>
+            <span class="star" data-value="5">☆</span>
+          </div>
+          <input type="hidden" id="ratingValue" value="0">
+        </div>
+
+        <!-- Feedback Text -->
+        <div class="form-group">
+          <label class="form-label" for="feedbackText">Your Feedback <span class="required">*</span></label>
+          <textarea id="feedbackText" class="form-textarea"
+            placeholder="Please share your thoughts, suggestions, or describe any issues you've encountered." rows="5"
+            required></textarea>
+          <span class="form-hint">Minimum 20 characters</span>
+        </div>
+
+        <!-- Info Banner -->
+        <div class="feedback-info-banner">
+          <span class="info-banner-icon">ℹ</span>
+          <span>Your feedback is important to us. For urgent, technical issues or emergencies, please use the <strong><a
+                href="emergency-request.html" style="color:white; text-decoration:underline;">Emergency
+                Help</a></strong> button or contact our support team at <strong>support@kindred.org.in</strong> or call
+            <strong>+91 1800 200 3000</strong>.</span>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit-feedback" id="submitFeedbackBtn">
+          💬 Submit Feedback
+        </button>
+        <div id="feedback-success-msg" style="display:none;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:12px;padding:16px 20px;margin-top:16px;text-align:center;">
+          <div style="font-size:1.8rem;margin-bottom:6px;">🙏</div>
+          <strong style="color:#15803d;">Thank you for your feedback!</strong>
+          <p style="color:#166534;font-size:.85rem;margin:6px 0 0;">Your submission has been shared with the platform admin. We'll review it within 48 hours.</p>
+        </div>
+      </form>
+
+      <!-- Feature Cards -->
+      <div class="feedback-features">
+        <div class="feedback-feature-card" style="border-top: 3px solid #22c55e;">
+          <h4 style="color: #22c55e;">Anonymous Option</h4>
+          <p>You can submit feedback anonymously by leaving the name & fields empty.</p>
+        </div>
+        <div class="feedback-feature-card" style="border-top: 3px solid #3b82f6;">
+          <h4 style="color: #3b82f6;">Quick Response</h4>
+          <p>We aim to review all feedback within 48 hours and respond if needed.</p>
+        </div>
+        <div class="feedback-feature-card" style="border-top: 3px solid #ef4444;">
+          <h4 style="color: #ef4444;">Make an Impact</h4>
+          <p>Your feedback directly influences our platform improvements and priorities.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+  <script src="auth.js"></script>
+  <script src="mock-data.js"></script>
+<script src="api.js"></script>
+  <script src="script.js"></script>
+  <script src="nav-controller.js"></script>
+  <script>
+  // Star rating
+  const stars = document.querySelectorAll('.star');
+  const ratingInput = document.getElementById('ratingValue');
+  stars.forEach(star => {
+    star.addEventListener('click', function() {
+      const val = parseInt(this.dataset.value);
+      ratingInput.value = val;
+      stars.forEach((s, i) => s.textContent = i < val ? '★' : '☆');
+    });
+    star.addEventListener('mouseover', function() {
+      const val = parseInt(this.dataset.value);
+      stars.forEach((s, i) => s.textContent = i < val ? '★' : '☆');
+    });
+  });
+  document.getElementById('starRating').addEventListener('mouseleave', function() {
+    const val = parseInt(ratingInput.value);
+    stars.forEach((s, i) => s.textContent = i < val ? '★' : '☆');
+  });
+
+  document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name     = document.getElementById('feedbackName').value.trim();
+    const email    = document.getElementById('feedbackEmail').value.trim();
+    const phone    = document.getElementById('feedbackPhone').value.trim();
+    const category = document.getElementById('feedbackCategory').value;
+    const rating   = parseInt(document.getElementById('ratingValue').value);
+    const text     = document.getElementById('feedbackText').value.trim();
+
+    if (!email) { alert('Please enter your email address.'); return; }
+    if (!category) { alert('Please select a feedback category.'); return; }
+    if (rating === 0) { alert('Please select a star rating.'); return; }
+    if (text.length < 20) { alert('Feedback must be at least 20 characters.'); return; }
+
+    const record = {
+      id:       'FB' + Date.now().toString().slice(-7),
+      type:     'feedback',
+      name:     name || 'Anonymous',
+      email,
+      phone,
+      category,
+      rating,
+      message:  text,
+      date:     new Date().toISOString(),
+      status:   'unread'
+    };
+
+    const existing = JSON.parse(localStorage.getItem('kindred_feedback') || '[]');
+    existing.unshift(record);
+    localStorage.setItem('kindred_feedback', JSON.stringify(existing));
+
+    // Also push to backend
+    if (typeof apiPost === 'function') {
+      apiPost('/incoming', {
+        name: record.name,
+        type: 'Feedback: ' + record.category + ' (' + record.rating + '★)',
+        desc: record.message,
+        urgency: 'low',
+        location: ''
+      }).catch(function(){});
+    }
+
+    document.getElementById('feedbackForm').style.display = 'none';
+    document.getElementById('feedback-success-msg').style.display = 'block';
+
+    setTimeout(() => { window.location.href = 'feedback-thankyou.html'; }, 3000);
+  });
+  </script>
+</body>
+
+</html>

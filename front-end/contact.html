@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - Kindred India</title>
+  <meta name="description" content="Get in touch with Kindred India for any questions or support.">
+  <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+
+  <!-- NAVBAR (Public) -->
+    
+  
+  
+  
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">Kindred</a>
+    <div class="navbar-links">
+      <a href="index.html" data-nav="index">Home</a>
+      <a href="organizations.html" data-nav="organizations">Organizations</a>
+      <a href="programs.html" data-nav="programs">Programs</a>
+      <a href="donate.html" data-nav="donate">Donate</a>
+      <a href="contact.html" data-nav="contact" class="nav-active">Contact</a>
+    </div>
+    <div class="navbar-auth">
+      <a href="signin.html" class="btn-nav-signin">Sign In</a>
+      <a href="signup.html" class="btn-nav-signup">Sign Up</a>
+    </div>
+    <div class="navbar-user hidden">
+      <div class="avatar">U</div>
+      <div class="user-info">
+        <span class="user-name">User</span>
+        <span class="user-role">Role</span>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+  </nav>
+
+
+
+
+
+  <!-- CONTACT HERO -->
+  <section class="page-hero">
+    <h1>Contact Us</h1>
+    <p>Have questions? We'd love to hear from you.</p>
+  </section>
+
+  <!-- CONTACT CONTENT -->
+  <section class="contact-section">
+    <div class="contact-container">
+
+      <!-- Left Column: Info -->
+      <div class="contact-info-col">
+        <div class="contact-info-item">
+          <div class="contact-info-icon">✉</div>
+          <div>
+            <div class="contact-info-label">Email</div>
+            <div class="contact-info-val">hello@kindred.in</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">📞</div>
+          <div>
+            <div class="contact-info-label">Phone</div>
+            <div class="contact-info-val">+91 1800 103 1234</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">📍</div>
+          <div>
+            <div class="contact-info-label">Office</div>
+            <div class="contact-info-val">42 Nariman Point, Mumbai,<br>Maharashtra 400021</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">🕒</div>
+          <div>
+            <div class="contact-info-label">Working Hours</div>
+            <div class="contact-info-val">Mon–Sat, 9:00 AM – 6:00 PM IST</div>
+          </div>
+        </div>
+
+        <div class="regional-offices-card">
+          <h3>Regional Offices</h3>
+          <div class="regional-office">
+            <strong>New Delhi</strong>
+            <p>11 Connaught Place, New Delhi 110001</p>
+          </div>
+          <div class="regional-office">
+            <strong>Bengaluru</strong>
+            <p>MG Road, Bengaluru, Karnataka 560001</p>
+          </div>
+          <div class="regional-office">
+            <strong>Chennai</strong>
+            <p>Anna Salai, Chennai, Tamil Nadu 600002</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Form -->
+      <div class="contact-form-col">
+        <form class="contact-form" id="contactForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" id="cf-fname" class="form-input" placeholder="Rahul" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" id="cf-lname" class="form-input" placeholder="Sharma" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" id="cf-email" class="form-input" placeholder="rahul.sharma@example.in" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Phone (Optional)</label>
+            <input type="tel" id="cf-phone" class="form-input" placeholder="+91 98765 43210">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Subject</label>
+            <input type="text" id="cf-subject" class="form-input" placeholder="How can we help you?">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea id="cf-message" class="form-textarea" placeholder="Tell us how we can help..." rows="5"
+              required></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width: auto;" id="contact-submit-btn">✈ Send Message</button>
+          <div id="contact-success-msg" style="display:none;background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:14px 16px;margin-top:14px;color:#15803d;font-size:.88rem;">
+            ✅ <strong>Message sent successfully!</strong> Our team will respond within 24–48 hours.
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+    
+  
+  
+  
+  <footer class="premium-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">Kindred</span>
+        <p>Connecting compassion with community. A unified platform for volunteers, donors, and beneficiaries across India.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="programs.html">Active Programs</a></li>
+          <li><a href="organizations.html">Our Partners</a></li>
+          <li><a href="donate.html">Donation Portal</a></li>
+          <li><a href="signup.html">Join Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Information</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About Kindred</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="emergency-request.html">Emergency Help</a></li>
+          <li><a href="feedback.html">Give Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <ul class="footer-links" style="color: #cbd5e1; font-size: 14px;">
+          <li style="margin-bottom: 12px;">✉ contact@kindred.org.in</li>
+          <li style="margin-bottom: 12px;">📞 +91 912 345 6789</li>
+          <li style="margin-bottom: 12px;">📍 New Delhi, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Kindred Platform. All rights reserved.</p>
+      <div style="display:flex; gap: 20px;">
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:#94a3b8; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+  <script src="auth.js"></script>
+  <script src="mock-data.js"></script>
+<script src="api.js"></script>
+  <script src="script.js"></script>
+  <script src="nav-controller.js"></script>
+  <script>
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const fname   = document.getElementById('cf-fname').value.trim();
+    const lname   = document.getElementById('cf-lname').value.trim();
+    const email   = document.getElementById('cf-email').value.trim();
+    const phone   = document.getElementById('cf-phone').value.trim();
+    const subject = document.getElementById('cf-subject').value.trim();
+    const message = document.getElementById('cf-message').value.trim();
+
+    const record = {
+      id:      'CT' + Date.now().toString().slice(-7),
+      type:    'contact',
+      name:    (fname + ' ' + lname).trim(),
+      email,
+      phone,
+      subject: subject || 'General Enquiry',
+      message,
+      date:    new Date().toISOString(),
+      status:  'unread'
+    };
+
+    // Gmail validation
+    if (!/^[a-zA-Z0-9.\-_]+@gmail\.com$/.test(email)) {
+      alert('Please enter a valid @gmail.com email address.');
+      document.getElementById('cf-email').focus();
+      return;
+    }
+
+    // Optional phone — if provided, must be 10 digits
+    if (phone) {
+      var cpDigits = phone.replace(/\D/g, '');
+      if (cpDigits.length === 12 && cpDigits.indexOf('91') === 0) cpDigits = cpDigits.slice(2);
+      if (cpDigits.length === 11 && cpDigits.charAt(0) === '0') cpDigits = cpDigits.slice(1);
+      
+      var dummy = ['1234567890','0123456789','9876543210','1111111111','1234512345'];
+      if (cpDigits.length !== 10 || !/^[6-9]\d{9}$/.test(cpDigits) || dummy.indexOf(cpDigits) !== -1 || /^(\d)\1{9}$/.test(cpDigits) || /^(\d{2})\1{4}$/.test(cpDigits)) {
+        alert('Please enter a valid 10-digit phone number (no dummy, sequential, or repeating sequences).');
+        document.getElementById('cf-phone').focus();
+        return;
+      }
+    }
+
+    const existing = JSON.parse(localStorage.getItem('kindred_contact_messages') || '[]');
+    existing.unshift(record);
+    localStorage.setItem('kindred_contact_messages', JSON.stringify(existing));
+
+    // Also push to backend
+    if (typeof apiPost === 'function') {
+      apiPost('/incoming', {
+        name: record.name,
+        type: 'Contact: ' + (record.subject || 'General Enquiry'),
+        desc: record.message,
+        urgency: 'low',
+        location: ''
+      }).catch(function(){});
+    }
+
+    document.getElementById('cf-fname').value = '';
+    document.getElementById('cf-lname').value = '';
+    document.getElementById('cf-email').value = '';
+    document.getElementById('cf-phone').value = '';
+    document.getElementById('cf-subject').value = '';
+    document.getElementById('cf-message').value = '';
+    document.getElementById('contact-success-msg').style.display = 'block';
+    document.getElementById('contact-submit-btn').disabled = true;
+    document.getElementById('contact-submit-btn').textContent = '✅ Sent!';
+  });
+  </script>
+</body>
+
+</html>
