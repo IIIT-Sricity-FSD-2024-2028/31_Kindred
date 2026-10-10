@@ -11,4 +11,11 @@ export interface Organization {
   email: string;
   phone: string;
   city: string;
+  adminEmail?: string;
+  image?: string;
+  bankAccountName?: string;
+  bankAccountNumber?: string;
+  bankIfsc?: string;
+  upiId?: string;
+  neededResources?: string;
 }

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsArray, ValidateNested } from 'class-validator';
+import { IsString, IsOptional, IsArray, ValidateNested, IsInt, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class DonationItemDto {
@@ -8,6 +8,8 @@ class DonationItemDto {
   name!: string;
 
   @ApiProperty({ description: 'Quantity', example: 10 })
+  @IsInt()
+  @Min(1)
   quantity!: number;
 
   @ApiProperty({ description: 'Condition of items', example: 'New' })
@@ -16,6 +18,11 @@ class DonationItemDto {
 }
 
 export class CreateResourceDonationDto {
+  @ApiPropertyOptional({ description: 'Client-provided ID for synchronized dashboard records' })
+  @IsOptional()
+  @IsString()
+  id?: string;
+
   @ApiProperty({ description: 'Donor full name', example: 'Vikram Malhotra' })
   @IsString()
   donorName!: string;
@@ -63,4 +70,7 @@ export class CreateResourceDonationDto {
   @IsOptional()
   @IsString()
   programName?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() orgId?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() orgName?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() notes?: string;
 }

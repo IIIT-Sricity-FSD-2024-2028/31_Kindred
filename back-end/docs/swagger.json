@@ -814,6 +814,157 @@
         ]
       }
     },
+    "/organizations/register": {
+      "post": {
+        "operationId": "OrganizationsController_register",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrganizationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Public organization registration; starts pending for platform approval",
+        "tags": [
+          "Organizations"
+        ]
+      }
+    },
+    "/organizations/{id}/approve": {
+      "patch": {
+        "operationId": "OrganizationsController_approve",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Organizations"
+        ]
+      }
+    },
+    "/organizations/{id}/reject": {
+      "patch": {
+        "operationId": "OrganizationsController_reject",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Organizations"
+        ]
+      }
+    },
+    "/organizations/upload-image": {
+      "post": {
+        "operationId": "OrganizationsController_uploadImage",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Organizations"
+        ]
+      }
+    },
     "/volunteers": {
       "get": {
         "operationId": "VolunteersController_findAll",
@@ -1996,6 +2147,84 @@
         ]
       }
     },
+    "/incoming/{id}/assign-volunteer": {
+      "patch": {
+        "operationId": "IncomingController_assignVolunteer",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Incoming Requests"
+        ]
+      }
+    },
+    "/incoming/{id}/resolve": {
+      "patch": {
+        "operationId": "IncomingController_resolve",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Incoming Requests"
+        ]
+      }
+    },
     "/incoming/{id}/decline": {
       "patch": {
         "operationId": "IncomingController_decline",
@@ -2167,6 +2396,46 @@
         ]
       }
     },
+    "/tasks/by-program/{programId}": {
+      "get": {
+        "operationId": "TasksController_findByProgram",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "programId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Program tasks retrieved"
+          }
+        },
+        "summary": "Get tasks for a specific program",
+        "tags": [
+          "Tasks"
+        ]
+      }
+    },
     "/tasks/{id}": {
       "get": {
         "operationId": "TasksController_findOne",
@@ -2213,7 +2482,7 @@
         ]
       },
       "patch": {
-        "description": "Update task details or mark as completed",
+        "description": "Update task details, status, or notes. Status transitions are enforced.",
         "operationId": "TasksController_update",
         "parameters": [
           {
@@ -2254,6 +2523,9 @@
         "responses": {
           "200": {
             "description": "Task updated"
+          },
+          "400": {
+            "description": "Invalid status transition"
           },
           "403": {
             "description": "Access denied"
@@ -2941,6 +3213,45 @@
           }
         },
         "summary": "Get donations assigned to volunteer for pickup",
+        "tags": [
+          "Resource Donations"
+        ]
+      }
+    },
+    "/resource-donations/by-org/{orgName}": {
+      "get": {
+        "operationId": "ResourceDonationsController_findByOrg",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary"
+              ]
+            }
+          },
+          {
+            "name": "orgName",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
         "tags": [
           "Resource Donations"
         ]
@@ -4560,6 +4871,1690 @@
           "Subtasks"
         ]
       }
+    },
+    "/sellers": {
+      "get": {
+        "operationId": "SellersController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary",
+                "seller"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by status (pending, approved, rejected)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sellers retrieved successfully"
+          }
+        },
+        "summary": "Get all sellers",
+        "tags": [
+          "Sellers"
+        ]
+      },
+      "post": {
+        "description": "Anyone can register as a seller. Status starts as pending until approved by platform admin.",
+        "operationId": "SellersController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary",
+                "seller"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSellerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Seller registered successfully"
+          },
+          "400": {
+            "description": "Validation failed or duplicate email"
+          }
+        },
+        "summary": "Register a new seller (public)",
+        "tags": [
+          "Sellers"
+        ]
+      }
+    },
+    "/sellers/{id}": {
+      "get": {
+        "operationId": "SellersController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary",
+                "seller"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Seller retrieved successfully"
+          },
+          "404": {
+            "description": "Seller not found"
+          }
+        },
+        "summary": "Get seller by ID",
+        "tags": [
+          "Sellers"
+        ]
+      },
+      "patch": {
+        "operationId": "SellersController_update",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary",
+                "seller"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSellerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Seller updated successfully"
+          },
+          "404": {
+            "description": "Seller not found"
+          }
+        },
+        "summary": "Update a seller",
+        "tags": [
+          "Sellers"
+        ]
+      },
+      "delete": {
+        "operationId": "SellersController_remove",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary",
+                "seller"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Seller deleted successfully"
+          },
+          "404": {
+            "description": "Seller not found"
+          }
+        },
+        "summary": "Delete a seller",
+        "tags": [
+          "Sellers"
+        ]
+      }
+    },
+    "/sellers/{id}/approve": {
+      "patch": {
+        "description": "Platform admin approves a pending seller account.",
+        "operationId": "SellersController_approve",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary",
+                "seller"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Seller approved successfully"
+          },
+          "404": {
+            "description": "Seller not found"
+          }
+        },
+        "summary": "Approve a seller",
+        "tags": [
+          "Sellers"
+        ]
+      }
+    },
+    "/sellers/{id}/reject": {
+      "patch": {
+        "operationId": "SellersController_reject",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary",
+                "seller"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Seller rejected"
+          },
+          "404": {
+            "description": "Seller not found"
+          }
+        },
+        "summary": "Reject a seller",
+        "tags": [
+          "Sellers"
+        ]
+      }
+    },
+    "/products": {
+      "get": {
+        "description": "Returns products. Use ?status=approved for public shop view, ?sellerId=X for seller dashboard.",
+        "operationId": "ProductsController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary",
+                "seller"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by status (pending_approval, approved, rejected)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sellerId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by seller ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Products retrieved successfully"
+          }
+        },
+        "summary": "Get all products",
+        "tags": [
+          "Products"
+        ]
+      },
+      "post": {
+        "description": "Seller adds a product. Status starts as pending_approval until admin approves.",
+        "operationId": "ProductsController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary",
+                "seller"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Product created successfully"
+          },
+          "400": {
+            "description": "Validation failed"
+          }
+        },
+        "summary": "Add a new product",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "operationId": "ProductsController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary",
+                "seller"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product retrieved successfully"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        },
+        "summary": "Get product by ID",
+        "tags": [
+          "Products"
+        ]
+      },
+      "patch": {
+        "operationId": "ProductsController_update",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary",
+                "seller"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product updated successfully"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        },
+        "summary": "Update a product",
+        "tags": [
+          "Products"
+        ]
+      },
+      "delete": {
+        "operationId": "ProductsController_remove",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary",
+                "seller"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product deleted successfully"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        },
+        "summary": "Delete a product",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/products/upload": {
+      "post": {
+        "operationId": "ProductsController_upload",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary",
+                "seller"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Upload a product image (multipart/form-data file upload middleware)",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/products/{id}/approve": {
+      "patch": {
+        "description": "Platform admin approves a pending product for the public shop.",
+        "operationId": "ProductsController_approve",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary",
+                "seller"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product approved successfully"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        },
+        "summary": "Approve a product",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/products/{id}/reject": {
+      "patch": {
+        "operationId": "ProductsController_reject",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "description": "User role for RBAC",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "superuser",
+                "admin",
+                "volunteer",
+                "donor",
+                "beneficiary",
+                "seller"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product rejected"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        },
+        "summary": "Reject a product",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/orders": {
+      "post": {
+        "operationId": "OrdersController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Complete a shop payment/order; updates stock, seller balance, and creates delivery allocation",
+        "tags": [
+          "Shop Orders"
+        ]
+      },
+      "get": {
+        "operationId": "OrdersController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sellerId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Shop Orders"
+        ]
+      }
+    },
+    "/orders/by-org/{orgId}": {
+      "get": {
+        "operationId": "OrdersController_findByOrg",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orgId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get orders linked to a specific organization",
+        "tags": [
+          "Shop Orders"
+        ]
+      }
+    },
+    "/orders/by-buyer/{email}": {
+      "get": {
+        "operationId": "OrdersController_findByBuyer",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get order history for a buyer",
+        "tags": [
+          "Shop Orders"
+        ]
+      }
+    },
+    "/orders/by-volunteer/{email}": {
+      "get": {
+        "operationId": "OrdersController_findByVolunteer",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get delivery orders assigned to a volunteer",
+        "tags": [
+          "Shop Orders"
+        ]
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "operationId": "OrdersController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Shop Orders"
+        ]
+      }
+    },
+    "/orders/{id}/assign-volunteer": {
+      "patch": {
+        "operationId": "OrdersController_assignVolunteer",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Assign a volunteer to deliver an order",
+        "tags": [
+          "Shop Orders"
+        ]
+      }
+    },
+    "/orders/{id}/delivery-status": {
+      "patch": {
+        "operationId": "OrdersController_updateDeliveryStatus",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Update delivery status of an order. Valid transitions are enforced.",
+        "tags": [
+          "Shop Orders"
+        ]
+      }
+    },
+    "/donations": {
+      "post": {
+        "operationId": "DonationsController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDonationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Record a successful donation payment",
+        "tags": [
+          "Monetary Donations"
+        ]
+      },
+      "get": {
+        "operationId": "DonationsController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Monetary Donations"
+        ]
+      }
+    },
+    "/donations/by-org/{org}": {
+      "get": {
+        "operationId": "DonationsController_byOrg",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "org",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Monetary Donations"
+        ]
+      }
+    },
+    "/donations/today-total": {
+      "get": {
+        "operationId": "DonationsController_todayTotal",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Monetary Donations"
+        ]
+      }
+    },
+    "/notifications": {
+      "get": {
+        "operationId": "NotificationsController_find",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "role",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "org",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Notifications"
+        ]
+      },
+      "post": {
+        "operationId": "NotificationsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNotificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/notifications/{id}/read": {
+      "patch": {
+        "operationId": "NotificationsController_markRead",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/replacements": {
+      "post": {
+        "operationId": "ReplacementsController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReplacementDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Request a product replacement (buyer)",
+        "tags": [
+          "Replacements"
+        ]
+      },
+      "get": {
+        "operationId": "ReplacementsController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get all replacement requests",
+        "tags": [
+          "Replacements"
+        ]
+      }
+    },
+    "/replacements/by-buyer/{email}": {
+      "get": {
+        "operationId": "ReplacementsController_findByBuyer",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get replacement requests by buyer email",
+        "tags": [
+          "Replacements"
+        ]
+      }
+    },
+    "/replacements/by-org/{orgId}": {
+      "get": {
+        "operationId": "ReplacementsController_findByOrg",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orgId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get replacement requests by organization",
+        "tags": [
+          "Replacements"
+        ]
+      }
+    },
+    "/replacements/by-seller/{sellerId}": {
+      "get": {
+        "operationId": "ReplacementsController_findBySeller",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sellerId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get replacement requests by seller",
+        "tags": [
+          "Replacements"
+        ]
+      }
+    },
+    "/replacements/by-volunteer/{email}": {
+      "get": {
+        "operationId": "ReplacementsController_findByVolunteer",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get replacement pickups assigned to a volunteer",
+        "tags": [
+          "Replacements"
+        ]
+      }
+    },
+    "/replacements/{id}": {
+      "get": {
+        "operationId": "ReplacementsController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get a replacement by ID",
+        "tags": [
+          "Replacements"
+        ]
+      }
+    },
+    "/replacements/{id}/approve": {
+      "patch": {
+        "operationId": "ReplacementsController_approve",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Approve a replacement request",
+        "tags": [
+          "Replacements"
+        ]
+      }
+    },
+    "/replacements/{id}/reject": {
+      "patch": {
+        "operationId": "ReplacementsController_reject",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Reject a replacement request",
+        "tags": [
+          "Replacements"
+        ]
+      }
+    },
+    "/replacements/{id}/assign-volunteer": {
+      "patch": {
+        "operationId": "ReplacementsController_assignVolunteer",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Assign volunteer for replacement pickup/delivery",
+        "tags": [
+          "Replacements"
+        ]
+      }
+    },
+    "/replacements/{id}/status": {
+      "patch": {
+        "operationId": "ReplacementsController_updateStatus",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Update replacement status (enforced transitions)",
+        "tags": [
+          "Replacements"
+        ]
+      }
+    },
+    "/volunteer-requests": {
+      "post": {
+        "operationId": "VolunteerRequestsController_create",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVolunteerRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create a new volunteer request (Org Admin)",
+        "tags": [
+          "Volunteer Requests"
+        ]
+      },
+      "get": {
+        "operationId": "VolunteerRequestsController_findAll",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get all volunteer requests",
+        "tags": [
+          "Volunteer Requests"
+        ]
+      }
+    },
+    "/volunteer-requests/by-org/{orgId}": {
+      "get": {
+        "operationId": "VolunteerRequestsController_findByOrg",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orgId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get requests by organization",
+        "tags": [
+          "Volunteer Requests"
+        ]
+      }
+    },
+    "/volunteer-requests/{id}": {
+      "get": {
+        "operationId": "VolunteerRequestsController_findOne",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get a volunteer request by ID",
+        "tags": [
+          "Volunteer Requests"
+        ]
+      },
+      "delete": {
+        "operationId": "VolunteerRequestsController_remove",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Delete a request",
+        "tags": [
+          "Volunteer Requests"
+        ]
+      }
+    },
+    "/volunteer-requests/{id}/status": {
+      "patch": {
+        "operationId": "VolunteerRequestsController_updateStatus",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Update request status (open, filled, closed, cancelled)",
+        "tags": [
+          "Volunteer Requests"
+        ]
+      }
+    },
+    "/volunteer-requests/{id}/respond": {
+      "patch": {
+        "operationId": "VolunteerRequestsController_respond",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Volunteer accepts or rejects a request",
+        "tags": [
+          "Volunteer Requests"
+        ]
+      }
     }
   },
   "info": {
@@ -4599,7 +6594,8 @@
               "admin",
               "volunteer",
               "donor",
-              "beneficiary"
+              "beneficiary",
+              "seller"
             ]
           },
           "org": {
@@ -4664,7 +6660,8 @@
               "admin",
               "volunteer",
               "donor",
-              "beneficiary"
+              "beneficiary",
+              "seller"
             ]
           },
           "org": {
@@ -4737,6 +6734,31 @@
             "type": "string",
             "description": "Organization status",
             "example": "active"
+          },
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for frontend/backend synchronization"
+          },
+          "adminEmail": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "bankAccountName": {
+            "type": "string"
+          },
+          "bankAccountNumber": {
+            "type": "string"
+          },
+          "bankIfsc": {
+            "type": "string"
+          },
+          "upiId": {
+            "type": "string"
+          },
+          "neededResources": {
+            "type": "string"
           }
         },
         "required": [
@@ -4779,6 +6801,31 @@
             "type": "string",
             "description": "Organization status",
             "example": "active"
+          },
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for frontend/backend synchronization"
+          },
+          "adminEmail": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "bankAccountName": {
+            "type": "string"
+          },
+          "bankAccountNumber": {
+            "type": "string"
+          },
+          "bankIfsc": {
+            "type": "string"
+          },
+          "upiId": {
+            "type": "string"
+          },
+          "neededResources": {
+            "type": "string"
           }
         }
       },
@@ -4884,6 +6931,10 @@
       "CreateProgramDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for synchronized dashboard records"
+          },
           "name": {
             "type": "string",
             "description": "Program name",
@@ -4895,9 +6946,11 @@
             "example": "GreenFuture Foundation"
           },
           "focus": {
-            "type": "string",
-            "description": "Focus area",
-            "example": "Education"
+            "type": "object",
+            "description": "Focus area(s)",
+            "example": [
+              "Education"
+            ]
           },
           "startDate": {
             "type": "string",
@@ -4908,6 +6961,16 @@
             "type": "string",
             "description": "End date (YYYY-MM-DD)",
             "example": "2025-08-31"
+          },
+          "status": {
+            "type": "string",
+            "description": "Initial program status",
+            "example": "active"
+          },
+          "volunteers": {
+            "type": "number",
+            "description": "Initial assigned volunteer count",
+            "example": 2
           },
           "budget": {
             "type": "number",
@@ -4952,7 +7015,6 @@
           "org",
           "focus",
           "startDate",
-          "endDate",
           "budget",
           "description"
         ]
@@ -4960,6 +7022,10 @@
       "UpdateProgramDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for synchronized dashboard records"
+          },
           "name": {
             "type": "string",
             "description": "Program name",
@@ -4971,9 +7037,11 @@
             "example": "GreenFuture Foundation"
           },
           "focus": {
-            "type": "string",
-            "description": "Focus area",
-            "example": "Education"
+            "type": "object",
+            "description": "Focus area(s)",
+            "example": [
+              "Education"
+            ]
           },
           "startDate": {
             "type": "string",
@@ -4984,6 +7052,16 @@
             "type": "string",
             "description": "End date (YYYY-MM-DD)",
             "example": "2025-08-31"
+          },
+          "status": {
+            "type": "string",
+            "description": "Initial program status",
+            "example": "active"
+          },
+          "volunteers": {
+            "type": "number",
+            "description": "Initial assigned volunteer count",
+            "example": 120
           },
           "budget": {
             "type": "number",
@@ -5022,10 +7100,6 @@
             "description": "Geographic location",
             "example": "Ranchi, Jharkhand"
           },
-          "status": {
-            "type": "string",
-            "example": "active"
-          },
           "raised": {
             "type": "number",
             "example": 850000
@@ -5033,10 +7107,6 @@
           "beneficiaries": {
             "type": "number",
             "example": 1500
-          },
-          "volunteers": {
-            "type": "number",
-            "example": 120
           }
         }
       },
@@ -5128,6 +7198,10 @@
       "CreateIncomingDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for synchronized dashboard records"
+          },
           "name": {
             "type": "string",
             "description": "Name of the person submitting",
@@ -5152,6 +7226,12 @@
             "type": "string",
             "description": "Location or address",
             "example": "Kankarbagh, Patna, Bihar"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "beneficiaryEmail": {
+            "type": "string"
           }
         },
         "required": [
@@ -5163,6 +7243,10 @@
       "CreateTaskDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for synchronized dashboard records"
+          },
           "title": {
             "type": "string",
             "description": "Task title",
@@ -5185,7 +7269,7 @@
           },
           "priority": {
             "type": "string",
-            "description": "Priority level (low, medium, high)",
+            "description": "Priority level (normal, high, urgent)",
             "example": "high"
           },
           "dueDate": {
@@ -5202,6 +7286,16 @@
             "type": "string",
             "description": "Associated program name",
             "example": "Cyclone Relief Fund"
+          },
+          "location": {
+            "type": "string",
+            "description": "Task location",
+            "example": "Sector 62, Noida"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Progress notes",
+            "example": "Started preparation for distribution"
           }
         },
         "required": [
@@ -5212,6 +7306,10 @@
       "UpdateTaskDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for synchronized dashboard records"
+          },
           "title": {
             "type": "string",
             "description": "Task title",
@@ -5234,7 +7332,7 @@
           },
           "priority": {
             "type": "string",
-            "description": "Priority level (low, medium, high)",
+            "description": "Priority level (normal, high, urgent)",
             "example": "high"
           },
           "dueDate": {
@@ -5252,15 +7350,30 @@
             "description": "Associated program name",
             "example": "Cyclone Relief Fund"
           },
+          "location": {
+            "type": "string",
+            "description": "Task location",
+            "example": "Sector 62, Noida"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Progress notes from volunteer",
+            "example": "Completed 50% of distribution"
+          },
           "status": {
             "type": "string",
-            "example": "in-progress"
+            "example": "in-progress",
+            "description": "Task status: pending | in-progress | pending_review | completed | cancelled"
           }
         }
       },
       "CreateHourLogDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for synchronized dashboard records"
+          },
           "volunteerEmail": {
             "type": "string",
             "description": "Email of the volunteer",
@@ -5305,6 +7418,10 @@
       "UpdateHourLogDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for synchronized dashboard records"
+          },
           "volunteerEmail": {
             "type": "string",
             "description": "Email of the volunteer",
@@ -5374,6 +7491,10 @@
       "CreateResourceDonationDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for synchronized dashboard records"
+          },
           "donorName": {
             "type": "string",
             "description": "Donor full name",
@@ -5430,6 +7551,15 @@
             "type": "string",
             "description": "Target program name",
             "example": "Cyclone Relief Fund"
+          },
+          "orgId": {
+            "type": "string"
+          },
+          "orgName": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
           }
         },
         "required": [
@@ -5447,6 +7577,10 @@
       "UpdateResourceDonationDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for synchronized dashboard records"
+          },
           "donorName": {
             "type": "string",
             "description": "Donor full name",
@@ -5504,6 +7638,16 @@
             "description": "Target program name",
             "example": "Cyclone Relief Fund"
           },
+          "orgId": {
+            "type": "string"
+          },
+          "orgName": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Notes about delivery"
+          },
           "status": {
             "type": "string",
             "example": "pending_pickup"
@@ -5515,16 +7659,16 @@
           "assignedVolunteerName": {
             "type": "string",
             "example": "Priya Singh"
-          },
-          "notes": {
-            "type": "string",
-            "example": "Notes about delivery"
           }
         }
       },
       "CreateProgramAssignmentDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for synchronized dashboard records"
+          },
           "programId": {
             "type": "string",
             "description": "Program ID",
@@ -5544,6 +7688,11 @@
             "type": "string",
             "description": "Volunteer name",
             "example": "Neha Kapoor"
+          },
+          "status": {
+            "type": "string",
+            "description": "Assignment status",
+            "example": "active"
           },
           "role": {
             "type": "string",
@@ -5561,6 +7710,10 @@
       "UpdateProgramAssignmentDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for synchronized dashboard records"
+          },
           "programId": {
             "type": "string",
             "description": "Program ID",
@@ -5581,6 +7734,11 @@
             "description": "Volunteer name",
             "example": "Neha Kapoor"
           },
+          "status": {
+            "type": "string",
+            "description": "Assignment status",
+            "example": "active"
+          },
           "role": {
             "type": "string",
             "description": "Role in the program",
@@ -5591,6 +7749,10 @@
       "CreateProgramApplicationDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for synchronized dashboard records"
+          },
           "programId": {
             "type": "string",
             "description": "Program ID to apply for",
@@ -5627,6 +7789,10 @@
       "CreateSubtaskDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for synchronized dashboard records"
+          },
           "programId": {
             "type": "string",
             "description": "Parent program ID",
@@ -5646,6 +7812,16 @@
             "type": "string",
             "description": "Email of assigned volunteer",
             "example": "neha.kapoor@gmail.com"
+          },
+          "status": {
+            "type": "string",
+            "description": "Initial status",
+            "example": "pending"
+          },
+          "progress": {
+            "type": "number",
+            "description": "Initial progress 0-100",
+            "example": 0
           },
           "assignedToName": {
             "type": "string",
@@ -5662,6 +7838,10 @@
       "UpdateSubtaskDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for synchronized dashboard records"
+          },
           "programId": {
             "type": "string",
             "description": "Parent program ID",
@@ -5682,20 +7862,378 @@
             "description": "Email of assigned volunteer",
             "example": "neha.kapoor@gmail.com"
           },
-          "assignedToName": {
-            "type": "string",
-            "description": "Name of assigned volunteer",
-            "example": "Neha Kapoor"
-          },
           "status": {
             "type": "string",
+            "description": "Initial status",
             "example": "in-progress"
           },
           "progress": {
             "type": "number",
+            "description": "Initial progress 0-100",
             "example": 65
+          },
+          "assignedToName": {
+            "type": "string",
+            "description": "Name of assigned volunteer",
+            "example": "Neha Kapoor"
           }
         }
+      },
+      "CreateSellerDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the seller",
+            "example": "Ravi Kumar"
+          },
+          "email": {
+            "type": "string",
+            "description": "Valid email address",
+            "example": "ravi@shop.com"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number",
+            "example": "+91 98765 43210"
+          },
+          "businessName": {
+            "type": "string",
+            "description": "Business or shop name",
+            "example": "Ravi Handicrafts"
+          },
+          "businessDescription": {
+            "type": "string",
+            "description": "Brief description of the business",
+            "example": "Handmade crafts and traditional art"
+          },
+          "organizationId": {
+            "type": "string",
+            "description": "Partner organization ID",
+            "example": "org_001"
+          },
+          "organizationName": {
+            "type": "string",
+            "description": "Partner organization name",
+            "example": "HopeConnect"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "businessName"
+        ]
+      },
+      "UpdateSellerDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "businessName": {
+            "type": "string"
+          },
+          "businessDescription": {
+            "type": "string"
+          },
+          "bankDetails": {
+            "type": "object"
+          },
+          "salesBalance": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "approved",
+              "rejected"
+            ]
+          }
+        }
+      },
+      "CreateProductDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Client-provided ID for synchronized dashboard records"
+          },
+          "sellerId": {
+            "type": "string",
+            "description": "ID of the seller",
+            "example": "seller_001"
+          },
+          "sellerName": {
+            "type": "string",
+            "description": "Seller display name",
+            "example": "Ravi Kumar"
+          },
+          "title": {
+            "type": "string",
+            "description": "Product title",
+            "example": "Handmade Pottery Vase"
+          },
+          "description": {
+            "type": "string",
+            "description": "Product description",
+            "example": "Beautiful handcrafted clay vase with traditional Indian motifs"
+          },
+          "price": {
+            "type": "number",
+            "description": "Price in INR",
+            "example": 1500
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Available quantity",
+            "example": 10
+          },
+          "category": {
+            "type": "string",
+            "description": "Product category",
+            "example": "Handicrafts"
+          },
+          "photos": {
+            "description": "Array of photo URLs or base64 strings",
+            "example": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "sellerId",
+          "title",
+          "description",
+          "price",
+          "quantity",
+          "category"
+        ]
+      },
+      "UpdateProductDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "category": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending_approval",
+              "approved",
+              "rejected"
+            ]
+          }
+        }
+      },
+      "CreateOrderDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 2
+          },
+          "buyerName": {
+            "type": "string"
+          },
+          "buyerEmail": {
+            "type": "string"
+          },
+          "buyerPhone": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "cardLast4": {
+            "type": "string"
+          },
+          "cardType": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "productId",
+          "quantity",
+          "buyerName",
+          "buyerEmail",
+          "buyerPhone",
+          "address"
+        ]
+      },
+      "CreateDonationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "org": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "frequency": {
+            "type": "string"
+          },
+          "donor": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "cardLast4": {
+            "type": "string"
+          },
+          "cardType": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "org",
+          "amount",
+          "donor",
+          "email"
+        ]
+      },
+      "CreateNotificationDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateReplacementDto": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "description": "Original order ID"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for replacement",
+            "example": "Defective item"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the issue"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "Image URL showing the issue"
+          },
+          "buyerEmail": {
+            "type": "string",
+            "description": "Buyer email"
+          },
+          "buyerName": {
+            "type": "string",
+            "description": "Buyer name"
+          }
+        },
+        "required": [
+          "orderId",
+          "reason",
+          "description",
+          "buyerEmail",
+          "buyerName"
+        ]
+      },
+      "CreateVolunteerRequestDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the request"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the request"
+          },
+          "location": {
+            "type": "string",
+            "description": "Location"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date of the event"
+          },
+          "startTime": {
+            "type": "string",
+            "description": "Start time"
+          },
+          "endTime": {
+            "type": "string",
+            "description": "End time"
+          },
+          "volunteersRequired": {
+            "type": "number",
+            "description": "Number of volunteers needed"
+          },
+          "requiredSkills": {
+            "description": "Required skills",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "programId": {
+            "type": "string",
+            "description": "Program ID if linked"
+          },
+          "programName": {
+            "type": "string",
+            "description": "Program Name if linked"
+          },
+          "organizationId": {
+            "type": "string",
+            "description": "Organization ID creating the request"
+          },
+          "organizationName": {
+            "type": "string",
+            "description": "Organization Name creating the request"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "location",
+          "date",
+          "volunteersRequired",
+          "requiredSkills",
+          "organizationId",
+          "organizationName"
+        ]
       }
     }
   }

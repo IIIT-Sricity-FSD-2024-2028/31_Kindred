@@ -26,4 +26,13 @@ export class CreateOrganizationDto {
   @IsOptional()
   @IsString()
   status?: string;
+  @ApiPropertyOptional({ description: 'Client-provided ID for frontend/backend synchronization' }) @IsOptional() @IsString() id?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() adminEmail?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() image?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() bankAccountName?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() bankAccountNumber?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() bankIfsc?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() upiId?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() neededResources?: string;
+
 }

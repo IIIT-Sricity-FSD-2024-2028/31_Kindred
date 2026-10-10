@@ -32,22 +32,22 @@ export class ProgramsService {
 
   create(dto: CreateProgramDto): Program {
     const newProg: Program = {
-      id: this.generateId(),
+      id: dto.id || this.generateId(),
       name: dto.name,
       org: dto.org,
       focus: dto.focus,
       startDate: dto.startDate,
-      endDate: dto.endDate,
+      endDate: dto.endDate || '',
       budget: dto.budget,
       description: dto.description,
       requiredSkills: dto.requiredSkills || [],
       volunteerGoal: dto.volunteerGoal || 0,
       openForApplications: dto.openForApplications !== undefined ? dto.openForApplications : true,
       location: dto.location || '',
-      status: 'active',
+      status: dto.status || 'active',
       raised: 0,
       beneficiaries: 0,
-      volunteers: 0,
+      volunteers: dto.volunteers || 0,
     };
     this.programs.push(newProg);
     return { ...newProg };
@@ -56,7 +56,7 @@ export class ProgramsService {
   update(id: string, dto: UpdateProgramDto): Program {
     const idx = this.programs.findIndex((p) => p.id === id);
     if (idx === -1) throw new NotFoundException(`Program with id '${id}' not found`);
-    this.programs[idx] = { ...this.programs[idx], ...dto };
+    this.programs[idx] = { ...this.programs[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
     return { ...this.programs[idx] };
   }
 

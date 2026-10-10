@@ -1,7 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsNumber } from 'class-validator';
+import { IsString, IsOptional, IsNumber, Min, Max } from 'class-validator';
 
 export class CreateSubtaskDto {
+  @ApiPropertyOptional({ description: 'Client-provided ID for synchronized dashboard records' })
+  @IsOptional()
+  @IsString()
+  id?: string;
+
   @ApiProperty({ description: 'Parent program ID', example: 'prog_001' })
   @IsString()
   programId!: string;
@@ -18,6 +23,18 @@ export class CreateSubtaskDto {
   @ApiProperty({ description: 'Email of assigned volunteer', example: 'neha.kapoor@gmail.com' })
   @IsString()
   assignedToEmail!: string;
+
+  @ApiPropertyOptional({ description: 'Initial status', example: 'pending' })
+  @IsOptional()
+  @IsString()
+  status?: string;
+
+  @ApiPropertyOptional({ description: 'Initial progress 0-100', example: 0 })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(100)
+  progress?: number;
 
   @ApiPropertyOptional({ description: 'Name of assigned volunteer', example: 'Neha Kapoor' })
   @IsOptional()

@@ -17,6 +17,8 @@ export interface ResourceDonation {
   pickupTimeSlot: string;
   programId: string;
   programName: string;
+  orgId?: string;
+  orgName?: string;
   status: string;
   assignedVolunteerEmail: string;
   assignedVolunteerName: string;

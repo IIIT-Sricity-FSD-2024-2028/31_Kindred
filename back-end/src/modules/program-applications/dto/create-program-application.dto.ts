@@ -2,6 +2,11 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsOptional } from 'class-validator';
 
 export class CreateProgramApplicationDto {
+  @ApiPropertyOptional({ description: 'Client-provided ID for synchronized dashboard records' })
+  @IsOptional()
+  @IsString()
+  id?: string;
+
   @ApiProperty({ description: 'Program ID to apply for', example: 'prog_002' })
   @IsString()
   programId!: string;

@@ -52,14 +52,14 @@ export class SubtasksService {
 
   create(dto: CreateSubtaskDto): Subtask {
     const newSt: Subtask = {
-      id: this.generateId(),
+      id: dto.id || this.generateId(),
       programId: dto.programId,
       title: dto.title,
       description: dto.description || '',
       assignedToEmail: dto.assignedToEmail,
       assignedToName: dto.assignedToName || '',
-      status: 'pending',
-      progress: 0,
+      status: dto.status || 'pending',
+      progress: dto.progress ?? 0,
       createdAt: new Date().toISOString().split('T')[0],
     };
     this.subtasks.push(newSt);
@@ -69,7 +69,7 @@ export class SubtasksService {
   update(id: string, dto: UpdateSubtaskDto): Subtask {
     const idx = this.subtasks.findIndex((s) => s.id === id);
     if (idx === -1) throw new NotFoundException(`Subtask with id '${id}' not found`);
-    this.subtasks[idx] = { ...this.subtasks[idx], ...dto };
+    this.subtasks[idx] = { ...this.subtasks[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
     return { ...this.subtasks[idx] };
   }
 

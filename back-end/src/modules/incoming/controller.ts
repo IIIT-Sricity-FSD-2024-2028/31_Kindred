@@ -63,6 +63,14 @@ export class IncomingController {
     return { success: true, data: this.service.accept(id), message: 'Request accepted' };
   }
 
+  @Patch(':id/assign-volunteer')
+  @Roles('admin', 'superuser')
+  assignVolunteer(@Param('id') id: string, @Body() body: { volunteerName: string; volunteerEmail: string }) { return { success: true, data: this.service.assign(id, body.volunteerName, body.volunteerEmail), message: 'Volunteer assigned to beneficiary request' }; }
+
+  @Patch(':id/resolve')
+  @Roles('admin', 'superuser', 'volunteer')
+  resolve(@Param('id') id: string) { return { success: true, data: this.service.resolve(id), message: 'Beneficiary request resolved' }; }
+
   @Patch(':id/decline')
   @Roles('admin', 'superuser')
   @ApiOperation({ summary: 'Decline an incoming request' })

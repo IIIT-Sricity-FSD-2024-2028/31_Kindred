@@ -77,6 +77,8 @@ export class ResourceDonationsService {
     return this.donations.filter((d) => d.assignedVolunteerEmail && d.assignedVolunteerEmail.toLowerCase() === email.toLowerCase());
   }
 
+  findByOrg(orgName: string): ResourceDonation[] { return this.donations.filter((d) => !d.orgName || (d.orgName || '').toLowerCase() === orgName.toLowerCase()); }
+
   findByProgram(programId: string): ResourceDonation[] {
     return this.donations.filter((d) => d.programId === programId);
   }
@@ -95,7 +97,7 @@ export class ResourceDonationsService {
 
   create(dto: CreateResourceDonationDto): ResourceDonation {
     const newDon: ResourceDonation = {
-      id: this.generateId(),
+      id: dto.id || this.generateId(),
       donorName: dto.donorName,
       donorEmail: dto.donorEmail,
       donorPhone: dto.donorPhone,
@@ -107,13 +109,14 @@ export class ResourceDonationsService {
       pickupTimeSlot: dto.pickupTimeSlot,
       programId: dto.programId || '',
       programName: dto.programName || '',
+      orgId: dto.orgId || '', orgName: dto.orgName || '',
       status: 'submitted',
       assignedVolunteerEmail: '',
       assignedVolunteerName: '',
       assignedAt: null,
       pickedUpAt: null,
       deliveredAt: null,
-      notes: '',
+      notes: dto.notes || '',
       createdAt: new Date().toISOString(),
     };
     this.donations.push(newDon);
@@ -123,7 +126,7 @@ export class ResourceDonationsService {
   update(id: string, dto: UpdateResourceDonationDto): ResourceDonation {
     const idx = this.donations.findIndex((d) => d.id === id);
     if (idx === -1) throw new NotFoundException(`Resource donation with id '${id}' not found`);
-    this.donations[idx] = { ...this.donations[idx], ...dto };
+    this.donations[idx] = { ...this.donations[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
     return { ...this.donations[idx] };
   }
 

@@ -49,7 +49,7 @@ export class OrganizationsService {
   create(dto: CreateOrganizationDto): Organization {
     const colors = ['#6366f1', '#ec4899', '#22c55e', '#f59e0b', '#ef4444', '#14b8a6', '#8b5cf6', '#06b6d4'];
     const newOrg: Organization = {
-      id: this.generateId(),
+      id: dto.id || this.generateId(),
       name: dto.name,
       focus: dto.focus,
       email: dto.email,
@@ -61,6 +61,7 @@ export class OrganizationsService {
       rating: '—',
       color: colors[Math.floor(Math.random() * colors.length)],
       status: dto.status || 'pending',
+      adminEmail: dto.adminEmail, image: dto.image, bankAccountName: dto.bankAccountName, bankAccountNumber: dto.bankAccountNumber, bankIfsc: dto.bankIfsc, upiId: dto.upiId, neededResources: dto.neededResources,
     };
     this.organizations.push(newOrg);
     return { ...newOrg };
@@ -69,7 +70,7 @@ export class OrganizationsService {
   update(id: string, dto: UpdateOrganizationDto): Organization {
     const idx = this.organizations.findIndex((o) => o.id === id);
     if (idx === -1) throw new NotFoundException(`Organization with id '${id}' not found`);
-    this.organizations[idx] = { ...this.organizations[idx], ...dto };
+    this.organizations[idx] = { ...this.organizations[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
     return { ...this.organizations[idx] };
   }
 

@@ -2,7 +2,7 @@ export interface Program {
   id: string;
   name: string;
   org: string;
-  focus: string;
+  focus: string | string[];
   status: string;
   startDate: string;
   endDate: string;

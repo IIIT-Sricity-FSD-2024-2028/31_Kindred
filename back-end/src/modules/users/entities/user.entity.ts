@@ -13,4 +13,5 @@ export interface User {
   bio?: string;
   registeredAt: string;
   skills?: string[];
+  team?: string;
 }

@@ -44,7 +44,7 @@ export class ProgramApplicationsService {
       throw new BadRequestException('Volunteer has already applied to this program');
     }
     const newApp: ProgramApplication = {
-      id: this.generateId(),
+      id: dto.id || this.generateId(),
       programId: dto.programId,
       programName: dto.programName,
       volunteerEmail: dto.volunteerEmail,

@@ -58,7 +58,7 @@ export class VolunteersService {
   update(id: string, dto: UpdateVolunteerDto): Volunteer {
     const idx = this.volunteers.findIndex((v) => v.id === id);
     if (idx === -1) throw new NotFoundException(`Volunteer with id '${id}' not found`);
-    this.volunteers[idx] = { ...this.volunteers[idx], ...dto };
+    this.volunteers[idx] = { ...this.volunteers[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
     return { ...this.volunteers[idx] };
   }
 
