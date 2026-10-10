@@ -2,6 +2,11 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsOptional } from 'class-validator';
 
 export class CreateIncomingDto {
+  @ApiPropertyOptional({ description: 'Client-provided ID for synchronized dashboard records' })
+  @IsOptional()
+  @IsString()
+  id?: string;
+
   @ApiProperty({ description: 'Name of the person submitting', example: 'Sunita Devi' })
   @IsString()
   name!: string;
@@ -23,4 +28,6 @@ export class CreateIncomingDto {
   @IsOptional()
   @IsString()
   location?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() phone?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() beneficiaryEmail?: string;
 }

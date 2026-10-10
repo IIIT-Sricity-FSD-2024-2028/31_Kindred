@@ -14,9 +14,9 @@ export class CreateUserDto {
   @IsString()
   password!: string;
 
-  @ApiProperty({ description: 'User role on the platform', example: 'volunteer', enum: ['superuser', 'admin', 'volunteer', 'donor', 'beneficiary'] })
+  @ApiProperty({ description: 'User role on the platform', example: 'volunteer', enum: ['superuser', 'admin', 'volunteer', 'donor', 'beneficiary', 'seller'] })
   @IsString()
-  @IsIn(['superuser', 'admin', 'volunteer', 'donor', 'beneficiary'])
+  @IsIn(['superuser', 'admin', 'volunteer', 'donor', 'beneficiary', 'seller'])
   role!: string;
 
   @ApiPropertyOptional({ description: 'Organization name (required for admin role)', example: 'GreenFuture Foundation' })

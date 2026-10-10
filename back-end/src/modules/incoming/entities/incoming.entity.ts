@@ -7,4 +7,9 @@ export interface IncomingRequest {
   date: string;
   status: string;
   location: string;
+  phone?: string;
+  beneficiaryEmail?: string;
+  assignedVolunteerName?: string;
+  assignedVolunteerEmail?: string;
+  resolvedAt?: string;
 }

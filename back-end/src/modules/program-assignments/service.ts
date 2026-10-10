@@ -46,14 +46,14 @@ export class ProgramAssignmentsService {
       throw new BadRequestException('Volunteer is already assigned to this program');
     }
     const newA: ProgramAssignment = {
-      id: this.generateId(),
+      id: dto.id || this.generateId(),
       programId: dto.programId,
       programName: dto.programName,
       volunteerEmail: dto.volunteerEmail,
       volunteerName: dto.volunteerName,
       role: dto.role || 'Volunteer',
       assignedAt: new Date().toISOString().split('T')[0],
-      status: 'active',
+      status: dto.status || 'active',
     };
     this.assignments.push(newA);
     return { ...newA };
@@ -62,7 +62,7 @@ export class ProgramAssignmentsService {
   update(id: string, dto: UpdateProgramAssignmentDto): ProgramAssignment {
     const idx = this.assignments.findIndex((a) => a.id === id);
     if (idx === -1) throw new NotFoundException(`Program assignment with id '${id}' not found`);
-    this.assignments[idx] = { ...this.assignments[idx], ...dto };
+    this.assignments[idx] = { ...this.assignments[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
     return { ...this.assignments[idx] };
   }
 

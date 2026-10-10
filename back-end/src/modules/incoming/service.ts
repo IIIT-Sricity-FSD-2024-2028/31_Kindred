@@ -28,7 +28,7 @@ export class IncomingService {
 
   create(dto: CreateIncomingDto): IncomingRequest {
     const newReq: IncomingRequest = {
-      id: `INC-${Date.now()}_${this.counter++}`,
+      id: dto.id || `INC-${Date.now()}_${this.counter++}`,
       name: dto.name,
       type: dto.type,
       desc: dto.desc,
@@ -36,6 +36,7 @@ export class IncomingService {
       date: new Date().toISOString().split('T')[0],
       status: 'pending',
       location: dto.location || '',
+      phone: dto.phone || '', beneficiaryEmail: dto.beneficiaryEmail || '',
     };
     this.requests.push(newReq);
     return { ...newReq };
@@ -47,6 +48,10 @@ export class IncomingService {
     this.requests[idx].status = 'accepted';
     return { ...this.requests[idx] };
   }
+
+  assign(id: string, volunteerName: string, volunteerEmail: string): IncomingRequest { const idx=this.requests.findIndex(r=>r.id===id); if(idx===-1) throw new NotFoundException(`Incoming request with id '${id}' not found`); this.requests[idx].status='assigned'; this.requests[idx].assignedVolunteerName=volunteerName; this.requests[idx].assignedVolunteerEmail=volunteerEmail; return {...this.requests[idx]}; }
+
+  resolve(id: string): IncomingRequest { const idx=this.requests.findIndex(r=>r.id===id); if(idx===-1) throw new NotFoundException(`Incoming request with id '${id}' not found`); this.requests[idx].status='resolved'; this.requests[idx].resolvedAt=new Date().toISOString(); return {...this.requests[idx]}; }
 
   decline(id: string): IncomingRequest {
     const idx = this.requests.findIndex((r) => r.id === id);

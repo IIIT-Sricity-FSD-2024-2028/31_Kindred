@@ -4,11 +4,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 const ROLE_DASHBOARDS: Record<string, string> = {
-  superuser: 'overview.html',
-  admin: 'org-admin-overview.html',
+  superuser: 'platform-admin.html',
+  admin: 'org-admin.html',
   volunteer: 'volunteer-dashboard.html',
   donor: 'donor-dashboard.html',
   beneficiary: 'beneficiary-dashboard.html',
+  seller: 'seller-dashboard.html',
 };
 
 const ROLE_AVATARS: Record<string, string> = {
@@ -17,6 +18,7 @@ const ROLE_AVATARS: Record<string, string> = {
   volunteer: '#10b981',
   donor: '#f59e0b',
   beneficiary: '#8b5cf6',
+  seller: '#14b8a6',
 };
 
 const IMMEDIATE_ACCESS_ROLES = ['donor', 'beneficiary', 'superuser'];
@@ -26,11 +28,19 @@ export class UsersService {
   private users: User[] = [
     {
       id: 'su_001', name: 'Kavita Sharma', email: 'super@kindred.org', password: 'Super@123',
-      role: 'superuser', status: 'approved', initials: 'KS', avatar: '#6366f1', dashboard: 'overview.html', registeredAt: '2024-01-01T00:00:00Z',
+      role: 'superuser', status: 'approved', initials: 'KS', avatar: '#6366f1', dashboard: 'platform-admin.html', registeredAt: '2024-01-01T00:00:00Z',
+    },
+    {
+      id: 'su_team1', name: 'Kavita Sharma (Team 1 Admin)', email: 'admin1@kindred.org', password: 'Admin1@123',
+      role: 'superuser', team: 'team1', status: 'approved', initials: 'T1', avatar: '#6366f1', dashboard: 'platform-admin.html', registeredAt: '2024-01-01T00:00:00Z',
+    },
+    {
+      id: 'su_team2', name: 'Neha Gupta (Team 2 Admin)', email: 'admin2@kindred.org', password: 'Admin2@123',
+      role: 'superuser', team: 'team2', status: 'approved', initials: 'T2', avatar: '#0d9488', dashboard: 'platform-admin.html', registeredAt: '2024-01-01T00:00:00Z',
     },
     {
       id: 'adm_001', name: 'Rajesh Verma', email: 'admin@hopeconnect.org', password: 'Admin@123',
-      role: 'admin', org: 'HopeConnect', status: 'approved', initials: 'RV', avatar: '#0f1a2e', dashboard: 'org-admin-overview.html', registeredAt: '2024-01-01T00:00:00Z',
+      role: 'admin', org: 'HopeConnect', status: 'approved', initials: 'RV', avatar: '#0f1a2e', dashboard: 'org-admin.html', registeredAt: '2024-01-01T00:00:00Z',
     },
     {
       id: 'vol_001', name: 'Priya Singh', email: 'volunteer@kindred.org', password: 'Vol@123',
@@ -43,6 +53,10 @@ export class UsersService {
     {
       id: 'ben_001', name: 'Meena Devi', email: 'beneficiary@kindred.org', password: 'Ben@123',
       role: 'beneficiary', status: 'approved', initials: 'MD', avatar: '#8b5cf6', dashboard: 'beneficiary-dashboard.html', registeredAt: '2024-01-01T00:00:00Z',
+    },
+    {
+      id: 'seller_001', name: 'Ravi Kumar', email: 'seller@kindred.org', password: 'Seller@123',
+      role: 'seller', status: 'approved', initials: 'RK', avatar: '#14b8a6', dashboard: 'seller-dashboard.html', registeredAt: '2024-01-01T00:00:00Z',
     },
   ];
   private counter = 100;
@@ -124,7 +138,7 @@ export class UsersService {
     const idx = this.users.findIndex((u) => u.id === id);
     if (idx === -1) throw new NotFoundException(`User with id '${id}' not found`);
 
-    this.users[idx] = { ...this.users[idx], ...dto };
+    this.users[idx] = { ...this.users[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
     return { ...this.users[idx] };
   }
 

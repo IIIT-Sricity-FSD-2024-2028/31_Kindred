@@ -2,6 +2,11 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsOptional, IsNumber, IsBoolean, IsArray } from 'class-validator';
 
 export class CreateProgramDto {
+  @ApiPropertyOptional({ description: 'Client-provided ID for synchronized dashboard records' })
+  @IsOptional()
+  @IsString()
+  id?: string;
+
   @ApiProperty({ description: 'Program name', example: 'Rural Literacy Drive 2025' })
   @IsString()
   name!: string;
@@ -10,17 +15,29 @@ export class CreateProgramDto {
   @IsString()
   org!: string;
 
-  @ApiProperty({ description: 'Focus area', example: 'Education' })
-  @IsString()
-  focus!: string;
+  @ApiProperty({ description: 'Focus area(s)', example: ['Education'] })
+  @IsOptional()
+  focus!: string | string[];
 
   @ApiProperty({ description: 'Start date (YYYY-MM-DD)', example: '2025-02-01' })
   @IsString()
   startDate!: string;
 
-  @ApiProperty({ description: 'End date (YYYY-MM-DD)', example: '2025-08-31' })
+  @ApiPropertyOptional({ description: 'End date (YYYY-MM-DD)', example: '2025-08-31' })
+  @IsOptional()
   @IsString()
-  endDate!: string;
+  endDate?: string;
+
+
+  @ApiPropertyOptional({ description: 'Initial program status', example: 'active' })
+  @IsOptional()
+  @IsString()
+  status?: string;
+
+  @ApiPropertyOptional({ description: 'Initial assigned volunteer count', example: 2 })
+  @IsOptional()
+  @IsNumber()
+  volunteers?: number;
 
   @ApiProperty({ description: 'Total budget in INR', example: 850000 })
   @IsNumber()

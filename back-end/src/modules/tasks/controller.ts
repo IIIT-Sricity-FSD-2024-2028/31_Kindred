@@ -34,6 +34,14 @@ export class TasksController {
     return { success: true, data: this.service.findByVolunteer(email), message: 'Tasks retrieved' };
   }
 
+  @Get('by-program/:programId')
+  @Roles('admin', 'superuser', 'volunteer')
+  @ApiOperation({ summary: 'Get tasks for a specific program' })
+  @ApiResponse({ status: 200, description: 'Program tasks retrieved' })
+  findByProgram(@Param('programId') programId: string) {
+    return { success: true, data: this.service.findByProgram(programId), message: 'Program tasks retrieved' };
+  }
+
   @Get(':id')
   @Roles('admin', 'superuser', 'volunteer')
   @ApiOperation({ summary: 'Get task by ID' })
@@ -45,7 +53,7 @@ export class TasksController {
   }
 
   @Post()
-  @Roles('admin', 'superuser')
+  @Roles('admin', 'superuser', 'volunteer')
   @ApiOperation({ summary: 'Create a new task', description: 'Assign a task to a volunteer' })
   @ApiResponse({ status: 201, description: 'Task created successfully' })
   @ApiResponse({ status: 400, description: 'Validation failed' })
@@ -56,8 +64,9 @@ export class TasksController {
 
   @Patch(':id')
   @Roles('admin', 'superuser', 'volunteer')
-  @ApiOperation({ summary: 'Update a task', description: 'Update task details or mark as completed' })
+  @ApiOperation({ summary: 'Update a task', description: 'Update task details, status, or notes. Status transitions are enforced.' })
   @ApiResponse({ status: 200, description: 'Task updated' })
+  @ApiResponse({ status: 400, description: 'Invalid status transition' })
   @ApiResponse({ status: 404, description: 'Task not found' })
   @ApiResponse({ status: 403, description: 'Access denied' })
   update(@Param('id') id: string, @Body() dto: UpdateTaskDto) {

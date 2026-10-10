@@ -61,6 +61,10 @@ export class ResourceDonationsController {
     return { success: true, data: this.service.findByVolunteer(email), message: 'Donations retrieved' };
   }
 
+  @Get('by-org/:orgName')
+  @Roles('admin', 'superuser')
+  findByOrg(@Param('orgName') orgName: string) { return { success: true, data: this.service.findByOrg(orgName), message: 'Organization resource donations retrieved' }; }
+
   @Get('by-program/:programId')
   @Roles('admin', 'superuser')
   @ApiOperation({ summary: 'Get donations allocated to a program' })

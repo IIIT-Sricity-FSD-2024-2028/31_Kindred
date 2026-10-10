@@ -34,7 +34,7 @@ export class HourLogsService {
 
   create(dto: CreateHourLogDto): HourLog {
     const newLog: HourLog = {
-      id: this.generateId(),
+      id: dto.id || this.generateId(),
       volunteerEmail: dto.volunteerEmail,
       volunteerName: dto.volunteerName,
       hours: dto.hours,
@@ -52,7 +52,7 @@ export class HourLogsService {
   update(id: string, dto: UpdateHourLogDto): HourLog {
     const idx = this.hourLogs.findIndex((l) => l.id === id);
     if (idx === -1) throw new NotFoundException(`Hour log with id '${id}' not found`);
-    this.hourLogs[idx] = { ...this.hourLogs[idx], ...dto };
+    this.hourLogs[idx] = { ...this.hourLogs[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
     return { ...this.hourLogs[idx] };
   }
 

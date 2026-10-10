@@ -2,6 +2,11 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsOptional } from 'class-validator';
 
 export class CreateTaskDto {
+  @ApiPropertyOptional({ description: 'Client-provided ID for synchronized dashboard records' })
+  @IsOptional()
+  @IsString()
+  id?: string;
+
   @ApiProperty({ description: 'Task title', example: 'Distribute relief kits at Zone B' })
   @IsString()
   title!: string;
@@ -20,7 +25,7 @@ export class CreateTaskDto {
   @IsString()
   assignedToName?: string;
 
-  @ApiPropertyOptional({ description: 'Priority level (low, medium, high)', example: 'high' })
+  @ApiPropertyOptional({ description: 'Priority level (normal, high, urgent)', example: 'high' })
   @IsOptional()
   @IsString()
   priority?: string;
@@ -39,4 +44,14 @@ export class CreateTaskDto {
   @IsOptional()
   @IsString()
   programName?: string;
+
+  @ApiPropertyOptional({ description: 'Task location', example: 'Sector 62, Noida' })
+  @IsOptional()
+  @IsString()
+  location?: string;
+
+  @ApiPropertyOptional({ description: 'Progress notes', example: 'Started preparation for distribution' })
+  @IsOptional()
+  @IsString()
+  notes?: string;
 }

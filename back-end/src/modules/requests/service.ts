@@ -46,7 +46,7 @@ export class RequestsService {
   update(id: string, dto: UpdateRequestDto): PlatformRequest {
     const idx = this.requests.findIndex((r) => r.id === id);
     if (idx === -1) throw new NotFoundException(`Request with id '${id}' not found`);
-    this.requests[idx] = { ...this.requests[idx], ...dto };
+    this.requests[idx] = { ...this.requests[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
     return { ...this.requests[idx] };
   }
 
