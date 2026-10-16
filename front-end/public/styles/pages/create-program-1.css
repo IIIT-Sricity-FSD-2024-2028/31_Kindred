@@ -1,0 +1,57 @@
+[data-layout-frame][data-route="/create-program.html"] > .navbar {
+  height: 72px;
+  padding: 0 50px;
+  background: #fff;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-layout-frame][data-route="/create-program.html"] > .navbar .navbar-brand {
+  margin: 0;
+  color: #1a3b5c;
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+[data-layout-frame][data-route="/create-program.html"] > .navbar .navbar-links {
+  display: flex;
+  justify-self: center;
+  gap: 32px;
+}
+
+[data-layout-frame][data-route="/create-program.html"] > .navbar .navbar-links a {
+  padding: 0;
+  color: #475569;
+  font-size: 15px;
+}
+
+[data-layout-frame][data-route="/create-program.html"] > .navbar .navbar-user {
+  justify-self: end;
+  margin-left: 0;
+}
+
+/* Keep the shared site footer intact when the legacy form stylesheet is active. */
+[data-layout-frame][data-route="/create-program.html"] > .premium-footer .footer-brand .footer-logo {
+  width: auto;
+  height: auto;
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  display: block;
+  color: #fff;
+  line-height: 1.2;
+}
+
+@media (max-width: 900px) {
+  [data-layout-frame][data-route="/create-program.html"] > .navbar {
+    grid-template-columns: 1fr auto;
+    padding: 0 24px;
+  }
+
+  [data-layout-frame][data-route="/create-program.html"] > .navbar .navbar-links {
+    display: none;
+  }
+}

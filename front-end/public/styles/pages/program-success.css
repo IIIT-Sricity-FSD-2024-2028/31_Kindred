@@ -1,0 +1,27 @@
+[data-react-page="/program-success.html"] {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 48px 20px 64px;
+  min-height: 650px;
+  background: #f5f8fb;
+  color: #172b4d;
+  font-family: 'DM Sans', sans-serif;
+}
+[data-route="/program-success.html"] *,
+[data-route="/program-success.html"] *::before,
+[data-route="/program-success.html"] *::after { box-sizing: border-box; }
+[data-react-page="/program-success.html"] .success-page { max-width: 560px; margin: 0 auto; }
+[data-react-page="/program-success.html"] .back-link { display: inline-block; margin-bottom: 20px; color: #365a77; text-decoration: none; }
+[data-react-page="/program-success.html"] .success-card { padding: 40px; background: white; border: 1px solid #dfe7ef; border-radius: 20px; box-shadow: 0 12px 32px #172b4d0d; text-align: center; }
+[data-react-page="/program-success.html"] .success-icon { display: grid; place-items: center; width: 64px; height: 64px; margin: 0 auto 20px; border-radius: 50%; background: #dcfce7; color: #15803d; font-size: 34px; }
+[data-react-page="/program-success.html"] .success-title { margin: 0 0 12px; color: #172b4d; font-size: 28px; line-height: 1.2; }
+[data-react-page="/program-success.html"] .success-sub { margin-bottom: 24px; color: #53677d; font-size: 15px; line-height: 1.7; }
+[data-react-page="/program-success.html"] .next-steps { padding: 20px; margin-bottom: 24px; background: #f5f8fb; border-radius: 12px; text-align: left; }
+[data-react-page="/program-success.html"] .next-steps-title { margin-bottom: 16px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+[data-react-page="/program-success.html"] .next-step { display: flex; align-items: center; gap: 12px; margin-top: 12px; font-size: 14px; line-height: 1.5; }
+[data-react-page="/program-success.html"] .step-num { display: grid; place-items: center; width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; background: #1c3c5c; color: white; font-size: 12px; }
+[data-react-page="/program-success.html"] .btn-full { display: flex; justify-content: center; width: 100%; box-sizing: border-box; text-decoration: none; }
+@media (max-width: 600px) {
+  [data-react-page="/program-success.html"] { padding: 24px 16px 40px; }
+  [data-react-page="/program-success.html"] .success-card { padding: 28px 20px; }
+}

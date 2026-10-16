@@ -1,0 +1,146 @@
+import { FieldError, validateField, requireFields, validateEmail, validatePhone, validateDate, localDate } from '../../services/validation.js';
+
+import { hasBankDetails } from '../../services/organizations.js';
+import { ensureAssignment } from '../../services/workflow.js';
+import { writeStored } from '../../services/storage.js';
+
+export function managementActions(ui) {
+  const { state, values: v, session, api, update, setValues, navigate } = ui;
+  const enc = encodeURIComponent;
+  async function saveProgram() {
+    if (ui.collections?.assignments?.loading) throw new Error('Wait for existing volunteer assignments to load before saving.');
+    requireFields(v, ['programTitle', 'programLocation', 'programBudget', 'programEndDate', 'volunteerGoal', 'programDesc']);
+    if (!state.categories.length) throw new Error('Select at least one program category.');
+    if (Number(v.programBudget) < 0 || !Number.isFinite(Number(v.programBudget))) throw new FieldError('programBudget', 'Please enter a valid budget.');
+    if (!Number.isInteger(Number(v.volunteerGoal)) || Number(v.volunteerGoal) < 1) throw new FieldError('volunteerGoal', 'Enter a positive volunteer goal.');
+    validateDate(v.programEndDate, { field: 'programEndDate', min: state.editingStartDate || localDate() });
+    const body = { name: v.programTitle, org: session.org || '', focus: state.categories, startDate: state.editingStartDate || localDate(),
+      endDate: v.programEndDate, budget: Number(v.programBudget), description: v.programDesc, location: v.programLocation,
+      volunteerGoal: Number(v.volunteerGoal), requiredSkills: state.programSkills, openForApplications: v.progOpenApps !== 'false',
+    };
+    body.requestListing = Boolean(v.requestPublicListing);
+    if (body.requestListing) {
+      const organizations = await api.get('/organizations/manage');
+      const organization = organizations.find((o) => o.name === session.org);
+      if (!hasBankDetails(organization)) throw new Error('Save complete bank details in your organization dashboard before requesting public program display.');
+      if (organization.status !== 'active') throw new Error('Your bank details are saved. Ask the platform admin to approve your organization registration before requesting public program display.');
+    }
+    if (state.files['program-photo']) { const form = new FormData(); form.append('file', state.files['program-photo']); body.image = (await api.post('/programs/upload-image', form)).url; }
+    const saved = state.editingProgram ? await api.patch(`/programs/${enc(state.editingProgram)}`, body) : await api.post('/programs', body);
+    update({ editingProgram: saved.id });
+    const existingAssignments = await api.get(`/program-assignments/by-program/${enc(saved.id)}`);
+    try {
+      for (const email of state.selectedVolunteers || []) {
+        const existingMember = existingAssignments.find((a) => a.volunteerEmail.toLowerCase() === email.toLowerCase());
+        const volunteer = ui.data('volunteers').find((v) => v.email.toLowerCase() === email.toLowerCase()) || (existingMember && { name: existingMember.volunteerName, role: existingMember.role });
+        if (!volunteer) throw new Error('A selected volunteer no longer exists. Refresh the directory before retrying.');
+        await ensureAssignment(api, { programId: saved.id, programName: saved.name, volunteerEmail: email, volunteerName: volunteer.name, role: volunteer.role || 'Volunteer' }, existingAssignments);
+      }
+      for (const assignment of existingAssignments) if (['active', 'pending'].includes(assignment.status) && !state.selectedVolunteers.some((email) => email.toLowerCase() === assignment.volunteerEmail.toLowerCase())) await api.patch(`/program-assignments/${enc(assignment.id)}`, { status: 'cancelled' });
+    } catch (error) { throw new Error(`The program was saved, but volunteer assignments are incomplete. Retry to finish: ${error.message}`, { cause: error }); }
+    const resourceRequestId = new URLSearchParams(ui.location.search).get('request');
+    if (resourceRequestId) await api.patch(`/fulfillment/requests/${enc(resourceRequestId)}/message`, { programId:saved.id,message:`Collection program created: ${saved.name}` });
+    writeStored('kindred_last_program', saved);
+    ui.refresh(); navigate('/program-success.html');
+  }
+  async function saveTask() {
+    const volunteer = session.role === 'volunteer';
+    const title = v[volunteer ? 'vt-title' : 'editor-title'];
+    if (!title?.trim()) throw new Error('Please enter a task title.');
+    const email = volunteer ? session.email : v['editor-volunteer'];
+    if (!email) throw new Error('Select a volunteer.');
+    const dateField = volunteer ? 'vt-date' : 'editor-date';
+    if (v[dateField]) validateDate(v[dateField], { field: dateField });
+    const programId = v[volunteer ? 'vt-prog' : 'editor-program'] || '';
+    if (!volunteer && !programId) throw new Error('Select a program before assigning a task.');
+    if (programId && !ui.data('assignments').some((a) => a.programId === programId && a.status === 'active' && a.volunteerEmail.toLowerCase() === email.toLowerCase())) throw new Error('Select a volunteer who has accepted this program invitation.');
+    const program = ui.data('programs').find((p) => p.id === programId);
+    await api.post('/tasks', { title: title.trim(), description: v[volunteer ? 'vt-desc' : 'editor-description'] || '', assignedToEmail: email,
+      assignedToName: volunteer ? session.name : ui.data('assignments').find((a) => a.programId === programId && a.volunteerEmail.toLowerCase() === email.toLowerCase())?.volunteerName || '',
+      priority: v[volunteer ? 'vt-priority' : 'editor-priority'] || 'medium', dueDate: v[volunteer ? 'vt-date' : 'editor-date'] || '',
+      location: v[volunteer ? 'vt-location' : 'editor-location'] || '', programId, programName: program?.name || '',
+    });
+    update({ modal: null, editor: null }); ui.refresh(); ui.toast({ type: 'success', title: 'Task submitted' });
+  }
+  async function saveProduct() {
+    requireFields(v, ['prod-title', 'prod-price', 'prod-quantity', 'prod-category', 'prod-desc']);
+    if (!Number.isFinite(Number(v['prod-price'])) || !(Number(v['prod-price']) > 0) || !Number.isInteger(Number(v['prod-quantity'])) || Number(v['prod-quantity']) < 0) throw new Error('Enter a valid price and whole-number stock quantity.');
+    const seller = ui.data('sellers').find((s) => s.email.toLowerCase() === session.email.toLowerCase());
+    if (!seller) throw new Error('A seller profile is required before listing products.');
+    const photos = [...(state.editingProduct?.photos || [])];
+    if (state.files.prodPhotoInput) {
+      const form = new FormData(); form.append('file', state.files.prodPhotoInput);
+      const image = await api.post('/products/upload', form); photos.push(image.url);
+    }
+    const body = { title: v['prod-title'], description: v['prod-desc'], price: Number(v['prod-price']), quantity: Number(v['prod-quantity']), category: v['prod-category'], sellerId: seller.id, sellerName: seller.name, photos };
+    if (state.editingProduct) { const changes = { ...body }; delete changes.sellerId; delete changes.sellerName; await api.patch(`/products/${enc(state.editingProduct.id)}`, changes); }
+    else await api.post('/products', body);
+    update({ modal: null, editingProduct: null }); ui.refresh(); ui.toast({ type: 'success', title: 'Product saved', body: 'New listings require platform approval.' });
+  }
+  function confirmMutation(endpoint, method, body, message) {
+    update({ confirmation: { endpoint, method, body, message } });
+  }
+  return {
+    openWorkProof: ([collection,recordId]) => { ui.clearFile('work-proof'); update({ proofTarget: { collection,recordId }, modal: 'workProof' }); },
+    submitWorkProof: async () => { const file = state.files['work-proof']; if (!file) throw new Error('Upload a proof image first.'); if (!state.proofTarget) throw new Error('Select the completed work.'); const form = new FormData(); form.append('file',file); form.append('collection',state.proofTarget.collection); form.append('recordId',state.proofTarget.recordId); await api.post('/proofs',form); update({ modal: null }); ui.refresh(); ui.toast({ type: 'success', title: 'Proof submitted for organization verification' }); },
+    openProgModal: () => navigate('/create-program.html'),
+    editProgram: ([id]) => { const program = ui.data('programs').find((p) => p.id === id); if (!writeStored('kindred_edit_program', program)) throw new Error('Browser storage is unavailable. The program editor could not be opened.'); navigate(`/create-program.html?edit=${enc(id)}`); },
+    createProgram: saveProgram,
+    addCustomCategory: () => { const category = v.customCategoryInput?.trim(); if (!category) throw new Error('Enter a category name.'); update({ categories: [...new Set([...state.categories, category])] }); setValues({ customCategoryInput: '' }); },
+    openGlobalTaskModal: ([id]) => { update({ editor: { type: 'task', title: 'Assign Task' } }); setValues({ 'editor-title': '', 'editor-description': '', 'editor-program': ui.data('programs').some((p) => p.id === id) ? id : '', 'editor-volunteer': ui.data('volunteers').find((v) => v.id === id)?.email || '' }); },
+    updateTaskStatus: async ([id, status]) => { if (['completed','pending_review'].includes(status)) { if (['admin','superuser'].includes(session.role)) { update({ modal: 'proofReview' }); return; } ui.clearFile('work-proof'); update({ proofTarget: { collection: 'tasks', recordId: id }, modal: 'workProof' }); return; } await api.patch(`/tasks/${enc(id)}`, { status }); ui.refresh(); },
+    taskNotes: ([id]) => { const task = ui.data('tasks').find((t) => t.id === id); update({ editor: { type: 'taskNotes', title: 'Task Notes', record: task } }); setValues({ 'editor-notes': task.notes || '' }); },
+    saveTaskNotes: async () => { await api.patch(`/tasks/${enc(state.editor.record.id)}`, { notes: v['editor-notes'] || '' }); update({ editor: null }); ui.refresh(); },
+    addSubtask: ([programId]) => { update({ modal: null, editor: { type: 'subtask', title: 'Add Subtask', record: { programId } } }); setValues({ 'editor-title': '', 'editor-description': '', 'editor-volunteer': '' }); },
+    saveSubtask: async () => { requireFields(v, ['editor-title','editor-volunteer']); const member = ui.data('assignments').find((a) => a.programId === state.editor.record.programId && a.status === 'active' && a.volunteerEmail.toLowerCase() === v['editor-volunteer'].toLowerCase()); const volunteer = member ? { email: member.volunteerEmail, name: member.volunteerName } : null; if (!volunteer || !ui.data('assignments').some((a) => a.programId === state.editor.record.programId && a.status === 'active' && a.volunteerEmail.toLowerCase() === volunteer.email.toLowerCase())) throw new Error('Select an accepted member of this program.'); await api.post('/subtasks', { programId: state.editor.record.programId, title: v['editor-title'], description: v['editor-description'] || '', assignedToEmail: volunteer.email, assignedToName: volunteer.name }); update({ editor: null }); ui.refresh(); },
+    setProgramStatus: ([id, status]) => confirmMutation(`/programs/${enc(id)}`, 'patch', { status }, `${status === 'active' ? 'Activate' : 'Delist'} this program?`),
+    openVolunteerTaskModal: () => update({ modal: 'addTaskModal' }), closeVolunteerTask: () => update({ modal: null }),
+    submitVolunteerTask: saveTask, saveTask,
+    logHoursModal: () => update({ modal: 'logHoursModal' }), closeLogHours: () => update({ modal: null }),
+    submitLogHours: async () => { requireFields(v, ['log-activity', 'log-hours', 'log-date']); validateDate(v['log-date'], { field: 'log-date', max: localDate() }); if (!(Number(v['log-hours']) > 0) || Number(v['log-hours']) > 24) throw new FieldError('log-hours', 'Enter more than 0 and at most 24 hours.'); const program = ui.data('programs').find((p) => p.id === v['log-program']); const log = await api.post('/hour-logs', { programId: program?.id, programName: program?.name, volunteerEmail: session.email, volunteerName: session.name, description: v['log-activity'], hours: Number(v['log-hours']), date: v['log-date'] }); ui.clearFile('work-proof'); update({ modal: 'workProof', proofTarget: { collection: 'hour-logs', recordId: log.id } }); ui.refresh(); ui.toast({ type: 'success', title: 'Hours submitted for verification' }); },
+    joinPublicProgram: async ([id]) => { if (!session) return navigate(`/signup?role=volunteer&redirect=${enc('/programs')}`); if (['admin','superuser'].includes(session.role)) throw new Error('Admin accounts cannot join programs as volunteers.'); const program = ui.data('programs').find((p) => p.id === id); if (!program) throw new Error('Program not found.'); await api.post('/program-applications', { programId: id, programName: program.name, volunteerEmail: session.email, volunteerName: session.name, message: 'I would like to join this program as a volunteer.' }); ui.refresh(); ui.toast({ type: 'success', title: 'Join request submitted', body: 'After organization approval, accept the invitation in your dashboard.' }); },
+    applyToProgram: ([id]) => { const program = ui.data('programs').find((p) => p.id === id); update({ selectedProgram: program, modal: 'applyModal' }); setValues({ 'apply-prog-id': id, 'apply-message': '' }); },
+    closeApplyModal: () => update({ modal: null }),
+    submitApplication: async () => { const program = state.selectedProgram; if (!program) throw new Error('Select a program.'); if (ui.data('applications').some((a) => a.programId === program.id)) throw new Error('You have already applied to this program.'); await api.post('/program-applications', { programId: program.id, programName: program.name, volunteerEmail: session.email, volunteerName: session.name, message: v['apply-message'] || '' }); update({ modal: null }); ui.refresh(); ui.toast({ type: 'success', title: 'Application submitted' }); },
+    respondProgramInvitation: async ([id, action]) => { await api.patch(`/program-assignments/${enc(id)}/respond`, { action }); ui.refresh(); ui.toast({ type: 'success', title: action === 'accepted' ? 'You joined the program' : 'Invitation declined' }); },
+    respondVolunteerRequest: async ([id, action]) => { await api.patch(`/volunteer-requests/${enc(id)}/respond`, { email: session.email, name: session.name, action }); ui.refresh(); },
+    updateSubtask: async ([id, progress]) => { if (Number(progress) >= 100) { ui.clearFile('work-proof'); update({ proofTarget: { collection: 'subtasks', recordId: id }, modal: 'workProof' }); return; } await api.patch(`/subtasks/${enc(id)}`, { progress: Number(progress), status: Number(progress) === 100 ? 'completed' : 'in-progress' }); ui.refresh(); },
+    openProgressReport: ([id]) => update({ modal: 'progressReport', progressProgram: ui.data('programs').find((p) => p.id === id), progressDraft: Object.fromEntries(ui.data('subtasks').filter((t) => t.programId === id).map((t) => [t.id,t.progress || 0])) }),
+    saveProgressReport: async () => { if (Object.values(state.progressDraft || {}).some((p) => Number(p) >= 100)) throw new Error('Upload completion proof for each finished subtask below. The organization admin verifies completion.'); await Promise.all(Object.entries(state.progressDraft || {}).map(([id,progress]) => api.patch(`/subtasks/${enc(id)}`, { progress: Number(progress), status: Number(progress) >= 100 ? 'completed' : Number(progress) > 0 ? 'in-progress' : 'pending' }))); update({ modal: null }); ui.refresh(); ui.toast({ type: 'success', title: 'Progress updated' }); },
+    downloadCertificate: ([id]) => { const tasks = ui.data('subtasks').filter((t) => t.programId === id); if (!tasks.length || tasks.some((t) => t.progress < 100)) throw new Error('Complete all assigned subtasks before downloading your certificate.'); update({ modal: 'certificate', certificateProgram: ui.data('programs').find((p) => p.id === id) }); },
+    openOrgModal: ([id]) => { const org = ui.data('organizations').find((o) => o.id === id); update({ editor: { type: 'organization', title: org ? 'Edit Organization' : 'Add Organization', record: org } }); setValues({ 'editor-name': org?.name || '', 'editor-focus': org?.focus || '', 'editor-email': org?.email || '', 'editor-phone': org?.phone || '', 'editor-city': org?.city || '' }); },
+    openVolunteerEditor: ([id]) => { const volunteer = ui.data('volunteers').find((v) => v.id === id); update({ editor: { type: 'volunteer', title: volunteer ? 'Edit Volunteer' : 'Add Volunteer', record: volunteer } }); setValues({ 'editor-name': volunteer?.name || '', 'editor-email': volunteer?.email || '', 'editor-phone': volunteer?.phone || '', 'editor-volunteer-role': volunteer?.role || 'Volunteer', 'editor-volunteer-skills': volunteer?.skills?.join(', ') || '' }); },
+    saveVolunteer: async () => { requireFields(v, ['editor-name','editor-email','editor-phone','editor-volunteer-role']); validateField('editor-email', validateEmail, v['editor-email']); if (v['editor-phone']) validateField('editor-phone', validatePhone, v['editor-phone']); const body = { name: v['editor-name'], email: v['editor-email'], phone: v['editor-phone'], role: v['editor-volunteer-role'], org: state.editor.record?.org || session.org || '', skills: String(v['editor-volunteer-skills'] || '').split(',').map((s) => s.trim()).filter(Boolean) }; if (state.editor.record) await api.patch(`/volunteers/${enc(state.editor.record.id)}`,body); else await api.post('/volunteers',body); update({ editor: null }); ui.refresh(); },
+    openUserEditor: ([id]) => { const user = ui.data('users').find((u) => u.id === id); update({ editor: { type: 'user', title: user ? 'Edit User' : 'Create User', record: user } }); setValues({ 'editor-name': user?.name || '', 'editor-email': user?.email || '', 'editor-phone': user?.phone || '', 'editor-role': user?.role || '', 'editor-org': user?.org || '', 'editor-password': '', 'editor-status': user?.status || 'pending' }); },
+    saveUser: async () => { requireFields(v, ['editor-name','editor-email','editor-role']); validateField('editor-email', validateEmail, v['editor-email']); if (v['editor-phone']) validateField('editor-phone', validatePhone, v['editor-phone']); const body = { name: v['editor-name'], email: v['editor-email'], role: v['editor-role'], phone: v['editor-phone'] || '', org: v['editor-org'] || '' }; if (v['editor-password']) body.password = v['editor-password']; if (state.editor.record) { body.status = v['editor-status']; await api.patch(`/users/${enc(state.editor.record.id)}`,body); } else { if (!body.password || body.password.length < 6) throw new Error('Enter a password of at least 6 characters.'); await api.post('/users',body); } update({ editor: null }); ui.refresh(); },
+    openOrgProfile: () => { ui.clearFile('op-image'); const org = ui.data('organizations').find((o) => o.name === session.org); if (!org) throw new Error('Organization profile not found.'); update({ editor: { type: 'orgProfile', title: 'Edit Organization Profile', record: org } }); setValues(Object.fromEntries(['upiId','bankAccountName','bankAccountNumber','bankIfsc','neededResources'].map((key) => ['op-'+key,org[key] || '']))); },
+    openListingRequest: async () => { ui.clearFile('op-image'); const organizations = await api.get('/organizations/manage'); const org = organizations.find((o) => o.name === session.org); if (!org) throw new Error('Organization profile not found.'); if (!hasBankDetails(org)) throw new Error('Update and save complete bank details before submitting a public listing request.'); if (org.status !== 'active') throw new Error('Your bank details are saved. Ask the platform admin to approve your organization registration first.'); update({ editor: { type: 'listingRequest', title: 'Request Public Organization Listing', record: org } }); setValues(Object.fromEntries(['bankAccountName','bankAccountNumber','bankIfsc'].map((key) => ['op-'+key,org[key] || '']))); },
+    submitListingRequest: async () => { requireFields(v, ['op-bankAccountName','op-bankAccountNumber','op-bankIfsc']); if (!/^\d{9,18}$/.test(v['op-bankAccountNumber'])) throw new FieldError('op-bankAccountNumber', 'Enter a bank account number with 9–18 digits.'); const ifsc = v['op-bankIfsc'].trim().toUpperCase(); if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc)) throw new FieldError('op-bankIfsc', 'Enter a valid IFSC code.'); const body = { bankAccountName: v['op-bankAccountName'].trim(), bankAccountNumber: v['op-bankAccountNumber'], bankIfsc: ifsc }; if (state.files['op-image']) { const form = new FormData(); form.append('file', state.files['op-image']); body.image = (await api.post('/organizations/upload-image', form)).url; } await api.patch(`/organizations/${enc(state.editor.record.id)}/request-listing`, body); update({ editor: null }); ui.refresh(); ui.toast({ type: 'success', title: 'Listing request submitted for platform approval' }); },
+    saveOrgProfile: async () => { requireFields(v, ['op-bankAccountName','op-bankAccountNumber','op-bankIfsc']); const payload = Object.fromEntries(['upiId','bankAccountName','bankAccountNumber','bankIfsc','neededResources'].map((key) => [key,(v['op-'+key] || '').trim()])); payload.bankIfsc = payload.bankIfsc.toUpperCase(); if (['bankAccountName','bankAccountNumber','bankIfsc'].some((key) => payload[key]) && !hasBankDetails(payload)) throw new Error('Enter a valid bank account holder, 9–18 digit account number and IFSC.'); if (state.files['op-image']) { const form = new FormData(); form.append('file',state.files['op-image']); const image = await api.post('/organizations/upload-image',form); payload.image = image.url; } await api.patch(`/organizations/${enc(state.editor.record.id)}`,payload); update({ editor: null }); ui.refresh(); ui.toast({ type: 'success', title: 'Organization profile saved' }); },
+    openAnnouncement: () => { update({ editor: { type: 'announcement', title: 'Send Announcement' } }); setValues({ 'announce-target': 'all', 'announce-title': 'Platform Announcement', 'announce-message': '' }); },
+    sendAnnouncement: async () => { requireFields(v,['announce-message']); const body = { title: v['announce-title'] || 'Platform Announcement', message: v['announce-message'], type: 'announcement' }; const target = v['announce-target']; if (target.startsWith('role:')) body.targetRole = target.slice(5); if (target.startsWith('email:')) body.targetEmail = target.slice(6); await api.post('/notifications',body); update({ editor: null }); ui.toast({ type: 'success', title: 'Announcement sent' }); },
+    saveOrganization: async () => { requireFields(v, ['editor-name', 'editor-focus', 'editor-email', 'editor-phone', 'editor-city']); validateField('editor-email', validateEmail, v['editor-email']); if (v['editor-phone']) validateField('editor-phone', validatePhone, v['editor-phone']); const body = { name: v['editor-name'], focus: v['editor-focus'], email: v['editor-email'], phone: v['editor-phone'], city: v['editor-city'] }; const id = state.editor.record?.id; if (id) await api.patch(`/organizations/${enc(id)}`, body); else await api.post('/organizations', body); update({ editor: null }); ui.refresh(); },
+    mutateRecord: ([collection, id, operation]) => { if (['mark-delivered','mark-completed'].includes(operation) && collection === 'resource-donations' || operation === 'approve' && collection === 'hour-logs') { update({ modal: 'proofReview' }); return; } return confirmMutation(`/${collection}/${enc(id)}${operation === 'delete' ? '' : '/'+operation}`, operation === 'delete' ? 'delete' : 'patch', {}, `${operation[0].toUpperCase()+operation.slice(1)} this record?`); },
+    assignResource: ([id]) => { update({ editor: { type: 'resourceAssignment', title: 'Assign Pickup Volunteer', record: { id } } }); setValues({ 'editor-volunteer': '' }); },
+    allocateResource: ([id]) => { update({ editor: { type: 'resourceAllocation', title: 'Allocate to Program', record: { id } } }); setValues({ 'editor-program': '' }); },
+    assignIncoming: ([id]) => { update({ editor: { type: 'incomingAssignment', title: 'Assign Request Volunteer', record: { id } } }); setValues({ 'editor-volunteer': '' }); },
+    assignOrder: ([id]) => { update({ editor: { type: 'orderAssignment', title: 'Assign Delivery Volunteer', record: { id } } }); setValues({ 'editor-volunteer': '' }); },
+    assignReplacement: ([id]) => { update({ editor: { type: 'replacementAssignment', title: 'Assign Replacement Pickup', record: { id } } }); setValues({ 'editor-volunteer': '' }); },
+    saveAssignment: async () => { const editor = state.editor; const volunteer = ui.data('volunteers').find((p) => p.email === v['editor-volunteer']); if (!volunteer) throw new Error('Select a volunteer.'); const collection = { resourceAssignment: 'resource-donations', incomingAssignment: 'incoming', orderAssignment: 'orders', replacementAssignment: 'replacements' }[editor.type]; await api.patch(`/${collection}/${enc(editor.record.id)}/assign-volunteer`, { volunteerName: volunteer.name, volunteerEmail: volunteer.email }); update({ editor: null }); ui.refresh(); },
+    saveAllocation: async () => { const program = ui.data('programs').find((p) => p.id === v['editor-program']); if (!program) throw new Error('Select a program.'); await api.patch(`/resource-donations/${enc(state.editor.record.id)}/allocate-program`, { programId: program.id, programName: program.name }); update({ editor: null }); ui.refresh(); },
+    updateOrderStatus: async ([id, status]) => { if (status === 'delivered') { if (['admin','superuser'].includes(session.role)) { update({ modal: 'proofReview' }); return; } ui.clearFile('work-proof'); update({ proofTarget: { collection: 'orders', recordId: id }, modal: 'workProof' }); return; } await api.patch(`/orders/${enc(id)}/delivery-status`, { status }); ui.refresh(); },
+    updateReplacementStatus: async ([id, status]) => { if (status === 'replaced') { ui.clearFile('work-proof'); update({ proofTarget: { collection: 'replacements', recordId: id }, modal: 'workProof' }); return; } await api.patch(`/replacements/${enc(id)}/status`, { status }); ui.refresh(); },
+    requestReplacement: ([id]) => { update({ editor: { type: 'replacement', title: 'Request Replacement', record: { id } } }); setValues({ 'editor-reason': '', 'editor-description': '' }); },
+    saveReplacement: async () => { requireFields(v, ['editor-reason', 'editor-description']); await api.post('/replacements', { orderId: state.editor.record.id, reason: v['editor-reason'], description: v['editor-description'], buyerEmail: session.email, buyerName: session.name }); update({ editor: null }); ui.refresh(); ui.toast({ type: 'success', title: 'Replacement request submitted' }); },
+    openAddProductModal: () => { ui.clearFile('prodPhotoInput'); update({ modal: 'addProductModal', editingProduct: null }); setValues({ 'prod-title': '', 'prod-desc': '', 'prod-price': '', 'prod-quantity': '', 'prod-category': 'Handicrafts' }); },
+    closeAddProductModal: () => update({ modal: null }), saveNewProduct: saveProduct,
+    editProduct: ([id]) => { ui.clearFile('prodPhotoInput'); const product = ui.data('products').find((p) => p.id === id); update({ modal: 'addProductModal', editingProduct: product }); setValues({ 'prod-title': product.title, 'prod-desc': product.description, 'prod-price': String(product.price), 'prod-quantity': String(product.quantity), 'prod-category': product.category }); },
+    saveBankDetails: async () => { requireFields(v, ['bank-acc-num', 'bank-ifsc', 'bank-name']); if (!/^\d{9,18}$/.test(v['bank-acc-num'])) throw new FieldError('bank-acc-num', 'Enter a valid bank account number.'); if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(v['bank-ifsc'].toUpperCase())) throw new FieldError('bank-ifsc', 'Enter a valid IFSC code.'); const seller = ui.data('sellers').find((s) => s.email === session.email); if (!seller) throw new Error('Seller profile not found.'); await api.patch(`/sellers/${enc(seller.id)}`, { bankDetails: { account: v['bank-acc-num'], ifsc: v['bank-ifsc'].toUpperCase(), bankName: v['bank-name'] } }); ui.refresh(); ui.toast({ type: 'success', title: 'Bank details saved' }); },
+    acceptRequest: ([id]) => confirmMutation(`/incoming/${enc(id)}/accept`, 'patch', {}, 'Accept this request?'),
+    declineRequest: ([id]) => confirmMutation(`/incoming/${enc(id)}/decline`, 'patch', {}, 'Decline this request?'),
+    viewBeneficiaryReq: () => { throw new Error('The backend has no beneficiary request-tracking endpoint.'); },
+    cancelBeneficiaryReq: () => { throw new Error('The backend has no beneficiary cancellation endpoint. Your request has not been cancelled.'); },
+    closeDetailModal: () => update({ modal: null, detail: null }),
+    resolveFromModal: () => confirmMutation(`/incoming/${enc(state.detail.id)}/resolve`, 'patch', {}, 'Resolve this submission?'),
+  };
+}

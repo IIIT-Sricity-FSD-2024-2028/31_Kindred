@@ -1,0 +1,318 @@
+
+    /* ── Single-Page Tab Styling for Org Admin ── */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 2px solid #e2e8f0;
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+    .tabs .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 20px;
+      font-size: .92rem;
+      font-weight: 600;
+      color: #64748b;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .tabs .tab-btn:hover {
+      color: #3b82f6;
+    }
+    .tabs .tab-btn.active {
+      color: #3b82f6;
+      border-bottom-color: #3b82f6;
+    }
+    .badge-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 100px;
+      background: #f59e0b;
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+    .program-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+      transition: all .2s ease;
+    }
+    .program-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,.08);
+      transform: translateY(-2px);
+    }
+    .action-btn {
+      padding: 6px 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: .8rem;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .action-btn:hover { background: #e2e8f0; }
+    .btn-approve {
+      padding: 6px 14px;
+      background: #ecfdf5;
+      color: #059669;
+      border: 1px solid #a7f3d0;
+      border-radius: 6px;
+      font-size: .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-approve:hover { background: #d1fae5; }
+    .btn-reject {
+      padding: 6px 14px;
+      background: #fef2f2;
+      color: #ef4444;
+      border: 1px solid #fecaca;
+      border-radius: 6px;
+      font-size: .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-reject:hover { background: #fee2e2; }
+    .programs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    /* Organization dashboard layout and action refinements */
+    [data-react-page="/org-admin.html"] .action-btn,
+    [data-react-page="/org-admin.html"] .btn-approve,
+    [data-react-page="/org-admin.html"] .btn-reject {
+      box-sizing:border-box;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:auto;
+      height:auto;
+      min-height:36px;
+      padding:8px 13px;
+      border-radius:8px;
+      font-family:inherit;
+      font-size:.78rem;
+      font-weight:650;
+      line-height:1.15;
+      white-space:normal;
+      text-align:center;
+      text-decoration:none;
+    }
+    [data-react-page="/org-admin.html"] .page-record-actions,
+    [data-react-page="/org-admin.html"] .action-btns {
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:9px;
+    }
+    [data-react-page="/org-admin.html"] #orgOverviewPrograms,
+    [data-react-page="/org-admin.html"] #orgProgramsGrid {
+      display:grid;
+      grid-template-columns:1fr;
+      gap:18px;
+    }
+    [data-react-page="/org-admin.html"] .org-overview-grid {
+      grid-template-columns:1fr !important;
+      gap:24px;
+    }
+    [data-react-page="/org-admin.html"] .org-overview-grid > .section-card:first-child {
+      background:linear-gradient(135deg,#f8fbff,#f1f7ff);
+      border:1px solid #dbeafe;
+    }
+    [data-react-page="/org-admin.html"] .program-card {
+      border-left:4px solid #94a3b8;
+      background:linear-gradient(135deg,#f8fbff,#f1f5f9);
+    }
+    [data-react-page="/org-admin.html"] .program-card.status-active {
+      border-color:#a7e8d1;
+      border-left-color:#10b981;
+      background:linear-gradient(135deg,#f0fdf8,#e9faf3);
+    }
+    [data-react-page="/org-admin.html"] .program-card.status-completed {
+      border-color:#c7d2fe;
+      border-left-color:#6366f1;
+      background:linear-gradient(135deg,#f5f7ff,#eef2ff);
+    }
+    [data-react-page="/org-admin.html"] .program-card.status-paused,
+    [data-react-page="/org-admin.html"] .program-card.status-pending {
+      border-color:#fde3a7;
+      border-left-color:#f59e0b;
+      background:linear-gradient(135deg,#fffbeb,#fff7dc);
+    }
+    [data-react-page="/org-admin.html"] .request-card {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:12px 18px;
+      align-items:start;
+      padding:20px;
+      border:1px solid #dbe5f0;
+      background:linear-gradient(135deg,#f8fbff,#f3f7fc);
+      box-shadow:0 2px 10px rgba(15,23,42,.04);
+    }
+    [data-react-page="/org-admin.html"] .request-card.status-pending {
+      border-color:#fde3a7;
+      background:linear-gradient(135deg,#fffbeb,#fff7dc);
+    }
+    [data-react-page="/org-admin.html"] .request-card.status-accepted,
+    [data-react-page="/org-admin.html"] .request-card.status-resolved {
+      border-color:#b7ead5;
+      background:linear-gradient(135deg,#f0fdf8,#e8faf3);
+    }
+    [data-react-page="/org-admin.html"] .request-card .request-info { min-width:0; }
+    [data-react-page="/org-admin.html"] .request-card .request-badges { justify-self:end; }
+    [data-react-page="/org-admin.html"] .request-card .action-btns {
+      grid-column:1 / -1;
+      padding-top:10px;
+      border-top:1px solid rgba(148,163,184,.22);
+    }
+    [data-react-page="/org-admin.html"] #orgProfileManagerCard {
+      box-sizing:border-box;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      margin:0 0 24px;
+      padding:24px;
+      border:1px solid #bfdbfe;
+      border-left:4px solid #3b82f6;
+      border-radius:14px;
+      background:linear-gradient(135deg,#eff6ff,#f8fbff);
+      box-shadow:0 3px 14px rgba(15,23,42,.06);
+    }
+    [data-react-page="/org-admin.html"] #orgProfileManagerCard h3 { margin:0 0 10px; }
+    [data-react-page="/org-admin.html"] #orgProfileManagerCard p { margin:5px 0; }
+    [data-react-page="/org-admin.html"] #orgProfileManagerCard .btn-primary-sm {
+      border:0;
+      border-radius:8px;
+      padding:9px 14px;
+      color:#fff;
+      background:#2563eb;
+      font-family:inherit;
+      font-weight:700;
+      cursor:pointer;
+    }
+    [data-react-page="/org-admin.html"] .section-card-header > * { min-width:0; }
+    [data-react-page="/org-admin.html"] .section-card-header .search-bar {
+      flex:0 1 360px;
+      width:360px;
+      max-width:100%;
+    }
+    [data-react-page="/org-admin.html"] .search-bar input {
+      box-sizing:border-box;
+      width:100%;
+      min-width:0;
+      max-width:100%;
+    }
+    [data-react-page="/org-admin.html"] .org-table .volunteer-row:nth-child(odd) {
+      background:#f8fbff;
+    }
+    [data-react-page="/org-admin.html"] .org-table .volunteer-row:nth-child(even) {
+      background:#f0fdf8;
+    }
+    [data-react-page="/org-admin.html"] .org-table .volunteer-row:hover {
+      background:#eaf2ff;
+    }
+    [data-react-page="/org-admin.html"] .org-table .volunteer-row td:first-child {
+      border-left:3px solid #93c5fd;
+    }
+    [data-react-page="/org-admin.html"] #org-panel-resources .section-card {
+      border-color:#dbeafe;
+      background:linear-gradient(135deg,#f8fbff,#f3f7fc);
+    }
+    [data-react-page="/org-admin.html"] .org-table .resource-row {
+      background:#f8fbff;
+      transition:background .15s ease;
+    }
+    [data-react-page="/org-admin.html"] .org-table .resource-row:nth-child(even) {
+      background:#f3f8ff;
+    }
+    [data-react-page="/org-admin.html"] .org-table .resource-row.status-submitted,
+    [data-react-page="/org-admin.html"] .org-table .resource-row.status-pending_pickup {
+      background:#fffdf5;
+    }
+    [data-react-page="/org-admin.html"] .org-table .resource-row.status-in_transit {
+      background:#f3f8ff;
+    }
+    [data-react-page="/org-admin.html"] .org-table .resource-row.status-delivered,
+    [data-react-page="/org-admin.html"] .org-table .resource-row.status-completed {
+      background:#f2fbf7;
+    }
+    [data-react-page="/org-admin.html"] .org-table .resource-row:hover {
+      background:#e8f1ff;
+    }
+    [data-react-page="/org-admin.html"] .org-table .resource-row td:first-child {
+      border-left:4px solid #60a5fa;
+    }
+    [data-react-page="/org-admin.html"] .org-table .resource-row.status-submitted td:first-child,
+    [data-react-page="/org-admin.html"] .org-table .resource-row.status-pending_pickup td:first-child {
+      border-left-color:#f59e0b;
+    }
+    [data-react-page="/org-admin.html"] .org-table .resource-row.status-delivered td:first-child,
+    [data-react-page="/org-admin.html"] .org-table .resource-row.status-completed td:first-child {
+      border-left-color:#10b981;
+    }
+    [data-react-page="/org-admin.html"] .shop-orders-section {
+      padding:22px 0 0;
+    }
+    [data-react-page="/org-admin.html"] .order-record-card {
+      border-left:4px solid #f59e0b;
+      background:linear-gradient(135deg,#f8fbff,#f4f7fc);
+      box-shadow:0 3px 12px rgba(15,23,42,.05);
+    }
+    [data-react-page="/org-admin.html"] .order-record-card.status-delivered {
+      border-left-color:#10b981;
+      background:linear-gradient(135deg,#f2fbf7,#f7fcfa);
+    }
+    [data-react-page="/org-admin.html"] #org-panel-resources .action-view {
+      color:#fff;
+      background:#2563eb;
+      border-color:#2563eb;
+    }
+    [data-react-page="/org-admin.html"] #org-panel-resources .resource-assign,
+    [data-react-page="/org-admin.html"] .shop-orders-section .order-assign {
+      color:#fff;
+      background:#d97706;
+      border-color:#d97706;
+    }
+    [data-react-page="/org-admin.html"] #org-panel-resources .resource-allocate {
+      color:#fff;
+      background:#7c3aed;
+      border-color:#7c3aed;
+    }
+    [data-react-page="/org-admin.html"] #org-panel-resources .action-success {
+      color:#fff;
+      background:#059669;
+      border-color:#059669;
+    }
+    [data-react-page="/org-admin.html"] #org-panel-resources .action-btn:hover,
+    [data-react-page="/org-admin.html"] .shop-orders-section .order-assign:hover {
+      color:#fff;
+      filter:brightness(.92);
+      transform:translateY(-1px);
+    }
+    @media (max-width:760px) {
+      [data-react-page="/org-admin.html"] .org-overview-grid { grid-template-columns:1fr !important; }
+      [data-react-page="/org-admin.html"] .request-card { grid-template-columns:1fr; }
+      [data-react-page="/org-admin.html"] .request-card .request-badges { justify-self:start; }
+      [data-react-page="/org-admin.html"] #orgProfileManagerCard { align-items:flex-start; flex-direction:column; }
+    }
+  

@@ -1,0 +1,69 @@
+
+    /* ─── 3D Card Scene ─── */
+    .card-scene { width:100%; perspective:900px; margin-bottom:22px; }
+    .card-3d {
+      width:100%; max-width:320px; height:180px;
+      margin:0 auto;
+      position:relative; transform-style:preserve-3d;
+      transition:transform .6s cubic-bezier(.4,0,.2,1);
+    }
+    .card-3d.flipped { transform:rotateY(180deg); }
+    .card-face {
+      position:absolute; width:100%; height:100%;
+      border-radius:16px; backface-visibility:hidden;
+      padding:20px 22px;
+      display:flex; flex-direction:column; justify-content:space-between;
+      box-shadow:0 8px 32px rgba(0,0,0,.18);
+    }
+    .card-front {
+      background:linear-gradient(135deg,#1e293b 0%,#334155 50%,#1e293b 100%);
+      color:#fff;
+    }
+    .card-back {
+      background:linear-gradient(135deg,#334155,#1e293b);
+      transform:rotateY(180deg);
+    }
+    .card-front-top { display:flex; justify-content:space-between; align-items:center; }
+    .card-chip { font-size:1.6rem; }
+    .card-network-logo { font-size:1.7rem; }
+    .card-number-display { font-size:1.15rem; letter-spacing:.18em; color:#e2e8f0; font-family:monospace; }
+    .card-front-bottom { display:flex; gap:24px; align-items:flex-end; }
+    .card-label-sm { font-size:.6rem; letter-spacing:.06em; color:#94a3b8; text-transform:uppercase; }
+    .card-holdername { font-size:.82rem; color:#f1f5f9; letter-spacing:.05em; text-transform:uppercase; margin-top:2px; max-width:160px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .card-expiry-display { font-size:.88rem; color:#f1f5f9; font-family:monospace; margin-top:2px; }
+    .card-stripe { background:linear-gradient(90deg,#1e293b,#475569); height:46px; margin:-20px -22px 14px; }
+    .card-cvv-area { background:#f1f5f9; border-radius:6px; padding:6px 14px; display:flex; justify-content:space-between; align-items:center; }
+    .card-cvv-display { font-family:monospace; letter-spacing:.15em; color:#1e293b; font-size:.95rem; }
+
+    /* ─── Card Form Fields ─── */
+    .card-form { display:flex; flex-direction:column; gap:14px; }
+    .card-field-group { display:flex; flex-direction:column; gap:4px; }
+    .card-field-label { font-size:.8rem; font-weight:600; color:#374151; }
+    .card-field-wrap {
+      display:flex; align-items:center; gap:8px;
+      border:1.5px solid #e2e8f0; border-radius:10px;
+      padding:0 12px; background:#fff;
+      transition:border-color .2s, box-shadow .2s;
+    }
+    .card-field-wrap:focus-within { border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,.12); }
+    .card-field-wrap.valid { border-color:#22c55e; }
+    .card-field-wrap.invalid { border-color:#ef4444; box-shadow:0 0 0 3px rgba(239,68,68,.1); }
+    .card-field-input {
+      flex:1; border:none; outline:none; padding:11px 0;
+      font-size:.9rem; font-family:monospace; background:transparent; color:#1e293b;
+    }
+    .card-field-icon { font-size:1rem; color:#94a3b8; flex-shrink:0; }
+    .card-field-error { font-size:.75rem; color:#ef4444; min-height:16px; }
+    .save-card-label { display:flex; align-items:center; gap:8px; font-size:.82rem; color:#4b5563; cursor:pointer; }
+    .save-card-label input { accent-color:#6366f1; width:15px; height:15px; }
+    .btn-pay-now {
+      background:linear-gradient(135deg,#6366f1,#4f46e5);
+      color:#fff; border:none; padding:14px 24px;
+      border-radius:12px; font-size:1rem; font-weight:700;
+      cursor:pointer; width:100%;
+      box-shadow:0 4px 14px rgba(99,102,241,.35);
+      transition:all .2s; letter-spacing:.02em;
+    }
+    .btn-pay-now:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(99,102,241,.45); }
+    .btn-pay-now:active { transform:translateY(0); }
+  
