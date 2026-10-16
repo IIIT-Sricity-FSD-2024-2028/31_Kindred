@@ -1,0 +1,18 @@
+
+    .pill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .pill-btn{padding:10px 8px;border:1.5px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:500;color:var(--mid);transition:all var(--t);text-align:center}
+    .pill-btn:hover{border-color:var(--blue);background:var(--role-bg)}
+    .pill-btn.active{border-color:#ef4444;background:#fef2f2;color:#ef4444}
+    
+    .emergency-icon-wrap {
+      width: 58px; height: 58px; background: #fef2f2; border: 2px solid #fecaca;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px; font-size: 1.5rem;
+    }
+    
+    .btn-emergency {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+    }
+    .btn-emergency:hover { box-shadow: 0 6px 16px rgba(239,68,68,0.4); opacity: 0.95; }
+  

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" role="img" aria-label="NGO">
+  <rect width="640" height="360" fill="#e9f3f5"/>
+  <circle cx="320" cy="180" r="122" fill="#d5e9eb"/>
+  <text x="320" y="208" text-anchor="middle" font-family="Arial,sans-serif" font-size="86" font-weight="700" letter-spacing="8" fill="#1a3b5c">NGO</text>
+</svg>

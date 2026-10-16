@@ -1,0 +1,70 @@
+
+    .navbar-wrapper {
+      position: relative;
+    }
+
+    [data-layout-frame][data-route="/beneficiary-dashboard.html"] > .navbar {
+      display: grid !important;
+      grid-template-columns: minmax(180px, 1fr) auto minmax(180px, 1fr);
+      align-items: center;
+    }
+    [data-layout-frame][data-route="/beneficiary-dashboard.html"] > .navbar .navbar-brand { justify-self: start; }
+    [data-layout-frame][data-route="/beneficiary-dashboard.html"] > .navbar .navbar-links { justify-self: center; }
+    [data-layout-frame][data-route="/beneficiary-dashboard.html"] > .navbar .navbar-user {
+      justify-self: end;
+      margin-left: 0 !important;
+    }
+    [data-react-page="/beneficiary-dashboard.html"] .requests-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    [data-react-page="/beneficiary-dashboard.html"] .beneficiary-request-card {
+      border: 1px solid #fed7aa;
+      border-left: 4px solid #f97316;
+      background: linear-gradient(135deg, #fff, #fff7ed);
+    }
+    [data-react-page="/beneficiary-dashboard.html"] .beneficiary-request-card.status-accepted,
+    [data-react-page="/beneficiary-dashboard.html"] .beneficiary-request-card.status-assigned,
+    [data-react-page="/beneficiary-dashboard.html"] .beneficiary-request-card.status-in_progress {
+      border-color: #bfdbfe;
+      border-left-color: #3b82f6;
+      background: linear-gradient(135deg, #fff, #eff6ff);
+    }
+    [data-react-page="/beneficiary-dashboard.html"] .beneficiary-request-card.status-resolved,
+    [data-react-page="/beneficiary-dashboard.html"] .beneficiary-request-card.status-completed {
+      border-color: #a7f3d0;
+      border-left-color: #10b981;
+      background: linear-gradient(135deg, #fff, #ecfdf5);
+    }
+    [data-react-page="/beneficiary-dashboard.html"] .beneficiary-request-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 24px;
+      margin: 14px 0;
+      color: #64748b;
+      font-size: .86rem;
+    }
+    [data-react-page="/beneficiary-dashboard.html"] .beneficiary-request-card .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: auto !important;
+      min-width: 88px;
+      min-height: 40px;
+      padding: 9px 16px;
+      border: 1px solid #ea580c;
+      border-radius: 9px;
+      background: #ea580c;
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    @media (max-width: 900px) {
+      [data-layout-frame][data-route="/beneficiary-dashboard.html"] > .navbar { display: flex !important; }
+      [data-layout-frame][data-route="/beneficiary-dashboard.html"] > .navbar .navbar-user { margin-left: auto !important; }
+    }
+  
