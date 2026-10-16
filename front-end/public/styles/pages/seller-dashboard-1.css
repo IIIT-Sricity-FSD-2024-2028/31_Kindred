@@ -1,0 +1,201 @@
+
+    .products-seller-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15,23,42,.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+    .modal-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 20px 48px rgba(0,0,0,.2);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: .82rem;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: .9rem;
+      color: #1e293b;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: #0d9488;
+    }
+    .action-btn {
+      padding: 6px 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: .8rem;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .action-btn:hover { background: #fee2e2; border-color: #fecaca; color: #ef4444; }
+
+    [data-react-page="/seller-dashboard.html"] .modal-box,
+    [data-react-page="/seller-dashboard.html"] .modal-box * { box-sizing: border-box; }
+    [data-react-page="/seller-dashboard.html"] .modal-box { overflow-x: hidden; }
+    [data-react-page="/seller-dashboard.html"] .modal-box .form-group input,
+    [data-react-page="/seller-dashboard.html"] .modal-box .form-group select,
+    [data-react-page="/seller-dashboard.html"] .modal-box .form-group textarea { max-width: 100%; }
+    [data-react-page="/seller-dashboard.html"] .seller-modal-cancel {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 104px;
+      min-height: 48px;
+      padding: 11px 22px;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      color: #334155;
+      font: inherit;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    [data-react-page="/seller-dashboard.html"] .seller-modal-cancel:hover { background: #f8fafc; border-color: #94a3b8; }
+    [data-react-page="/seller-dashboard.html"] .seller-modal-cancel:focus-visible,
+    [data-react-page="/seller-dashboard.html"] #prodPhotoDropZone:focus-visible {
+      outline: 3px solid rgba(13, 148, 136, .22);
+      outline-offset: 2px;
+    }
+    [data-react-page="/seller-dashboard.html"] #prodPhotoDropZone { cursor: pointer; }
+
+    [data-react-page="/seller-dashboard.html"] .seller-bank-card {
+      overflow: hidden;
+      border-color: #99f6e4 !important;
+      border-left: 4px solid #0d9488 !important;
+      background: linear-gradient(135deg, #fff, #f0fdfa) !important;
+      box-shadow: 0 7px 20px rgba(13, 148, 136, .08);
+    }
+    [data-react-page="/seller-dashboard.html"] .seller-bank-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+    [data-react-page="/seller-dashboard.html"] .seller-bank-grid .form-group {
+      min-width: 0;
+      margin-bottom: 0;
+    }
+    [data-react-page="/seller-dashboard.html"] .seller-bank-grid input {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      background: rgba(255, 255, 255, .9);
+    }
+
+    [data-react-page="/seller-dashboard.html"] .shop-product-actions {
+      display: grid;
+      grid-template-columns: minmax(110px, 1fr) auto auto;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 22px;
+    }
+    [data-react-page="/seller-dashboard.html"] .shop-product-actions .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: auto !important;
+      min-width: 78px;
+      height: auto !important;
+      min-height: 40px;
+      padding: 9px 14px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    [data-react-page="/seller-dashboard.html"] .shop-product-actions .action-edit {
+      border-color: #f59e0b;
+      background: #fffbeb;
+      color: #b45309;
+    }
+    [data-react-page="/seller-dashboard.html"] .shop-product-actions .action-danger {
+      border-color: #fca5a5;
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    [data-layout-frame][data-route="/seller-dashboard.html"] .page-operational-sections {
+      max-width: 1500px;
+      margin: 28px auto 0;
+      padding: 0 32px 40px;
+      box-sizing: border-box;
+    }
+    [data-layout-frame][data-route="/seller-dashboard.html"] .shop-orders-section {
+      min-height: 190px;
+      padding: 26px 30px;
+      border: 1px solid #bae6fd;
+      border-left: 4px solid #0ea5e9;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #fff, #f0f9ff);
+      box-shadow: 0 7px 20px rgba(14, 165, 233, .07);
+    }
+    [data-layout-frame][data-route="/seller-dashboard.html"] .shop-orders-section h2 {
+      margin: 0 0 18px;
+      color: #0f172a;
+    }
+    [data-layout-frame][data-route="/seller-dashboard.html"] .shop-orders-section .page-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100px;
+      margin: 0;
+      border: 1px dashed #7dd3fc;
+      border-radius: 12px;
+      background: rgba(255,255,255,.72);
+      color: #64748b;
+    }
+    [data-layout-frame][data-route="/seller-dashboard.html"] .order-record-card {
+      margin-top: 14px;
+      border-color: #bae6fd;
+      background: #fff;
+    }
+
+    @media (max-width: 900px) {
+      [data-react-page="/seller-dashboard.html"] .seller-bank-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    @media (max-width: 560px) {
+      [data-react-page="/seller-dashboard.html"] .shop-product-actions {
+        grid-template-columns: 1fr 1fr;
+      }
+      [data-react-page="/seller-dashboard.html"] .shop-product-actions > strong {
+        grid-column: 1 / -1;
+      }
+      [data-layout-frame][data-route="/seller-dashboard.html"] .page-operational-sections {
+        padding-inline: 16px;
+      }
+    }
+  

@@ -1,0 +1,98 @@
+
+    .shop-hero {
+      background: linear-gradient(135deg, #0f766e 0%, #115e59 50%, #134e4a 100%);
+      color: #fff;
+      padding: 56px 24px;
+      text-align: center;
+      border-radius: 20px;
+      margin-bottom: 36px;
+      box-shadow: 0 10px 30px rgba(15,118,110,.18);
+    }
+    .shop-hero h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+    .shop-hero p {
+      font-size: 1.05rem;
+      max-width: 680px;
+      margin: 0 auto 24px;
+      opacity: .92;
+      line-height: 1.6;
+    }
+    .category-chips {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .category-chip {
+      padding: 9px 20px;
+      border-radius: 100px;
+      border: 1.5px solid #e2e8f0;
+      background: #fff;
+      font-family: inherit;
+      font-size: .85rem;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .category-chip:hover {
+      border-color: #0d9488;
+      color: #0d9488;
+    }
+    .category-chip.active {
+      background: #0d9488;
+      color: #fff;
+      border-color: #0d9488;
+      box-shadow: 0 4px 12px rgba(13,148,136,.25);
+    }
+    .shop-products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .shop-product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,.08) !important;
+    }
+    .btn-buy {
+      padding: 8px 16px;
+      background: #0d9488;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    .btn-buy:hover { opacity: .9; }
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15,23,42,.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+    .modal-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 20px 48px rgba(0,0,0,.2);
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: .85rem; font-weight: 600; color: #475569; margin-bottom: 6px; }
+    .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: .9rem; }
+  

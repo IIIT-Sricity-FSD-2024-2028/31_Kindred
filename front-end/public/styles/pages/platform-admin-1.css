@@ -1,0 +1,398 @@
+
+    /* ── Single-Page Tab System ── */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 2px solid #e2e8f0;
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+    .tabs .tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 20px;
+      font-size: .92rem;
+      font-weight: 600;
+      color: #64748b;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .tabs .tab:hover {
+      color: #6366f1;
+    }
+    .tabs .tab.active {
+      color: #6366f1;
+      border-bottom-color: #6366f1;
+    }
+    .tab-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 100px;
+      background: #ef4444;
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+
+    /* ── Filter Buttons ── */
+    .filter-btn, .inbox-filter-btn {
+      padding: 8px 18px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 100px;
+      background: #fff;
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .filter-btn:hover, .inbox-filter-btn:hover {
+      border-color: #6366f1;
+      color: #6366f1;
+    }
+    .filter-btn.active, .inbox-filter-btn.active {
+      background: #6366f1;
+      color: #fff;
+      border-color: #6366f1;
+    }
+    .filter-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 100px;
+      background: #f1f5f9;
+      color: #64748b;
+      font-size: .7rem;
+      font-weight: 700;
+      margin-left: 6px;
+    }
+    .filter-btn.active .filter-count {
+      background: rgba(255,255,255,.25);
+      color: #fff;
+    }
+    .action-btn {
+      padding: 6px 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: .8rem;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .action-btn:hover { background: #e2e8f0; }
+    .btn-approve {
+      padding: 6px 12px;
+      background: #ecfdf5;
+      color: #059669;
+      border: 1px solid #a7f3d0;
+      border-radius: 6px;
+      font-size: .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-approve:hover { background: #d1fae5; }
+    .btn-reject {
+      padding: 6px 12px;
+      background: #fef2f2;
+      color: #ef4444;
+      border: 1px solid #fecaca;
+      border-radius: 6px;
+      font-size: .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-reject:hover { background: #fee2e2; }
+
+    /* Platform dashboard refinements */
+    [data-react-page="/platform-admin.html"] .platform-header-actions {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    [data-react-page="/platform-admin.html"] .section-card-header > * {
+      min-width:0;
+    }
+    [data-react-page="/platform-admin.html"] .section-card-header .search-bar {
+      flex:0 1 360px;
+      width:360px;
+      max-width:100%;
+    }
+    [data-react-page="/platform-admin.html"] .search-bar input {
+      box-sizing:border-box;
+      width:100%;
+      min-width:0;
+      max-width:100%;
+    }
+    [data-react-page="/platform-admin.html"] .organization-header-actions {
+      min-width:0;
+      max-width:100%;
+      flex-wrap:nowrap;
+    }
+    [data-react-page="/platform-admin.html"] .organization-header-actions .search-bar {
+      width:260px;
+      min-width:0;
+      max-width:100%;
+    }
+    [data-react-page="/platform-admin.html"] .organization-header-actions .search-bar input {
+      box-sizing:border-box;
+      width:100%;
+    }
+    [data-react-page="/platform-admin.html"] .organization-header-actions .btn-add-org {
+      flex:0 0 auto;
+      white-space:nowrap;
+    }
+    [data-react-page="/platform-admin.html"] .user-header-actions {
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+      min-width:0;
+      max-width:100%;
+    }
+    [data-react-page="/platform-admin.html"] .user-header-actions .search-bar {
+      width:320px;
+      min-width:180px;
+      max-width:100%;
+    }
+    [data-react-page="/platform-admin.html"] .user-header-actions .search-bar input {
+      box-sizing:border-box;
+      width:100%;
+    }
+    [data-react-page="/platform-admin.html"] .user-header-actions .btn-add-org {
+      flex:0 0 auto;
+      white-space:nowrap;
+    }
+    [data-react-page="/platform-admin.html"] .page-operational-sections {
+      margin:24px 0 0;
+    }
+    [data-react-page="/platform-admin.html"] .page-operational-sections > section {
+      box-sizing:border-box;
+      padding:24px;
+      border:1px solid #e6edf5;
+      border-radius:14px;
+      background:#fbfdff;
+      box-shadow:0 3px 14px rgba(15,23,42,.05);
+    }
+    [data-react-page="/platform-admin.html"] .page-operational-sections > section h2 {
+      margin:0 0 16px;
+    }
+    [data-react-page="/platform-admin.html"] .page-operational-sections .page-record-card {
+      margin-bottom:12px;
+      background:linear-gradient(135deg,#f8fbff,#eef6ff);
+      border-color:#d7e5f5;
+    }
+    [data-react-page="/platform-admin.html"] .seller-record-card {
+      border-left:4px solid #94a3b8;
+      background:linear-gradient(135deg,#f8fbff,#f1f5f9);
+    }
+    [data-react-page="/platform-admin.html"] .seller-record-card.status-approved {
+      border-color:#86d8ba;
+      border-left-color:#10b981;
+      background:linear-gradient(135deg,#f0fdf8,#e9faf3);
+    }
+    [data-react-page="/platform-admin.html"] .seller-record-card.status-pending {
+      border-color:#f8d687;
+      border-left-color:#f59e0b;
+      background:linear-gradient(135deg,#fffbeb,#fff5d6);
+    }
+    [data-react-page="/platform-admin.html"] .seller-record-card.status-rejected {
+      border-color:#fecaca;
+      border-left-color:#ef4444;
+      background:linear-gradient(135deg,#fff7f7,#fef2f2);
+    }
+    [data-react-page="/platform-admin.html"] .seller-record-card .action-btns {
+      gap:10px;
+      margin-top:12px;
+    }
+    [data-react-page="/platform-admin.html"] .btn-announce {
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      min-height:42px;
+      padding:10px 18px;
+      border:1px solid #c7d2fe;
+      border-radius:10px;
+      background:#eef2ff;
+      color:#4338ca;
+      font-family:inherit;
+      font-size:.86rem;
+      font-weight:700;
+      cursor:pointer;
+      transition:background .18s, border-color .18s, transform .18s;
+    }
+    [data-react-page="/platform-admin.html"] .btn-announce:hover {
+      background:#e0e7ff;
+      border-color:#a5b4fc;
+      transform:translateY(-1px);
+    }
+
+    [data-react-page="/platform-admin.html"] .charts-row,
+    [data-react-page="/platform-admin.html"] .charts-split { align-items:stretch; }
+    [data-react-page="/platform-admin.html"] .chart-container {
+      box-sizing:border-box;
+      min-width:0;
+      border:1px solid #e7edf5;
+      box-shadow:0 5px 18px rgba(15,23,42,.06);
+    }
+    [data-react-page="/platform-admin.html"] .chart-container h3 { margin:0 0 14px; }
+    [data-react-page="/platform-admin.html"] .react-data-chart {
+      display:flex;
+      align-items:center;
+      width:100%;
+      min-height:0;
+      height:220px;
+      margin:0;
+    }
+    [data-react-page="/platform-admin.html"] .react-data-chart svg {
+      display:block;
+      width:100%;
+      height:100%;
+      max-height:none;
+    }
+    [data-react-page="/platform-admin.html"] .donut-chart-wrapper {
+      box-sizing:border-box;
+      min-height:240px;
+      padding:10px !important;
+    }
+    [data-react-page="/platform-admin.html"] .bar-chart-wrapper {
+      box-sizing:border-box;
+      height:auto;
+      min-height:240px;
+      padding:10px !important;
+    }
+
+    [data-react-page="/platform-admin.html"] .action-btns {
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:7px;
+    }
+    [data-react-page="/platform-admin.html"] .action-btn,
+    [data-react-page="/platform-admin.html"] .btn-approve,
+    [data-react-page="/platform-admin.html"] .btn-reject {
+      box-sizing:border-box;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:auto;
+      height:auto;
+      min-height:34px;
+      padding:7px 12px;
+      border-radius:8px;
+      font-family:inherit;
+      font-size:.78rem;
+      font-weight:600;
+      line-height:1;
+      white-space:nowrap;
+      text-decoration:none;
+    }
+    [data-react-page="/platform-admin.html"] .action-btn {
+      color:#334155;
+      background:#f8fafc;
+      border-color:#dbe3ee;
+    }
+    [data-react-page="/platform-admin.html"] .action-btn:hover {
+      color:#1d4ed8;
+      background:#eff6ff;
+      border-color:#bfdbfe;
+    }
+    [data-react-page="/platform-admin.html"] .request-card {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:12px 20px;
+      align-items:center;
+      padding:18px 20px;
+      border:1px solid #dbe5f0;
+      background:linear-gradient(135deg,#f8fbff 0%,#f3f7fc 100%);
+      box-shadow:0 2px 10px rgba(15,23,42,.04);
+    }
+    [data-react-page="/platform-admin.html"] .request-card.status-pending {
+      border-color:#fde3a7;
+      background:linear-gradient(135deg,#fffbeb 0%,#fff7dc 100%);
+    }
+    [data-react-page="/platform-admin.html"] .request-card.status-accepted,
+    [data-react-page="/platform-admin.html"] .request-card.status-resolved {
+      border-color:#b7ead5;
+      background:linear-gradient(135deg,#f0fdf8 0%,#e8faf3 100%);
+    }
+    [data-react-page="/platform-admin.html"] .request-card.status-declined,
+    [data-react-page="/platform-admin.html"] .request-card.status-rejected {
+      border-color:#fecaca;
+      background:linear-gradient(135deg,#fff7f7 0%,#fef2f2 100%);
+    }
+    [data-react-page="/platform-admin.html"] #panel-overview > .section-card {
+      background:#fbfdff;
+      border:1px solid #e6edf5;
+    }
+    [data-react-page="/platform-admin.html"] .status-badge.pending {
+      color:#a16207;
+      background:#fef3c7;
+    }
+    [data-react-page="/platform-admin.html"] .status-badge.accepted,
+    [data-react-page="/platform-admin.html"] .status-badge.resolved {
+      color:#047857;
+      background:#d1fae5;
+    }
+    [data-react-page="/platform-admin.html"] .status-badge.declined,
+    [data-react-page="/platform-admin.html"] .status-badge.rejected {
+      color:#b91c1c;
+      background:#fee2e2;
+    }
+    [data-react-page="/platform-admin.html"] .request-card .request-info { min-width:0; }
+    [data-react-page="/platform-admin.html"] .request-card .request-id {
+      color:#64748b;
+      font-size:.72rem;
+      font-weight:700;
+      letter-spacing:.04em;
+    }
+    [data-react-page="/platform-admin.html"] .request-card h4 { margin:5px 0; }
+    [data-react-page="/platform-admin.html"] .request-card p { margin:5px 0; }
+    [data-react-page="/platform-admin.html"] .request-card .request-badges { justify-self:end; }
+    [data-react-page="/platform-admin.html"] .request-card .action-btns {
+      grid-column:1 / -1;
+      padding-top:10px;
+      border-top:1px solid #eef2f7;
+    }
+
+    @media (max-width:700px) {
+      [data-react-page="/platform-admin.html"] .platform-header-actions { justify-content:flex-start; }
+      [data-react-page="/platform-admin.html"] .organization-header-actions {
+        width:100%;
+        flex-wrap:wrap;
+      }
+      [data-react-page="/platform-admin.html"] .organization-header-actions .search-bar {
+        width:min(100%, 320px);
+        flex:1 1 220px;
+      }
+      [data-react-page="/platform-admin.html"] .user-header-actions {
+        width:100%;
+        justify-content:flex-start;
+        flex-wrap:wrap;
+      }
+      [data-react-page="/platform-admin.html"] .user-header-actions .search-bar {
+        flex:1 1 220px;
+      }
+      [data-react-page="/platform-admin.html"] .charts-split { grid-template-columns:1fr; }
+      [data-react-page="/platform-admin.html"] .request-card { grid-template-columns:1fr; }
+      [data-react-page="/platform-admin.html"] .request-card .request-badges { justify-self:start; }
+    }
+  
