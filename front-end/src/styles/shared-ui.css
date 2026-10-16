@@ -1,0 +1,66 @@
+/* Small React-specific behavior rules. Original CSS is loaded per route. */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+#root { display: flex; flex-direction: column; min-height: 100vh; width: 100%; }
+[data-layout-frame] { display: flex; flex-direction: column; min-height: 100vh; width: 100%; }
+[data-layout-frame][hidden] { display: none; }
+.user-btn .user-info { display: flex; flex-direction: column; }
+.user-btn .user-menu-trigger { gap: 8px; }
+.user-menu-trigger { display: flex; align-items: center; gap: 10px; padding: 0; border: 0; background: transparent; font: inherit; cursor: pointer; text-align: left; color: inherit; min-width: 0; max-width: 100%; }
+.user-menu-trigger:focus-visible { outline: 2px solid #2563a8; outline-offset: 4px; border-radius: 24px; }
+.nav-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.12); min-width: 210px; z-index: 9999; padding: 8px 0; }
+.account-summary { padding: 10px 16px 8px; border-bottom: 1px solid #f1f5f9; margin-bottom: 4px; font-size: .82rem; font-weight: 700; color: #1e293b; }
+.account-summary small { display: block; font-size: .74rem; font-weight: 400; color: #94a3b8; margin-top: 2px; }
+.nav-dropdown a, .nav-dropdown button { display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: .85rem; color: #374151; text-decoration: none; }
+.nav-dropdown button { width: 100%; text-align: left; color: #ef4444; background: none; border: none; cursor: pointer; font-family: inherit; }
+.nav-dropdown hr { border: none; border-top: 1px solid #f1f5f9; margin: 4px 0; }
+.footer-contact-list { color: #cbd5e1; font-size: 14px; }
+.footer-legal-labels { display: flex; gap: 20px; color: #94a3b8; }
+.footer-policy-label { font-size: 14px; color: #cbd5e1; }
+.classic-footer { background: #1a3b5c; color: #fff; padding: 40px 0 24px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin-top: auto; }
+.classic-footer .footer-content { max-width: 1200px; margin: 0 auto 40px; padding: 0 32px; display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 40px; }
+.classic-footer .footer-logo { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 24px; margin-bottom: 16px; }
+.classic-footer .footer-brand p { color: #e2e8f0; font-size: 14px; line-height: 1.6; padding-right: 20px; }
+.classic-footer .footer-col h4 { color: #94a3b8; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+.classic-footer .footer-contact-item { color: #e2e8f0; font-size: 14px; margin-bottom: 12px; display: flex; gap: 10px; }
+.classic-footer .footer-contact-item a { color: #ffcccc; text-decoration: none; font-weight: 600; }
+.classic-footer .footer-bottom { flex-wrap: wrap; gap: 16px; }
+.classic-footer .classic-links { list-style: none; padding: 0; margin: 0; }
+.classic-footer .classic-links li { margin-bottom: 12px; }
+.classic-footer .classic-links a { color: #e2e8f0; text-decoration: none; font-size: 14px; }
+.classic-footer .footer-policy-label { color: #e2e8f0; }
+.migration-content { box-sizing: border-box; flex: 1; }
+.migration-content > .page-header { width: 100%; }
+.tabs button { font-family: inherit; }
+.shared-tab-action { border: 0; background: none; }
+.react-modal { border: 0; margin: 0; width: 100%; height: 100%; max-width: none; max-height: none; box-sizing: border-box; color: inherit; }
+.react-modal::backdrop { background: transparent; }
+.shared-error { color: #ef4444; }
+.notification-dock { position: fixed; right: 22px; top: 82px; z-index: 9998; }
+.notification-bell { width: 46px; height: 46px; border-radius: 14px; border: 1px solid #e2e8f0; background: #fff; box-shadow: 0 8px 24px rgba(15,23,42,.12); cursor: pointer; font-size: 1.25rem; position: relative; }
+.notification-count { position: absolute; right: -5px; top: -5px; background: #ef4444; color: #fff; border-radius: 20px; min-width: 20px; height: 20px; padding: 0 4px; font-size: .65rem; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+.notification-panel { position: absolute; right: 0; top: 54px; width: 350px; max-width: 88vw; max-height: 440px; overflow: auto; background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; box-shadow: 0 18px 50px rgba(15,23,42,.18); }
+.notification-heading { padding: 13px 14px; font-weight: 800; color: #0f172a; border-bottom: 1px solid #e2e8f0; }
+.notification-item { display: block; width: 100%; text-align: left; border: 0; padding: 11px 12px; border-bottom: 1px solid #eef2f7; background: #fff; cursor: pointer; font-family: inherit; }
+.notification-item.unread { background: #f0fdfa; }
+.notification-title { display: block; font-weight: 700; color: #0f172a; font-size: .82rem; }
+.notification-message { display: block; font-size: .76rem; color: #64748b; margin-top: 3px; line-height: 1.4; }
+.notification-empty { padding: 22px; text-align: center; color: #94a3b8; font-size: .82rem; }
+.notification-empty.shared-error { color: #ef4444; }
+.toast-stack { position: fixed; top: 80px; right: 24px; z-index: 10000; display: flex; flex-direction: column; gap: 12px; max-width: calc(100vw - 32px); }
+.toast-stack .toast { position: static; display: flex; align-items: flex-start; gap: 12px; max-width: 340px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,.12); padding: 14px 20px; font-family: 'DM Sans', sans-serif; }
+.toast-stack .toast.success { border-left: 4px solid #2d9e6b; }
+.toast-stack .toast.info { border-left: 4px solid #457b9d; }
+.toast-stack .toast.error { border-left: 4px solid #ef4444; }
+.toast-stack .toast-title { font-size: 13.5px; font-weight: 700; margin-bottom: 2px; }
+.toast-stack .toast-body { font-size: 12.5px; color: #64748b; }
+.toast-stack .toast-close { margin-left: auto; background: none; border: none; color: #64748b; font-size: 18px; line-height: 1; cursor: pointer; }

@@ -1,0 +1,328 @@
+
+    .assignments-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .assignment-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow);
+      transition: box-shadow .2s, transform .2s;
+    }
+
+    .assignment-card:hover {
+      box-shadow: 0 4px 18px rgba(0, 0, 0, .09);
+      transform: translateY(-2px);
+    }
+
+    .assignment-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ecfdf5;
+      color: #10b981;
+      flex-shrink: 0;
+    }
+
+    .assignment-info {
+      flex: 1;
+    }
+
+    .assignment-id {
+      font-size: 11px;
+      font-weight: 700;
+      color: #10b981;
+      margin-bottom: 4px;
+      letter-spacing: .05em;
+    }
+
+    .assignment-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .assignment-meta {
+      font-size: 12.5px;
+      color: #64748b;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .assignment-badges {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      font-size: 11.5px;
+      font-weight: 600;
+      border-radius: 20px;
+    }
+
+    .badge-active {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .badge-pending {
+      background: #fef9c3;
+      color: #ca8a04;
+    }
+
+    .badge-urgent {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .badge-done {
+      background: #e0e7ff;
+      color: #4338ca;
+    }
+
+    .btn-action {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .15s;
+    }
+
+    .btn-action:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .btn-action.complete {
+      background: #ecfdf5;
+      color: #059669;
+      border-color: #a7f3d0;
+    }
+
+    .btn-action.complete:hover {
+      background: #d1fae5;
+    }
+
+    .btn-primary-sm {
+      background: #1a3c5e;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: .88rem;
+    }
+
+    /* Onboarding panel */
+    .onboarding-panel {
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      border: 1px solid #bae6fd;
+      border-radius: 16px;
+      padding: 32px 28px;
+      margin-bottom: 24px;
+    }
+
+    .onboarding-panel h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0c4a6e;
+      margin-bottom: 6px;
+    }
+
+    .onboarding-panel p {
+      color: #0369a1;
+      font-size: .88rem;
+      margin-bottom: 20px;
+    }
+
+    .onboarding-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .onboarding-step {
+      background: #fff;
+      border: 1px solid #bae6fd;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .onboarding-step:hover {
+      border-color: #0ea5e9;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, .15);
+      transform: translateY(-2px);
+    }
+
+    .onboarding-step .step-icon {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .onboarding-step .step-title {
+      font-size: .82rem;
+      font-weight: 700;
+      color: #0c4a6e;
+    }
+
+    .onboarding-step .step-desc {
+      font-size: .74rem;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    /* Priority badge */
+    .priority-high {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .priority-normal {
+      background: #f0fdf4;
+      color: #16a34a;
+    }
+
+    .priority-urgent {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .empty-tasks {
+      text-align: center;
+      padding: 40px 20px;
+      color: #94a3b8;
+    }
+
+    .empty-tasks .empty-icon {
+      font-size: 2.8rem;
+      margin-bottom: 12px;
+    }
+
+    /* Volunteer dashboard alignment and card refinements */
+    [data-layout-frame][data-route="/volunteer-dashboard.html"] > .navbar {
+      display: grid !important;
+      grid-template-columns: 1fr auto 1fr !important;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    [data-layout-frame][data-route="/volunteer-dashboard.html"] > .navbar .navbar-brand {
+      justify-self: start;
+    }
+
+    [data-layout-frame][data-route="/volunteer-dashboard.html"] > .navbar .navbar-links {
+      justify-self: center;
+    }
+
+    [data-layout-frame][data-route="/volunteer-dashboard.html"] > .navbar .navbar-user {
+      justify-self: end !important;
+      margin-left: 0;
+    }
+
+    [data-react-page="/volunteer-dashboard.html"] .page-record-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    [data-react-page="/volunteer-dashboard.html"] .action-btn,
+    [data-react-page="/volunteer-dashboard.html"] .btn-approve,
+    [data-react-page="/volunteer-dashboard.html"] .btn-reject {
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: auto;
+      min-width: 0;
+      height: auto;
+      min-height: 40px;
+      padding: 9px 15px;
+      border-radius: 8px;
+      line-height: 1.2;
+      white-space: nowrap;
+      text-align: center;
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 650;
+    }
+
+    [data-react-page="/volunteer-dashboard.html"] .program-assignment-card {
+      border-color: #bfdbfe;
+      border-left: 4px solid #3b82f6;
+      background: linear-gradient(135deg, #f5f9ff, #eef5ff);
+      box-shadow: 0 3px 12px rgba(15, 23, 42, .05);
+    }
+
+    [data-react-page="/volunteer-dashboard.html"] .program-assignment-card:nth-child(even) {
+      border-color: #c7d2fe;
+      border-left-color: #6366f1;
+      background: linear-gradient(135deg, #f7f7ff, #f0f2ff);
+    }
+
+    [data-react-page="/volunteer-dashboard.html"] #assignments-list .page-record-card,
+    [data-react-page="/volunteer-dashboard.html"] #hour-logs-list .page-record-card {
+      border-color: #fde68a;
+      border-left: 4px solid #f59e0b;
+      background: linear-gradient(135deg, #fffdf5, #fffbeb);
+    }
+
+    [data-react-page="/volunteer-dashboard.html"] #vol-pickups-list .resource-record-card {
+      border-color: #fde68a;
+      border-left: 4px solid #f59e0b;
+      background: linear-gradient(135deg, #fffdf5, #fffbeb);
+      box-shadow: 0 3px 12px rgba(15, 23, 42, .05);
+    }
+
+    [data-react-page="/volunteer-dashboard.html"] .action-view {
+      color: #fff;
+      background: #2563eb;
+      border-color: #2563eb;
+    }
+
+    [data-react-page="/volunteer-dashboard.html"] .action-success {
+      color: #fff;
+      background: #059669;
+      border-color: #059669;
+    }
+
+    [data-react-page="/volunteer-dashboard.html"] .action-edit {
+      color: #fff;
+      background: #d97706;
+      border-color: #d97706;
+    }
+
+    @media (max-width: 900px) {
+      [data-layout-frame][data-route="/volunteer-dashboard.html"] > .navbar {
+        grid-template-columns: 1fr auto !important;
+      }
+
+      [data-layout-frame][data-route="/volunteer-dashboard.html"] > .navbar .navbar-links {
+        display: none;
+      }
+    }
+  

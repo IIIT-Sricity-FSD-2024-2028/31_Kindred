@@ -1,0 +1,8 @@
+{
+  "/beneficiary-dashboard.html": "/styles/pages/beneficiary-dashboard-interactions.css",
+  "/donor-dashboard.html": "/styles/pages/donor-dashboard-interactions.css",
+  "/join-volunteer.html": "/styles/pages/join-volunteer-interactions.css",
+  "/org-admin-overview.html": "/styles/pages/org-admin-overview-interactions.css",
+  "/profile.html": "/styles/pages/profile-interactions.css",
+  "/volunteer-dashboard.html": "/styles/pages/volunteer-dashboard-interactions.css"
+}

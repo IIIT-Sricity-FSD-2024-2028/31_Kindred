@@ -1,0 +1,980 @@
+{
+  "/about.html": {},
+  "/admin-inbox.html": {
+    "searchInbox": {
+      "default": "",
+      "type": "text"
+    }
+  },
+  "/admin-users.html": {
+    "searchUsers": {
+      "default": "",
+      "type": "text"
+    }
+  },
+  "/analytics.html": {},
+  "/beneficiary-dashboard.html": {
+    "fullName": {
+      "default": "",
+      "type": "text"
+    },
+    "phone": {
+      "default": "",
+      "type": "tel"
+    },
+    "location": {
+      "default": "",
+      "type": "text"
+    },
+    "type": {
+      "default": "",
+      "type": "radio"
+    },
+    "description": {
+      "default": "",
+      "type": "textarea"
+    }
+  },
+  "/contact-success.html": {},
+  "/contact.html": {
+    "cf-fname": {
+      "default": "",
+      "type": "text"
+    },
+    "cf-lname": {
+      "default": "",
+      "type": "text"
+    },
+    "cf-email": {
+      "default": "",
+      "type": "email"
+    },
+    "cf-phone": {
+      "default": "",
+      "type": "tel"
+    },
+    "cf-subject": {
+      "default": "",
+      "type": "text"
+    },
+    "cf-message": {
+      "default": "",
+      "type": "textarea"
+    }
+  },
+  "/create-program.html": {
+    "programTitle": {
+      "default": "",
+      "type": "text"
+    },
+    "customCategoryInput": {
+      "default": "",
+      "type": "text"
+    },
+    "programLocation": {
+      "default": "",
+      "type": "text"
+    },
+    "programBudget": {
+      "default": "",
+      "type": "number"
+    },
+    "programEndDate": {
+      "default": "",
+      "type": "date"
+    },
+    "volunteerGoal": {
+      "default": "",
+      "type": "number"
+    },
+    "programDesc": {
+      "default": "",
+      "type": "textarea"
+    },
+    "progOpenApps": {
+      "default": "true",
+      "type": "select"
+    }
+  },
+  "/demo-login.html": {},
+  "/donate.html": {
+    "custom-amount": {
+      "default": "",
+      "type": "number"
+    },
+    "donor-name": {
+      "default": "",
+      "type": "text"
+    },
+    "donor-email": {
+      "default": "",
+      "type": "email"
+    },
+    "donor-pan": {
+      "default": "",
+      "type": "text"
+    },
+    "card-number": {
+      "default": "",
+      "type": "text"
+    },
+    "card-holder-name": {
+      "default": "",
+      "type": "text"
+    },
+    "card-expiry": {
+      "default": "",
+      "type": "text"
+    },
+    "card-cvv": {
+      "default": "",
+      "type": "password"
+    },
+    "save-card-check": {
+      "default": true,
+      "type": "checkbox"
+    },
+    "res-donor-name": {
+      "default": "",
+      "type": "text"
+    },
+    "res-donor-email": {
+      "default": "",
+      "type": "email"
+    },
+    "res-donor-phone": {
+      "default": "",
+      "type": "tel"
+    },
+    "res-org": {
+      "default": "",
+      "type": "select"
+    },
+    "res-category": {
+      "default": "Food",
+      "type": "select"
+    },
+    "res-items": {
+      "default": "",
+      "type": "textarea"
+    },
+    "res-address": {
+      "default": "",
+      "type": "textarea"
+    },
+    "res-date": {
+      "default": "",
+      "type": "date"
+    },
+    "res-timeslot": {
+      "default": "Morning (9AM-12PM)",
+      "type": "select"
+    }
+  },
+  "/donor-dashboard.html": {
+    "rd-name": {
+      "default": "",
+      "type": "text"
+    },
+    "rd-phone": {
+      "default": "",
+      "type": "text"
+    },
+    "rd-category": {
+      "default": "",
+      "type": "select"
+    },
+    "rd-desc": {
+      "default": "",
+      "type": "textarea"
+    },
+    "rd-address": {
+      "default": "",
+      "type": "textarea"
+    },
+    "rd-date": {
+      "default": "",
+      "type": "date"
+    },
+    "rd-timeslot": {
+      "default": "",
+      "type": "select"
+    },
+    "rd-program": {
+      "default": "",
+      "type": "select"
+    }
+  },
+  "/emergency-request.html": {
+    "er-name": {
+      "default": "",
+      "type": "text"
+    },
+    "er-phone": {
+      "default": "",
+      "type": "tel"
+    },
+    "er-location": {
+      "default": "",
+      "type": "text"
+    },
+    "selectedEmergencyType": {
+      "default": "",
+      "type": "hidden"
+    },
+    "er-desc": {
+      "default": "",
+      "type": "textarea"
+    },
+    "emergency-request-41": {
+      "default": "",
+      "type": "file"
+    }
+  },
+  "/emergency-success.html": {},
+  "/emergency-verify.html": {
+    "emergency-verify-16": {
+      "default": "",
+      "type": "text"
+    },
+    "emergency-verify-17": {
+      "default": "",
+      "type": "text"
+    },
+    "emergency-verify-18": {
+      "default": "",
+      "type": "text"
+    },
+    "emergency-verify-19": {
+      "default": "",
+      "type": "text"
+    },
+    "emergency-verify-20": {
+      "default": "",
+      "type": "text"
+    },
+    "emergency-verify-21": {
+      "default": "",
+      "type": "text"
+    }
+  },
+  "/feedback-thankyou.html": {},
+  "/feedback.html": {
+    "feedbackName": {
+      "default": "",
+      "type": "text"
+    },
+    "feedbackEmail": {
+      "default": "",
+      "type": "email"
+    },
+    "feedbackPhone": {
+      "default": "",
+      "type": "tel"
+    },
+    "feedbackCategory": {
+      "default": "",
+      "type": "select"
+    },
+    "ratingValue": {
+      "default": "0",
+      "type": "hidden"
+    },
+    "feedbackText": {
+      "default": "",
+      "type": "textarea"
+    }
+  },
+  "/forgot-otp.html": {
+    "forgot-otp-10": {
+      "default": "",
+      "type": "text"
+    },
+    "forgot-otp-11": {
+      "default": "",
+      "type": "text"
+    },
+    "forgot-otp-12": {
+      "default": "",
+      "type": "text"
+    },
+    "forgot-otp-13": {
+      "default": "",
+      "type": "text"
+    }
+  },
+  "/forgot-password.html": {
+    "fp-phone": {
+      "default": "",
+      "type": "tel"
+    }
+  },
+  "/fundraising.html": {},
+  "/incoming.html": {
+    "requestSearch": {
+      "default": "",
+      "type": "text"
+    }
+  },
+  "/index.html": {},
+  "/join-volunteer.html": {
+    "jv-name": {
+      "default": "",
+      "type": "text"
+    },
+    "jv-email": {
+      "default": "",
+      "type": "email"
+    },
+    "jv-phone": {
+      "default": "",
+      "type": "tel"
+    },
+    "skill-teaching": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "skill-medical": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "skill-logistics": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "skill-cooking": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "skill-translation": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "skill-technology": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "skill-counseling": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "skill-driving": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "skill-construction": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "skill-first-aid": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "skill-fundraising": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "skill-photography": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "jv-custom-skill": {
+      "default": "",
+      "type": "text"
+    },
+    "jv-pass": {
+      "default": "",
+      "type": "password"
+    },
+    "jv-pass2": {
+      "default": "",
+      "type": "password"
+    }
+  },
+  "/ngo-success.html": {},
+  "/org-admin-organizations.html": {},
+  "/org-admin-overview.html": {
+    "volunteerSearch": {
+      "default": "",
+      "type": "text"
+    }
+  },
+  "/org-admin-programs.html": {},
+  "/org-admin-requests.html": {},
+  "/org-admin.html": {
+    "org-admin-64": {
+      "default": "",
+      "type": "text"
+    }
+  },
+  "/organization-details.html": {
+    "custom-amount": {
+      "default": "",
+      "type": "number"
+    },
+    "donor-name": {
+      "default": "",
+      "type": "text"
+    },
+    "donor-email": {
+      "default": "",
+      "type": "email"
+    },
+    "donor-pan": {
+      "default": "",
+      "type": "text"
+    },
+    "card-number": {
+      "default": "",
+      "type": "text"
+    },
+    "card-holder-name": {
+      "default": "",
+      "type": "text"
+    },
+    "card-expiry": {
+      "default": "",
+      "type": "text"
+    },
+    "card-cvv": {
+      "default": "",
+      "type": "password"
+    },
+    "save-card-check": {
+      "default": true,
+      "type": "checkbox"
+    }
+  },
+  "/organizations.html": {},
+  "/otp-verify.html": {
+    "otp-verify-13": {
+      "default": "",
+      "type": "text"
+    },
+    "otp-verify-14": {
+      "default": "",
+      "type": "text"
+    },
+    "otp-verify-15": {
+      "default": "",
+      "type": "text"
+    },
+    "otp-verify-16": {
+      "default": "",
+      "type": "text"
+    },
+    "otp-verify-17": {
+      "default": "",
+      "type": "text"
+    },
+    "otp-verify-18": {
+      "default": "",
+      "type": "text"
+    }
+  },
+  "/overview.html": {
+    "searchOrgs": {
+      "default": "",
+      "type": "text"
+    }
+  },
+  "/page2-new-request-modal.html": {
+    "fullName": {
+      "default": "",
+      "type": "text"
+    },
+    "phone": {
+      "default": "",
+      "type": "tel"
+    },
+    "location": {
+      "default": "",
+      "type": "text"
+    },
+    "type": {
+      "default": "",
+      "type": "radio"
+    },
+    "description": {
+      "default": "",
+      "type": "textarea"
+    }
+  },
+  "/page4-broadcast-sent.html": {},
+  "/page5-connected-notification.html": {
+    "fullName": {
+      "default": "",
+      "type": "text"
+    },
+    "phone": {
+      "default": "",
+      "type": "tel"
+    },
+    "location": {
+      "default": "",
+      "type": "text"
+    },
+    "type": {
+      "default": "",
+      "type": "radio"
+    },
+    "description": {
+      "default": "",
+      "type": "textarea"
+    }
+  },
+  "/phone-entry.html": {
+    "phone-input": {
+      "default": "",
+      "type": "tel"
+    }
+  },
+  "/platform-admin.html": {
+    "searchOrgs": {
+      "default": "",
+      "type": "text"
+    },
+    "platform-admin-96": {
+      "default": "",
+      "type": "text"
+    },
+    "platform-admin-131": {
+      "default": "",
+      "type": "text"
+    },
+    "platform-admin-162": {
+      "default": "",
+      "type": "text"
+    }
+  },
+  "/profile.html": {
+    "pf-name": {
+      "default": "",
+      "type": "text"
+    },
+    "pf-email": {
+      "default": "",
+      "type": "email"
+    },
+    "pf-phone": {
+      "default": "",
+      "type": "tel"
+    },
+    "pf-role": {
+      "default": "",
+      "type": "text"
+    },
+    "pf-org": {
+      "default": "",
+      "type": "text"
+    },
+    "pf-bio": {
+      "default": "",
+      "type": "textarea"
+    },
+    "pf-skill-teaching": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "pf-skill-medical": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "pf-skill-logistics": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "pf-skill-cooking": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "pf-skill-translation": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "pf-skill-technology": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "pf-skill-counseling": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "pf-skill-driving": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "pf-skill-construction": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "pf-skill-first-aid": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "pf-skill-fundraising": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "pf-skill-photography": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "pf-custom-skill": {
+      "default": "",
+      "type": "text"
+    },
+    "pf-newpass": {
+      "default": "",
+      "type": "password"
+    },
+    "pf-newpass2": {
+      "default": "",
+      "type": "password"
+    }
+  },
+  "/program-success.html": {},
+  "/programs.html": {},
+  "/register-ngo.html": {
+    "register-ngo-13": {
+      "default": "",
+      "type": "text"
+    },
+    "register-ngo-16": {
+      "default": "",
+      "type": "select"
+    },
+    "register-ngo-28": {
+      "default": "",
+      "type": "text"
+    },
+    "register-ngo-31": {
+      "default": "",
+      "type": "text"
+    },
+    "register-ngo-34": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "register-ngo-36": {
+      "default": false,
+      "type": "checkbox"
+    },
+    "register-ngo-41": {
+      "default": "",
+      "type": "text"
+    },
+    "register-ngo-44": {
+      "default": "",
+      "type": "email"
+    },
+    "register-ngo-47": {
+      "default": "",
+      "type": "textarea"
+    }
+  },
+  "/registration-pending.html": {},
+  "/requests.html": {},
+  "/reset-password.html": {
+    "rp-pass": {
+      "default": "",
+      "type": "password"
+    },
+    "rp-pass2": {
+      "default": "",
+      "type": "password"
+    }
+  },
+  "/reset-success.html": {},
+  "/resources.html": {},
+  "/seller-dashboard.html": {
+    "bank-acc-num": {
+      "default": "",
+      "type": "text"
+    },
+    "bank-ifsc": {
+      "default": "",
+      "type": "text"
+    },
+    "bank-name": {
+      "default": "",
+      "type": "text"
+    },
+    "prod-title": {
+      "default": "",
+      "type": "text"
+    },
+    "prod-category": {
+      "default": "Handicrafts",
+      "type": "select"
+    },
+    "prod-price": {
+      "default": "",
+      "type": "number"
+    },
+    "prod-quantity": {
+      "default": "",
+      "type": "number"
+    },
+    "prod-desc": {
+      "default": "",
+      "type": "textarea"
+    },
+    "prodPhotoInput": {
+      "default": "",
+      "type": "file"
+    }
+  },
+  "/shop.html": {
+    "shop-17": {
+      "default": "",
+      "type": "text"
+    },
+    "checkout-qty": {
+      "default": "1",
+      "type": "number"
+    },
+    "checkout-phone": {
+      "default": "",
+      "type": "text"
+    },
+    "checkout-name": {
+      "default": "",
+      "type": "text"
+    },
+    "checkout-email": {
+      "default": "",
+      "type": "email"
+    },
+    "checkout-address": {
+      "default": "",
+      "type": "textarea"
+    },
+    "checkout-prod-id": {
+      "default": "",
+      "type": "hidden"
+    },
+    "shop-card-number": {
+      "default": "",
+      "type": "text"
+    },
+    "shop-card-holder-name": {
+      "default": "",
+      "type": "text"
+    },
+    "shop-card-expiry": {
+      "default": "",
+      "type": "text"
+    },
+    "shop-card-cvv": {
+      "default": "",
+      "type": "password"
+    }
+  },
+  "/signin.html": {
+    "si-email": {
+      "default": "",
+      "type": "email"
+    },
+    "si-pass": {
+      "default": "",
+      "type": "password"
+    }
+  },
+  "/signup.html": {
+    "org-name": {
+      "default": "",
+      "type": "text"
+    },
+    "org-focus": {
+      "default": "",
+      "type": "text"
+    },
+    "org-loc": {
+      "default": "",
+      "type": "text"
+    },
+    "org-phone": {
+      "default": "",
+      "type": "tel"
+    },
+    "org-desc": {
+      "default": "",
+      "type": "textarea"
+    },
+    "org-cert-file": {
+      "default": "",
+      "type": "file"
+    },
+    "org-admin": {
+      "default": "",
+      "type": "text"
+    },
+    "org-email": {
+      "default": "",
+      "type": "email"
+    },
+    "org-pass": {
+      "default": "",
+      "type": "password"
+    },
+    "org-pass2": {
+      "default": "",
+      "type": "password"
+    },
+    "vol-name": {
+      "default": "",
+      "type": "text"
+    },
+    "vol-email": {
+      "default": "",
+      "type": "email"
+    },
+    "vol-phone": {
+      "default": "",
+      "type": "tel"
+    },
+    "vol-pass": {
+      "default": "",
+      "type": "password"
+    },
+    "vol-pass2": {
+      "default": "",
+      "type": "password"
+    },
+    "don-name": {
+      "default": "",
+      "type": "text"
+    },
+    "don-email": {
+      "default": "",
+      "type": "email"
+    },
+    "don-phone": {
+      "default": "",
+      "type": "tel"
+    },
+    "don-pass": {
+      "default": "",
+      "type": "password"
+    },
+    "don-pass2": {
+      "default": "",
+      "type": "password"
+    },
+    "ben-name": {
+      "default": "",
+      "type": "text"
+    },
+    "ben-email": {
+      "default": "",
+      "type": "email"
+    },
+    "ben-phone": {
+      "default": "",
+      "type": "tel"
+    },
+    "ben-pass": {
+      "default": "",
+      "type": "password"
+    },
+    "ben-pass2": {
+      "default": "",
+      "type": "password"
+    },
+    "seller-name": {
+      "default": "",
+      "type": "text"
+    },
+    "seller-business": {
+      "default": "",
+      "type": "text"
+    },
+    "seller-desc": {
+      "default": "",
+      "type": "textarea"
+    },
+    "seller-email": {
+      "default": "",
+      "type": "email"
+    },
+    "seller-phone": {
+      "default": "",
+      "type": "tel"
+    },
+    "seller-pass": {
+      "default": "",
+      "type": "password"
+    },
+    "seller-pass2": {
+      "default": "",
+      "type": "password"
+    }
+  },
+  "/volunteer-dashboard.html": {
+    "log-activity": {
+      "default": "",
+      "type": "text"
+    },
+    "log-hours": {
+      "default": "",
+      "type": "number"
+    },
+    "log-date": {
+      "default": "",
+      "type": "date"
+    },
+    "vt-title": {
+      "default": "",
+      "type": "text"
+    },
+    "vt-desc": {
+      "default": "",
+      "type": "textarea"
+    },
+    "vt-prog": {
+      "default": "",
+      "type": "select"
+    },
+    "vt-priority": {
+      "default": "normal",
+      "type": "select"
+    },
+    "vt-location": {
+      "default": "",
+      "type": "text"
+    },
+    "vt-date": {
+      "default": "",
+      "type": "date"
+    }
+  },
+  "/volunteer-portal.html": {
+    "portal-search": {
+      "default": "",
+      "type": "text"
+    },
+    "portal-skill-filter": {
+      "default": "",
+      "type": "select"
+    },
+    "portal-category-filter": {
+      "default": "",
+      "type": "select"
+    },
+    "apply-message": {
+      "default": "",
+      "type": "textarea"
+    },
+    "apply-prog-id": {
+      "default": "",
+      "type": "hidden"
+    }
+  },
+  "/volunteers.html": {
+    "volunteerSearch": {
+      "default": "",
+      "type": "text"
+    }
+  }
+}
