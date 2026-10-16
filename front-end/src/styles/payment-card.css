@@ -1,0 +1,128 @@
+
+    /* ─── 3D Card Scene ─── */
+    .animated-payment-card .card-scene {
+      width: 100%;
+      perspective: 900px;
+      margin-bottom: 22px;
+    }
+
+    .animated-payment-card .card-3d {
+      width: 100%;
+      max-width: 320px;
+      height: 180px;
+      margin: 0 auto;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform .6s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .animated-payment-card .card-3d.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .animated-payment-card .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 16px;
+      backface-visibility: hidden;
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .18);
+    }
+
+    .animated-payment-card .card-front {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+      color: #fff;
+    }
+
+    .animated-payment-card .card-back {
+      background: linear-gradient(135deg, #334155, #1e293b);
+      transform: rotateY(180deg);
+    }
+
+    .animated-payment-card .card-front-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .animated-payment-card .card-chip {
+      font-size: 1.6rem;
+    }
+
+    .animated-payment-card .card-network-logo {
+      font-size: 1.7rem;
+    }
+
+    .animated-payment-card .card-number-display {
+      font-size: 1.15rem;
+      letter-spacing: .18em;
+      color: #e2e8f0;
+      font-family: monospace;
+    }
+
+    .animated-payment-card .card-front-bottom {
+      display: flex;
+      gap: 24px;
+      align-items: flex-end;
+    }
+
+    .animated-payment-card .card-label-sm {
+      font-size: .6rem;
+      letter-spacing: .06em;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+
+    .animated-payment-card .card-holdername {
+      font-size: .82rem;
+      color: #f1f5f9;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      margin-top: 2px;
+      max-width: 160px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .animated-payment-card .card-expiry-display {
+      font-size: .88rem;
+      color: #f1f5f9;
+      font-family: monospace;
+      margin-top: 2px;
+    }
+
+    .animated-payment-card .card-stripe {
+      background: linear-gradient(90deg, #1e293b, #475569);
+      height: 46px;
+      margin: -20px -22px 14px;
+    }
+
+    .animated-payment-card .card-cvv-area {
+      background: #f1f5f9;
+      border-radius: 6px;
+      padding: 6px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .animated-payment-card .card-cvv-display {
+      font-family: monospace;
+      letter-spacing: .15em;
+      color: #1e293b;
+      font-size: .95rem;
+    }
+
+
+.animated-payment-card { margin: 20px 0 26px; }
+.inline-card-donation-dialog { font-family: Arial, sans-serif; }
+.animated-payment-card * { box-sizing: border-box; }
+.animated-payment-card .card-chip { color: #f4d78b; font-size: 32px; }
+.animated-payment-card .card-network-logo { font-size: 18px; font-weight: 700; }
+@media (max-width: 430px) { .animated-payment-card .card-number-display { font-size: 14px; letter-spacing: .12em; } }
+@media (prefers-reduced-motion: reduce) { .animated-payment-card .card-3d { transition: none; } }
