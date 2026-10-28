@@ -1,6 +1,7 @@
 import { Link } from '../../routes/navigation.jsx';
 import PageField from '../../pages/runtime/PageField.jsx';
 import { usePage } from '../../pages/runtime/PageContext.js';
+import { API_BASE_URL } from '../../services/api.js';
 import { hasBankDetails } from '../../services/organizations.js';
 import { filterRecords } from '../../services/pageData.js';
 import { OrganizationCards, ProgramCards, ProductCards, ProductDetail, Testimonials } from './PublicRegions.jsx';
@@ -37,11 +38,23 @@ function UserRows({ records }) {
 }
 function VolunteerRows({ records, region }) {
   const ui = usePage(), overview = region === 'orgOverviewVolunteersBody', orgTable = region === 'orgVolunteersTableBody';
-  return records.map((v) => <tr className={`volunteer-row status-${v.status}`} key={v.id}><td><strong>{v.name}</strong><div>{v.email}</div></td><td>{v.role}</td>{overview || orgTable ? <><td>{(v.skills || []).join(', ')}</td><td>{v.hours || 0}</td>{orgTable && <td><span className={`status-badge ${v.status}`}>{v.status}</span></td>}</> : <><td><span className={`status-badge ${v.status}`}>{v.status}</span></td><td>{v.hours || 0}</td><td>{ui.data('tasks').filter((t) => t.assignedToEmail === v.email && t.status !== 'completed').length}</td></>}{!overview && <td><div className="action-btns"><Action name="showDetail" args={['volunteers',v.id]}>Details</Action><Action name="openVolunteerEditor" args={[v.id]}>Edit</Action><Mutate collection="volunteers" id={v.id} operation="delete">Delete</Mutate><Action name="openGlobalTaskModal" args={[v.id]}>+ Assign Task</Action></div></td>}</tr>);
+  return records.map((v) => <tr className={`volunteer-row status-${v.status}`} key={v.id}><td><strong>{v.name}</strong><div>{v.email}</div></td><td>{v.role}</td>{overview || orgTable ? <><td>{(v.skills || []).join(', ')}</td><td>{v.hours || 0}</td>{orgTable && <td><span className={`status-badge ${v.status}`}>{v.status}</span></td>}</> : <><td><span className={`status-badge ${v.status}`}>{v.status}</span></td><td>{v.hours || 0}</td><td>{ui.data('tasks').filter((t) => t.assignedToEmail === v.email && t.status !== 'completed').length}</td></>}{!overview && <td><div className="action-btns">{v.membershipOnly ? <Action name="openGlobalTaskModal" args={[v.email]}>+ Assign Task</Action> : <><Action name="showDetail" args={['volunteers',v.id]}>Details</Action><Action name="openVolunteerEditor" args={[v.id]}>Edit</Action><Mutate collection="volunteers" id={v.id} operation="delete">Delete</Mutate><Action name="openGlobalTaskModal" args={[v.id]}>+ Assign Task</Action></>}</div></td>}</tr>);
 }
 function IncomingCards({ records, registration = false }) {
   const ui = usePage();
   return records.map((r) => <article className={ui.path === '/incoming.html' ? `request-card request-item priority-${r.urgency || 'medium'} status-${r.status}` : `request-card status-${r.status}`} key={r.id} data-record-id={r.id}><div className="request-info"><div className="request-id">{r.id}</div><h4>{r.type}</h4><strong>{r.name || r.org}</strong><p className="request-desc">{r.desc || r.description}</p><p className="request-meta">{r.location || r.city} • {r.date}</p></div><div className="request-badges"><span className={`status-badge ${r.status}`}>{r.status}</span></div><div className="action-btns"><Action name="showDetail" args={[registration ? 'requests' : 'incoming',r.id]}>Details</Action>{r.status === 'pending' && <><Mutate collection={registration ? 'requests' : 'incoming'} id={r.id} operation={registration ? 'approve' : 'accept'}>{registration ? 'Approve' : 'Accept'}</Mutate><Mutate collection={registration ? 'requests' : 'incoming'} id={r.id} operation={registration ? 'reject' : 'decline'}>{registration ? 'Reject' : 'Decline'}</Mutate></>}{!registration && ['admin','superuser'].includes(ui.session?.role) && r.status === 'accepted' && <><Action name="assignIncoming" args={[r.id]}>Assign Volunteer</Action><Mutate collection="incoming" id={r.id} operation="resolve">Resolve</Mutate></>}</div></article>);
+}
+function OrganizationCertificate({ organization }) {
+  if (!organization.certificateUrl) return <p className="certificate-missing">No registration certificate is attached.</p>;
+  const url = organization.certificateUrl;
+  let trustedUpload = false;
+  try { const parsed = new URL(url); trustedUpload = parsed.origin === new URL(API_BASE_URL).origin && parsed.pathname.startsWith('/uploads/'); } catch { /* Keep untrusted values as plain links only. */ }
+  const isImage = trustedUpload && /\.(png|jpe?g)(?:[?#]|$)/i.test(url);
+  const isPdf = trustedUpload && /\.pdf(?:[?#]|$)/i.test(url);
+  return <div className="organization-certificate-preview">
+    <div className="organization-certificate-heading"><strong>Registration certificate</strong><a href={url} target="_blank" rel="noreferrer">{organization.certificateName || 'Open certificate'}</a></div>
+    {isImage ? <a href={url} target="_blank" rel="noreferrer"><img src={url} alt={`${organization.name} registration certificate`} /></a> : isPdf ? <iframe src={url} title={`${organization.name} registration certificate`} loading="lazy" /> : <p className="certificate-missing">Preview is unavailable. Open the certificate link above.</p>}
+  </div>;
 }
 function InboxRows({ records }) {
   const ui = usePage(), platform = ui.path === '/platform-admin.html';
@@ -61,7 +74,7 @@ function HoursCards({ records, review = false }) {
   return records.map((h) => <article className="page-record-card" key={h.id}><div className="page-record-heading"><h4>{h.description || 'Volunteer Hours'}</h4><span className={`status-badge ${h.status}`}>{h.status}</span></div><p>{h.volunteerName} • {h.hours} hours • {h.date}</p>{review && h.status === 'pending' && <div className="page-record-actions"><Mutate collection="hour-logs" id={h.id} operation="approve">Verify</Mutate><Mutate collection="hour-logs" id={h.id} operation="reject">Reject</Mutate></div>}</article>);
 }
 function ApplicationCards({ records }) {
-  return records.map((a) => <article className="page-record-card" key={a.id}><h4>{a.volunteerName} — {a.programName}</h4><p>{a.message || 'No message provided.'}</p><span className={`status-badge ${a.status}`}>{a.status}</span>{a.status === 'pending' && <div className="page-record-actions"><Mutate collection="program-applications" id={a.id} operation="approve">Approve</Mutate><Mutate collection="program-applications" id={a.id} operation="reject">Reject</Mutate></div>}</article>);
+  return records.filter((a) => a.status === 'pending').map((a) => <article className="page-record-card" key={a.id}><h4>{a.volunteerName} — {a.programName}</h4><p>{a.message || 'No message provided.'}</p><span className={`status-badge ${a.status}`}>{a.status}</span><div className="page-record-actions"><Mutate collection="program-applications" id={a.id} operation="approve">Approve</Mutate><Mutate collection="program-applications" id={a.id} operation="reject">Reject</Mutate></div></article>);
 }
 
 function ItemsEditor() {
@@ -78,7 +91,18 @@ export default function PageRegions({ name }) {
   const ui = usePage(), { state, session } = ui;
   const query = (key) => state.searches[key] || '';
   const orgPrograms = ui.data('programs').filter((p) => session?.role !== 'admin' || p.org === session.org);
-  const orgVolunteers = ui.data('volunteers').filter((v) => session?.role !== 'admin' || !session.org || v.org === session.org);
+  const orgVolunteerProfiles = ui.data('volunteers').filter((v) => session?.role !== 'admin' || !session.org || v.org === session.org);
+  const orgProgramIds = new Set(orgPrograms.map((p) => p.id));
+  const acceptedOrgMembers = ui.data('assignments').filter((a) => a.status === 'active' && orgProgramIds.has(a.programId));
+  const orgVolunteers = [...orgVolunteerProfiles];
+  for (const member of acceptedOrgMembers) {
+    const existingIndex = orgVolunteers.findIndex((v) => v.email?.toLowerCase() === member.volunteerEmail?.toLowerCase());
+    const existing = existingIndex >= 0 ? orgVolunteers[existingIndex] : null;
+    const loggedHours = ui.data('hours').filter((h) => h.volunteerEmail?.toLowerCase() === member.volunteerEmail?.toLowerCase()).reduce((sum, h) => sum + Number(h.hours || 0), 0);
+    const profile = { ...(existing || {}), id: existing?.id || `program-member-${member.id}`, name: existing?.name || member.volunteerName, email: member.volunteerEmail, role: existing?.role || member.role || 'Volunteer', org: session?.org || member.org || '', status: 'active', skills: existing?.skills || [], hours: existing?.hours || loggedHours, membershipOnly: !existing };
+    if (existingIndex >= 0) orgVolunteers[existingIndex] = profile;
+    else orgVolunteers.push(profile);
+  }
   const collection = (key, records, render, table = false, empty) => <CollectionState collection={key} table={table} empty={empty}>{records.length ? render(records) : []}</CollectionState>;
   if (name === 'donorWelcome') return <><div className="option-icon">♡</div><h3>Welcome, {session.name.split(' ')[0]}!</h3><p>Choose an organization below to make your next donation.</p><Link className="btn-primary block-btn" to="/donor-dashboard.html">My Donor Dashboard</Link></>;
   if (name === 'campaignsGrid' || name === 'fundraisingGrid') return collection('programs',ui.data('programs').filter((p) => p.status === 'active'),(records) => <ProgramCards records={records} campaign />);
@@ -100,7 +124,7 @@ export default function PageRegions({ name }) {
     <PageRegions name="listingReview" />
     {collection('requests',ui.data('requests').filter((r) => r.status === 'pending'),(records) => <IncomingCards records={records} registration />)}
     {ui.data('users').filter((u) => u.status === 'pending').map((u) => <article className="request-card" key={u.id}><div><h4>{u.name}</h4><p>{u.role} • {u.email}</p></div><div className="action-btns"><Mutate collection="users" id={u.id} operation="approve">Approve</Mutate><Mutate collection="users" id={u.id} operation="reject">Reject</Mutate></div></article>)}
-    {ui.data('organizations').filter((o) => o.status === 'pending').map((o) => <article className="request-card" key={o.id}><div><h4>{o.name}</h4><p>{o.focus} • {o.email}</p></div><div className="action-btns"><Mutate collection="organizations" id={o.id} operation="approve">Approve</Mutate><Mutate collection="organizations" id={o.id} operation="reject">Reject</Mutate></div></article>)}
+    {ui.data('organizations').filter((o) => o.status === 'pending').map((o) => <article className="request-card organization-approval-card" key={o.id}><div><h4>{o.name}</h4><p>{o.focus} • {o.email}</p></div><OrganizationCertificate organization={o} /><div className="action-btns"><Mutate collection="organizations" id={o.id} operation="approve">Approve</Mutate><Mutate collection="organizations" id={o.id} operation="reject">Reject</Mutate></div></article>)}
   </>;
   if (name === 'listingReview') return collection('organizations',ui.data('organizations').filter((o) => o.listingStatus === 'pending'),(records) => <section className="listing-review"><h3>Public Organization Listing Requests</h3>{records.map((o) => <article className="page-record-card" key={o.id}><h4>{o.name}</h4><p>{o.city} · {o.focus}</p><dl><dt>Account holder</dt><dd>{o.bankAccountName}</dd><dt>Account number</dt><dd>{o.bankAccountNumber}</dd><dt>IFSC</dt><dd>{o.bankIfsc}</dd></dl>{o.image && <img className="listing-photo" src={o.image} alt={`${o.name} submitted photo`} />}<div className="page-record-actions"><Mutate collection="organizations" id={o.id} operation="approve-listing">Accept Listing</Mutate><Mutate collection="organizations" id={o.id} operation="reject-listing">Reject Listing</Mutate></div></article>)}</section>,false,'No public listing requests awaiting review.');
   if (name === 'listingManager') {
@@ -138,11 +162,23 @@ export default function PageRegions({ name }) {
   if (['programApplicationsList','volAppReviewList'].includes(name)) return collection('applications',ui.data('applications').filter((a) => orgPrograms.some((p) => p.id === a.programId)),(records) => <ApplicationCards records={records} />);
   if (['assignments-list','taskApprovalList'].includes(name)) return collection('tasks',ui.data('tasks'),(records) => records.map((t) => <article className="page-record-card" key={t.id}><h4>{t.title}</h4><p>{t.description}</p><p>{t.programName} • {t.assignedToName} • {t.status}</p><div className="page-record-actions"><Action name="showDetail" args={['tasks',t.id]}>Details</Action>{t.status === 'pending' && <Action name="updateTaskStatus" args={[t.id,'in-progress']}>{session?.role === 'volunteer' ? 'Start Task' : 'Approve Task'}</Action>}{t.status === 'in-progress' && <Action name="updateTaskStatus" args={[t.id,session?.role === 'volunteer' ? 'pending_review' : 'completed']}>{session?.role === 'volunteer' ? 'Submit for Review' : 'Mark Complete'}</Action>}{t.status === 'pending_review' && session?.role !== 'volunteer' && <Action name="updateTaskStatus" args={[t.id,'completed']}>Approve Completion</Action>}{t.status !== 'completed' && <Action name="taskNotes" args={[t.id]}>Add Notes</Action>}</div></article>));
   if (name === 'my-programs-list') return collection('assignments',ui.data('assignments'),(records) => records.map((a) => {
-    const subtasks = ui.data('subtasks').filter((t) => t.programId === a.programId);
+    const subtasks = ui.data('subtasks').filter((t) => t.programId === a.programId && (session?.role !== 'volunteer' || t.assignedToEmail?.toLowerCase() === session.email.toLowerCase()));
+    const tasks = ui.data('tasks').filter((t) => t.programId === a.programId && (session?.role !== 'volunteer' || t.assignedToEmail?.toLowerCase() === session.email.toLowerCase()));
     const complete = subtasks.length > 0 && subtasks.every((t) => Number(t.progress) >= 100);
+    const totalWork = tasks.length + subtasks.length;
+    const completedWork = tasks.filter((t) => t.status === 'completed').length + subtasks.filter((t) => Number(t.progress) >= 100).length;
+    const progress = totalWork ? Math.round(completedWork / totalWork * 100) : 0;
     if (['cancelled','declined'].includes(a.status)) return null;
     if (a.status === 'pending') return <article className="page-record-card program-invitation-card" key={a.id}><h3>{a.programName}</h3><p>You have been invited to join this program as {a.role}.</p><div className="page-record-actions"><Action name="respondProgramInvitation" args={[a.id,'accepted']}>Accept Invitation</Action><Action name="respondProgramInvitation" args={[a.id,'declined']}>Decline Invitation</Action></div></article>;
-    return <article className={`page-record-card program-assignment-card status-${a.status}`} key={a.id}><h3>{a.programName}</h3><p>{a.role} • {a.status}</p>{subtasks.map((t) => <p key={t.id}>{t.title} • {t.progress || 0}%</p>)}<div className="page-record-actions"><Action name="openProgressReport" args={[a.programId]}>Report Progress</Action>{complete && <Action name="downloadCertificate" args={[a.programId]}>Download Certificate</Action>}</div></article>;
+    return <article className={`page-record-card volunteer-program-card status-${a.status}`} key={a.id}>
+      <div className="volunteer-program-card-heading"><div><span className="volunteer-program-label">Active program</span><h3>{a.programName}</h3></div><span className="volunteer-member-badge">{a.role || 'Volunteer'}</span></div>
+      <div className="volunteer-program-progress-label"><span>Work completed</span><strong>{progress}%</strong></div>
+      <div className="volunteer-program-progress-track" role="progressbar" aria-valuenow={progress} aria-valuemin="0" aria-valuemax="100"><span style={{ width: `${progress}%` }} /></div>
+      <p className="volunteer-program-work-summary">{totalWork ? `${completedWork} of ${totalWork} assigned ${totalWork === 1 ? 'task' : 'tasks'} completed` : 'No tasks assigned yet. Your organization will add tasks here.'}</p>
+      {tasks.map((t) => <div className="volunteer-program-task" key={t.id}><span>{t.title}</span><span className={`volunteer-task-status status-${t.status}`}>{t.status.replaceAll('_',' ')}</span></div>)}
+      {subtasks.map((t) => <div className="volunteer-program-task" key={t.id}><span>{t.title}</span><span className="volunteer-task-status">{Number(t.progress || 0)}%</span></div>)}
+      <div className="page-record-actions volunteer-program-actions">{subtasks.length > 0 && <Action name="openProgressReport" args={[a.programId]}>Report Progress</Action>}{complete && <Action name="downloadCertificate" args={[a.programId]}>Download Certificate</Action>}</div>
+    </article>;
   }));
   if (name === 'portalGrid') {
     const skill = ui.values['portal-skill-filter'], category = ui.values['portal-category-filter'];

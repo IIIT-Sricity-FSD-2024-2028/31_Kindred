@@ -121,6 +121,14 @@
 
 .animated-payment-card { margin: 20px 0 26px; }
 .inline-card-donation-dialog { font-family: Arial, sans-serif; }
+.replacement-dialog { max-width: 560px; }
+.replacement-dialog .modal-body, .replacement-dialog form { display: grid; gap: 14px; }
+.replacement-dialog .field { margin: 0; }
+.replacement-dialog .field label { display: block; margin-bottom: 6px; color: #334155; font-size: .88rem; font-weight: 700; }
+.replacement-dialog .field select, .replacement-dialog .field textarea { box-sizing: border-box; width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 9px; background: #fff; color: #0f172a; font: inherit; }
+.replacement-dialog .field textarea { min-height: 108px; resize: vertical; }
+.replacement-help { margin: 0; padding: 12px 14px; border-radius: 10px; background: #f0fdfa; color: #134e4a; line-height: 1.5; }
+.replacement-dialog .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
 .animated-payment-card * { box-sizing: border-box; }
 .animated-payment-card .card-chip { color: #f4d78b; font-size: 32px; }
 .animated-payment-card .card-network-logo { font-size: 18px; font-weight: 700; }

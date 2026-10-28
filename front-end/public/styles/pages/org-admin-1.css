@@ -139,8 +139,19 @@
       border:1px solid #dbeafe;
     }
     [data-react-page="/org-admin.html"] .program-card {
+      height:auto;
+      min-height:0;
+      overflow:visible;
+      cursor:default;
       border-left:4px solid #94a3b8;
       background:linear-gradient(135deg,#f8fbff,#f1f5f9);
+    }
+    [data-react-page="/org-admin.html"] .program-card .page-record-actions {
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:10px;
+      padding-bottom:2px;
     }
     [data-react-page="/org-admin.html"] .program-card.status-active {
       border-color:#a7e8d1;

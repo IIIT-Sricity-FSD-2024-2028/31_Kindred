@@ -26,7 +26,7 @@ function WorkProofs() {
       const proof = [...proofs].reverse().find((p) => p.collection === collection && p.recordId === record.id);
       return <article className="page-record-card" key={`${collection}/${record.id}`}><h3>{record.title || record.productTitle || record.category || record.type || record.description}</h3><p>{collection.replaceAll('-',' ')} · {record.programName || 'Organization work'}</p>{proof && <p>Proof: <strong>{proof.status}</strong></p>}{!proof || proof.status === 'rejected' ? <button className="btn-primary-sm" onClick={() => ui.action('openWorkProof',[collection,record.id])}>{proof ? 'Upload New Proof' : 'Upload Completion Proof'}</button> : <p>Awaiting organization verification.</p>}</article>;
     })}
-    {proofs.filter((p) => admin || p.status === 'approved').map((p) => <article className="page-record-card proof-review-card" key={p.id}><h3>{p.title}</h3><p>{p.organization} · {p.volunteerEmail}</p><span className={`status-badge ${p.status}`}>{p.status}</span><a href={p.image} target="_blank" rel="noreferrer"><img className="work-proof-image" src={p.image} alt={`Completion proof for ${p.title}`} /></a>{admin && p.status === 'pending' && <div className="page-record-actions"><button className="btn-approve" onClick={() => ui.action('mutateRecord',['proofs',p.id,'approve'])}>Verify Proof & Complete</button><button className="btn-reject" onClick={() => ui.action('mutateRecord',['proofs',p.id,'reject'])}>Reject Proof</button></div>}</article>)}
+    {proofs.filter((p) => admin || p.status === 'approved').map((p) => <article className="page-record-card proof-review-card" key={p.id}><div className="page-record-heading"><h3>{p.title}</h3><span className={`status-badge ${p.status}`}>{p.status}</span></div><p>{p.organization} · {p.volunteerEmail}</p><a className="proof-image-link" href={p.image} target="_blank" rel="noreferrer"><img className="work-proof-image" src={p.image} alt={`Completion proof for ${p.title}`} /><span>Open full-size proof image ↗</span></a>{admin && p.status === 'pending' && <div className="page-record-actions"><button className="btn-approve" onClick={() => ui.action('mutateRecord',['proofs',p.id,'approve'])}>Verify Proof & Complete</button><button className="btn-reject" onClick={() => ui.action('mutateRecord',['proofs',p.id,'reject'])}>Reject Proof</button></div>}</article>)}
     {!work.length && !proofs.length && <p className="page-empty">No work proofs awaiting submission or review.</p>}
   </section>;
 }
@@ -34,6 +34,32 @@ function WorkProofs() {
 function ProgramListingReviews() {
   const ui = usePage();
   return <section className="workflow-section" aria-label="Program listing requests"><h2>Public Program Listing Requests</h2>{ui.data('programs').filter((p) => p.listingStatus === 'pending').map((p) => <article className="page-record-card" key={p.id}><h3>{p.name}</h3><p>{p.org} · {p.location}</p><p>{p.description}</p>{p.image && <img className="work-proof-image" src={p.image} alt={`${p.name} proposed photo`} />}<div className="page-record-actions"><button className="btn-approve" onClick={() => ui.action('mutateRecord',['programs',p.id,'approve-listing'])}>Accept Program Listing</button><button className="btn-reject" onClick={() => ui.action('mutateRecord',['programs',p.id,'reject-listing'])}>Reject Program Listing</button></div></article>)}</section>;
+}
+
+function VolunteerProgress() {
+  const ui = usePage();
+  const assignments = ui.data('assignments').filter((a) => ['active','pending'].includes(a.status));
+  return <section className="workflow-section volunteer-progress-workflow" aria-label="Volunteer progress">
+    <div className="volunteer-progress-heading"><div><span className="volunteer-progress-eyebrow">Your impact</span><h2>Volunteer Progress</h2></div><p>Track accepted programs, assigned tasks, and reported progress.</p></div>
+    {!assignments.length && <p className="page-empty">No program memberships yet.</p>}
+    {assignments.map((assignment) => {
+      const tasks = ui.data('tasks').filter((t) => t.programId === assignment.programId && t.assignedToEmail?.toLowerCase() === assignment.volunteerEmail.toLowerCase());
+      const subtasks = ui.data('subtasks').filter((t) => t.programId === assignment.programId && t.assignedToEmail?.toLowerCase() === assignment.volunteerEmail.toLowerCase());
+      const work = [...tasks, ...subtasks];
+      const done = tasks.filter((t) => t.status === 'completed').length + subtasks.filter((t) => Number(t.progress) >= 100).length;
+      const progress = work.length ? Math.round(done / work.length * 100) : 0;
+      return <article className="volunteer-program-card" key={assignment.id}>
+        <div className="volunteer-program-card-heading"><div><span className="volunteer-program-label">{assignment.status === 'active' ? 'Active program' : 'Invitation'}</span><h3>{assignment.programName}</h3></div><span className={assignment.status === 'active' ? 'volunteer-member-badge' : 'volunteer-task-status'}>{assignment.status === 'active' ? assignment.role || 'Volunteer' : 'Pending'}</span></div>
+        {assignment.status === 'active' ? <>
+          <div className="volunteer-program-progress-label"><span>Work completed</span><strong>{progress}%</strong></div><div className="volunteer-program-progress-track" role="progressbar" aria-valuenow={progress} aria-valuemin="0" aria-valuemax="100"><span style={{ width: `${progress}%` }} /></div>
+          <p className="volunteer-program-work-summary">{work.length ? `${done} of ${work.length} assigned ${work.length === 1 ? 'task' : 'tasks'} completed` : 'No tasks assigned yet.'}</p>
+          {tasks.map((task) => <div className="volunteer-program-task" key={task.id}><span>{task.title}</span><span className={`volunteer-task-status status-${task.status}`}>{task.status.replaceAll('_',' ')}</span></div>)}
+          {subtasks.map((task) => <div className="volunteer-program-task" key={task.id}><span>{task.title}</span><span className="volunteer-task-status">{Number(task.progress || 0)}%</span></div>)}
+          {subtasks.length > 0 && <div className="page-record-actions volunteer-program-actions"><button className="action-btn" onClick={() => ui.action('openProgressReport',[assignment.programId])}>Report Progress</button></div>}
+        </> : <div className="page-record-actions volunteer-program-actions"><button className="btn-approve" onClick={() => ui.action('respondProgramInvitation',[assignment.id,'accepted'])}>Accept Invitation</button><button className="btn-reject" onClick={() => ui.action('respondProgramInvitation',[assignment.id,'declined'])}>Decline Invitation</button></div>}
+      </article>;
+    })}
+  </section>;
 }
 
 function Donations() {
@@ -54,11 +80,12 @@ export default function WorkflowPanels() {
   if (!session) return null;
   const dashboard = /dashboard|org-admin\.html|org-admin-overview|platform-admin/.test(ui.path);
   const admin = session.role === 'admin', platform = session.role === 'superuser';
+  const orgAdminArea = admin && /org-admin|overview/.test(ui.path);
   const certificate = ui.state.donorCertificate;
   return <>
-    {(dashboard || /resources|incoming/.test(ui.path)) && <FulfillmentPanel />}
-    {dashboard && !admin && !platform && session.role !== 'volunteer' && <section className="workflow-section"><h2>My Volunteer Programs</h2>{ui.data('assignments').filter((a) => ['active','pending'].includes(a.status)).map((a) => <article className="page-record-card" key={a.id}><h3>{a.programName}</h3><p>{a.status === 'active' ? 'Accepted member' : 'Invitation pending'}</p>{a.status === 'pending' && <div className="page-record-actions"><button className="btn-approve" onClick={() => ui.action('respondProgramInvitation',[a.id,'accepted'])}>Accept Invitation</button><button className="btn-reject" onClick={() => ui.action('respondProgramInvitation',[a.id,'declined'])}>Decline Invitation</button></div>}</article>)}{ui.data('tasks').filter((t) => t.status === 'pending').map((t) => <article className="page-record-card" key={t.id}><h3>{t.title}</h3><button className="btn-primary-sm" onClick={() => ui.action('updateTaskStatus',[t.id,'in-progress'])}>Start Task</button></article>)}</section>}
-    {dashboard && !platform && <WorkProofs />}
+    {(dashboard || orgAdminArea || /resources|incoming/.test(ui.path)) && <FulfillmentPanel />}
+    {dashboard && !admin && !platform && session.role !== 'volunteer' && <VolunteerProgress />}
+    {(dashboard || orgAdminArea) && !platform && <WorkProofs />}
     {dashboard && !platform && <Donations />}
     {platform && ui.path === '/platform-admin.html' && ui.activeTab === 'requests' && <ProgramListingReviews />}
     <Modal open={ui.state.modal === 'workProof'} title="Upload Completion Proof" busy={ui.state.busy} onClose={() => ui.update({ modal: null })}><form onSubmit={(e) => { e.preventDefault(); ui.action('submitWorkProof'); }}><p>Upload a PNG, JPG or WebP image (up to 5 MB). The organization admin will review it.</p><label>Proof Image<input type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => ui.selectFile('work-proof',e.target.files?.[0])} /></label>{ui.state.files['work-proof'] && <p>{ui.state.files['work-proof'].name}</p>}{ui.state.error && <p role="alert">{ui.state.error}</p>}<button className="btn-modal-save" disabled={ui.state.busy} type="submit">Submit Proof for Review</button></form></Modal>

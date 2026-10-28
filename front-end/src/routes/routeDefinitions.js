@@ -337,7 +337,7 @@ export const routeDefinitions = [
     "path": "/shop.html",
     "label": "Shop",
     "title": "Artisan & Community Shop — Kindred",
-    "roles": null
+    "roles": ["superuser", "admin", "volunteer", "donor", "beneficiary", "seller"]
   },
   {
     "path": "/signin.html",

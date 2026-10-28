@@ -115,6 +115,17 @@ export default function ProfilePage() {
          </>)}
        </form>
      </div>
+     <div className="profile-card">
+       <div className="profile-card-title">Account Recovery Questions</div>
+       <p className="field-hint" style={{ marginBottom: 16 }}>Set two questions and answers so you can recover your password if you get locked out. You can replace them any time while signed in.</p>
+       <form {...ui.props('recoveryQuestionsForm', { id: 'recoveryQuestionsForm', noValidate: true, pageForm: true })}>
+         <div className="profile-field"><label htmlFor="pf-security-question-1">Security question 1 *</label><PageField as="select" field="pf-security-question-1" spec={{ id: 'pf-security-question-1', className: 'profile-input' }}><option value="">Choose a question</option><option value="first_school">What was the name of your first school?</option><option value="childhood_friend">What was the first name of your childhood best friend?</option><option value="first_pet">What was the name of your first pet?</option><option value="birth_city">In what city were you born?</option></PageField></div>
+         <div className="profile-field"><label htmlFor="pf-security-answer-1">Answer *</label><PageField field="pf-security-answer-1" spec={{ id: 'pf-security-answer-1', type: 'text', className: 'profile-input', autoComplete: 'off', placeholder: 'Your answer' }} /></div>
+         <div className="profile-field" style={{ marginTop: 12 }}><label htmlFor="pf-security-question-2">Security question 2 *</label><PageField as="select" field="pf-security-question-2" spec={{ id: 'pf-security-question-2', className: 'profile-input' }}><option value="">Choose a different question</option><option value="first_school">What was the name of your first school?</option><option value="childhood_friend">What was the first name of your childhood best friend?</option><option value="first_pet">What was the name of your first pet?</option><option value="birth_city">In what city were you born?</option></PageField></div>
+         <div className="profile-field"><label htmlFor="pf-security-answer-2">Answer *</label><PageField field="pf-security-answer-2" spec={{ id: 'pf-security-answer-2', type: 'text', className: 'profile-input', autoComplete: 'off', placeholder: 'Your answer' }} /></div>
+         <div className="profile-actions"><button type="submit" className="btn-profile-save">Save Recovery Questions</button></div>
+       </form>
+     </div>
      <div {...ui.props("skillsSection", {"className": "profile-card vol-skills-section", "id": "skillsSection"})}>
        {ui.content("skillsSection", <>
        <div {...ui.props("profile-41", {"className": "profile-card-title"})}>

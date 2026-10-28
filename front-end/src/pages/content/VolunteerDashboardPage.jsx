@@ -185,18 +185,17 @@ export default function VolunteerDashboardPage() {
        </div>
        </>)}
      </div>
-     <h3 {...ui.props("volunteer-dashboard-66", {"style": {"marginBottom": "16px", "fontSize": "1.1rem", "borderBottom": "1px solid #e2e8f0", "paddingBottom": "8px"}})}>
-       {" 🏢 My Assigned Programs "}
-     </h3>
-     <div {...ui.props("my-programs-list", {"id": "my-programs-list", "style": {"marginBottom": "32px"}})}>
-       <PageRegion name="my-programs-list" />
-     </div>
-     <h3 {...ui.props("volunteer-dashboard-68", {"style": {"marginBottom": "16px", "fontSize": "1.1rem", "borderBottom": "1px solid #e2e8f0", "paddingBottom": "8px"}})}>
-       {" 📋 My Assigned Tasks "}
-     </h3>
-     <div {...ui.props("assignments-list", {"className": "assignments-list", "id": "assignments-list", "style": {"marginBottom": "32px"}})}>
-       <PageRegion name="assignments-list" />
-     </div>
+     <section className="volunteer-progress-section" aria-labelledby="volunteer-progress-title">
+       <div className="volunteer-progress-heading"><div><span className="volunteer-progress-eyebrow">Your impact</span><h2 id="volunteer-progress-title">Volunteer Progress</h2></div><p>Track your programs, assigned work, and reported progress.</p></div>
+       <h3 className="volunteer-progress-subheading">My Assigned Programs</h3>
+       <div {...ui.props("my-programs-list", {"className": "volunteer-program-list", "id": "my-programs-list"})}>
+         <PageRegion name="my-programs-list" />
+       </div>
+       <h3 className="volunteer-progress-subheading">My Assigned Tasks</h3>
+       <div {...ui.props("assignments-list", {"className": "assignments-list volunteer-task-list", "id": "assignments-list"})}>
+         <PageRegion name="assignments-list" />
+       </div>
+     </section>
      <h3 {...ui.props("volunteer-dashboard-70", {"style": {"marginBottom": "16px", "fontSize": "1.1rem", "borderBottom": "1px solid #e2e8f0", "paddingBottom": "8px"}})}>
        {" ⏱️ My Logged Hours "}
      </h3>

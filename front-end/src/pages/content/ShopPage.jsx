@@ -1,6 +1,7 @@
 import { Link } from '../../routes/navigation.jsx';
 import { usePage } from '../runtime/PageContext.js';
 import PageExtras from '../../components/pages/PageExtras.jsx';
+import AnimatedPaymentCard from '../../components/pages/AnimatedPaymentCard.jsx';
 import { PageField, PageModal, PageRegion } from '../runtime/PageElements.jsx';
 
 export default function ShopPage() {
@@ -153,65 +154,7 @@ export default function ShopPage() {
              {"Card Payment"}
            </h2>
          </div>
-         <div {...ui.props("shop-57", {"className": "card-scene"})}>
-           <div {...ui.props("shop-card-3d", {"className": "card-3d", "id": "shop-card-3d"})}>
-             {ui.content("shop-card-3d", <>
-             <div {...ui.props("shop-59", {"className": "card-face card-front", "style": {"background": "linear-gradient(135deg,#0f766e 0%,#134e4a 50%,#042f2e 100%)"}})}>
-               <div {...ui.props("shop-60", {"className": "card-front-top"})}>
-                 <span {...ui.props("shop-61", {"className": "card-chip"})}>
-                   {"💳"}
-                 </span>
-                 {" "}
-                 <span {...ui.props("shop-card-network-logo", {"className": "card-network-logo", "id": "shop-card-network-logo"})}>
-                   {ui.content("shop-card-network-logo", <>
-                   </>)}
-                 </span>
-               </div>
-               <div {...ui.props("shop-card-number-display", {"className": "card-number-display", "id": "shop-card-number-display"})}>
-                 {ui.content("shop-card-number-display", <>
-                 {"•••• •••• •••• ••••"}
-                 </>)}
-               </div>
-               <div {...ui.props("shop-64", {"className": "card-front-bottom"})}>
-                 <div {...ui.props("shop-65", {})}>
-                   <div {...ui.props("shop-66", {"className": "card-label-sm"})}>
-                     {"CARDHOLDER"}
-                   </div>
-                   <div {...ui.props("shop-card-holdername-display", {"className": "card-holdername", "id": "shop-card-holdername-display"})}>
-                     {ui.content("shop-card-holdername-display", <>
-                     {"YOUR NAME"}
-                     </>)}
-                   </div>
-                 </div>
-                 <div {...ui.props("shop-68", {})}>
-                   <div {...ui.props("shop-69", {"className": "card-label-sm"})}>
-                     {"EXPIRES"}
-                   </div>
-                   <div {...ui.props("shop-card-expiry-display", {"className": "card-expiry-display", "id": "shop-card-expiry-display"})}>
-                     {ui.content("shop-card-expiry-display", <>
-                     {"MM/YY"}
-                     </>)}
-                   </div>
-                 </div>
-               </div>
-             </div>
-             <div {...ui.props("shop-71", {"className": "card-face card-back", "style": {"background": "linear-gradient(135deg,#134e4a,#042f2e)"}})}>
-               <div {...ui.props("shop-72", {"className": "card-stripe"})}>
-               </div>
-               <div {...ui.props("shop-73", {"className": "card-cvv-area"})}>
-                 <div {...ui.props("shop-74", {"className": "card-label-sm", "style": {"color": "#aaa"}})}>
-                   {"CVV"}
-                 </div>
-                 <div {...ui.props("shop-card-cvv-display", {"className": "card-cvv-display", "id": "shop-card-cvv-display"})}>
-                   {ui.content("shop-card-cvv-display", <>
-                   {"•••"}
-                   </>)}
-                 </div>
-               </div>
-             </div>
-             </>)}
-           </div>
-         </div>
+         <AnimatedPaymentCard prefix="shop-" />
          <div {...ui.props("shop-76", {"className": "card-form"})}>
            <div {...ui.props("shop-77", {"className": "card-field-group"})}>
              <label {...ui.props("shop-78", {"className": "card-field-label"})}>

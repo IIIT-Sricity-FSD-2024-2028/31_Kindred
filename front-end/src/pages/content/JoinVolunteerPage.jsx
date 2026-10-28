@@ -234,6 +234,16 @@ export default function JoinVolunteerPage() {
              {"Your volunteer application will be reviewed by the Platform Administrator before you can access the platform."}
            </span>
          </div>
+         <section className="security-questions" aria-label="Account recovery questions">
+           <h2 style={{ fontSize: '1rem', margin: '0 0 6px' }}>Account recovery questions</h2>
+           <p style={{ fontSize: '.82rem', color: '#64748b', margin: '0 0 14px' }}>Choose two different questions. You will need both answers to reset your password.</p>
+           <label htmlFor="security-question-1">Security question 1 *</label>
+           <PageField as="select" field="security-question-1" spec={{ id: 'security-question-1', className: 'security-question-control', 'aria-label': 'Security question 1' }}><option value="">Choose a question</option><option value="first_school">What was the name of your first school?</option><option value="childhood_friend">What was the first name of your childhood best friend?</option><option value="first_pet">What was the name of your first pet?</option><option value="birth_city">In what city were you born?</option></PageField>
+           <PageField as="input" field="security-answer-1" spec={{ type: 'text', className: 'security-answer-control', autoComplete: 'off', placeholder: 'Your answer', 'aria-label': 'Answer to security question 1' }} />
+           <label htmlFor="security-question-2" style={{ display: 'block', marginTop: '12px' }}>Security question 2 *</label>
+           <PageField as="select" field="security-question-2" spec={{ id: 'security-question-2', className: 'security-question-control', 'aria-label': 'Security question 2' }}><option value="">Choose a different question</option><option value="first_school">What was the name of your first school?</option><option value="childhood_friend">What was the first name of your childhood best friend?</option><option value="first_pet">What was the name of your first pet?</option><option value="birth_city">In what city were you born?</option></PageField>
+           <PageField as="input" field="security-answer-2" spec={{ type: 'text', className: 'security-answer-control', autoComplete: 'off', placeholder: 'Your answer', 'aria-label': 'Answer to security question 2' }} />
+         </section>
          <button {...ui.props("btnVolSubmit", {"className": "btn-vol-submit", "id": "btnVolSubmit", "type": "button", "actionLabel": "Submit Volunteer Application"}, {"click": {"name": "submitVolunteerForm", "args": []}})}>
            {ui.content("btnVolSubmit", <>
            {" Submit Volunteer Application "}

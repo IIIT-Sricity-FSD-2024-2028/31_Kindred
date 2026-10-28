@@ -36,11 +36,12 @@ export function pageRequests(path, session) {
     jobs.products = `/products?sellerId=${enc(session.id)}`;
     jobs.orders = `/orders?sellerId=${enc(session.id)}`;
     jobs.replacements = `/replacements/by-seller/${enc(session.id)}`;
+    jobs.proofs = '/proofs';
   }
   if (['admin', 'superuser'].includes(session?.role) && /admin|overview|analytics|requests|incoming|resources|volunteers|create-program/.test(path)) {
     Object.assign(jobs, { organizations: '/organizations/manage', programs: '/programs/manage', proofs: '/proofs', volunteers: '/volunteers',
       incoming: '/incoming', tasks: '/tasks', hours: '/hour-logs', subtasks: '/subtasks',
-      assignments: '/program-assignments', applications: '/program-applications',
+      assignments: '/program-assignments', applications: session.role === 'admin' ? `/program-applications/by-org/${enc(session.org || '')}` : '/program-applications',
       resources: session.role === 'admin' && session.org ? `/resource-donations/by-org/${enc(session.org)}` : '/resource-donations',
       orders: '/orders', replacements: '/replacements',
       volunteerRequests: '/volunteer-requests',

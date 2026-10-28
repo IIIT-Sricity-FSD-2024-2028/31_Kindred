@@ -1,6 +1,7 @@
 import { FieldError, validateField, requireFields, validateEmail, validatePasswordFields, validatePhone } from '../../services/validation.js';
 import { readStored, writeStored } from '../../services/storage.js';
 import { safeNotificationLink } from '../../services/notifications.js';
+import { apiClient } from '../../services/auth.js';
 
 export const demoCredentials = {
   platform: ['super@kindred.org', 'Super@123'], org: ['admin@hopeconnect.org', 'Admin@123'],
@@ -21,7 +22,15 @@ export function authActions(ui) {
     if (!state.selectedRole) throw new Error('Please select your role.');
     requireFields(v, ['si-email', 'si-pass']); validateField('si-email', validateEmail, v['si-email']);
     const user = await ui.signIn({ email: v['si-email'].trim(), password: v['si-pass'], role: authRole(state.selectedRole) });
-    const redirect = location.state?.from || new URLSearchParams(location?.search || '').get('redirect') || readStored('kindred_signup_destination');
+    const params = new URLSearchParams(location?.search || '');
+    const joinProgramId = params.get('joinProgram');
+    if (joinProgramId) {
+      if (['admin', 'superuser'].includes(user.role)) throw new Error('Sign in with a volunteer or community account to send this join request.');
+      const program = await apiClient.get(`/programs/${encodeURIComponent(joinProgramId)}`);
+      await apiClient.post('/program-applications', { programId: program.id, programName: program.name, volunteerEmail: user.email, volunteerName: user.name, message: 'I would like to join this program as a volunteer.' });
+      ui.toast({ type: 'success', title: 'Join request submitted', body: 'The organization admin can now review your request.' });
+    }
+    const redirect = location.state?.from || params.get('redirect') || readStored('kindred_signup_destination');
     writeStored('kindred_signup_destination', null);
     navigate(safeNotificationLink(redirect) || user.dashboard, { replace: true });
   }
@@ -30,7 +39,11 @@ export function authActions(ui) {
     if (v[`${prefix}-name`].trim().length < 2) throw new FieldError(`${prefix}-name`, 'Full name is required (min 2 characters)');
     validateField(`${prefix}-email`, validateEmail, v[`${prefix}-email`]); validatePasswordFields(v, `${prefix}-pass`, `${prefix}-pass2`);
     if (v[`${prefix}-phone`]) validateField(`${prefix}-phone`, validatePhone, v[`${prefix}-phone`]);
+    requireFields(v, ['security-question-1', 'security-answer-1', 'security-question-2', 'security-answer-2']);
+    if (v['security-question-1'] === v['security-question-2']) throw new FieldError('security-question-2', 'Choose a different question for each answer.');
     const body = { name: v[`${prefix}-name`].trim(), email: v[`${prefix}-email`].trim(), password: v[`${prefix}-pass`], role,
+      securityQuestion1: v['security-question-1'], securityAnswer1: v['security-answer-1'].trim(),
+      securityQuestion2: v['security-question-2'], securityAnswer2: v['security-answer-2'].trim(),
       phone: v[`${prefix}-phone`] || '', skills: Object.keys(v).filter((k) => k.startsWith('skill-') && v[k]).map((k) => k.slice(6)).concat(state.customSkills),
     };
     if (role === 'admin') {
@@ -88,6 +101,17 @@ export function authActions(ui) {
     ui.updateSession(saved);
     ui.refresh(); ui.toast({ type: 'success', title: 'Profile saved' });
   }
+  async function saveRecoveryQuestions() {
+    if (!session?.id) throw new Error('Sign in to update your account recovery questions.');
+    requireFields(v, ['pf-security-question-1', 'pf-security-answer-1', 'pf-security-question-2', 'pf-security-answer-2']);
+    if (v['pf-security-question-1'] === v['pf-security-question-2']) throw new FieldError('pf-security-question-2', 'Choose a different question for each answer.');
+    await api.patch(`/users/${encodeURIComponent(session.id)}/security-questions`, {
+      securityQuestion1: v['pf-security-question-1'], securityAnswer1: v['pf-security-answer-1'].trim(),
+      securityQuestion2: v['pf-security-question-2'], securityAnswer2: v['pf-security-answer-2'].trim(),
+    });
+    setValues({ 'pf-security-answer-1': '', 'pf-security-answer-2': '' });
+    ui.toast({ type: 'success', title: 'Recovery questions saved' });
+  }
   return {
     selectRole: (args, meta) => selectRole(args[0] || meta['data-role']),
     selectSignInRole: (_args, meta) => selectRole(meta['data-role']),
@@ -100,7 +124,7 @@ export function authActions(ui) {
     submitOrg: () => register('admin', 'org'), submitVolunteer: () => register('volunteer', 'vol'),
     submitDonor: () => register('donor', 'don'), submitBeneficiary: () => register('beneficiary', 'ben'),
     submitSeller: () => register('seller', 'seller'), submitVolunteerForm: () => register('volunteer', 'jv'),
-    saveProfile,
+    saveProfile, saveRecoveryQuestions,
     resetForm: () => setValues({ 'pf-name': ui.savedProfile.name || session.name, 'pf-phone': ui.savedProfile.phone || '', 'pf-bio': ui.savedProfile.bio || session.bio || '' }),
     saveSkills: async () => {
       if (!['admin','superuser'].includes(session.role)) throw new Error('The backend does not permit this role to update skills. Your changes have not been saved.');
@@ -116,12 +140,23 @@ export function authActions(ui) {
     addCustomSkillJV: () => ui.addSkill('jv-custom-skill'), addCustomSkillProfile: () => ui.addSkill('pf-custom-skill'),
     removeCert: () => ui.clearFile('org-cert-file'),
     sendOTP: () => { validateField('phone-input', validatePhone, v['phone-input']); throw new Error('Phone verification is unavailable: the backend has no OTP send/verify endpoints.'); },
-    sendFPOTP: () => { validateField('fp-phone', validatePhone, v['fp-phone']); throw new Error('Password recovery is unavailable: the backend has no recovery or OTP endpoint.'); },
+    loadRecoveryQuestions: async () => {
+      requireFields(v, ['fp-email', 'fp-role']); validateField('fp-email', validateEmail, v['fp-email']);
+      const result = await api.post('/users/recovery-questions', { email: v['fp-email'].trim(), role: v['fp-role'] });
+      update({ recoveryQuestions: result, recoveryEmail: v['fp-email'].trim(), recoveryRole: v['fp-role'] });
+    },
+    recoverPassword: async () => {
+      if (!state.recoveryQuestions || state.recoveryEmail !== v['fp-email']?.trim() || state.recoveryRole !== v['fp-role']) throw new Error('Continue again to load the security questions for this account.');
+      requireFields(v, ['fp-answer-1', 'fp-answer-2', 'rp-pass', 'rp-pass2']); validatePasswordFields(v, 'rp-pass', 'rp-pass2');
+      await api.post('/users/recover-password', { email: v['fp-email'].trim(), role: v['fp-role'], securityAnswer1: v['fp-answer-1'], securityAnswer2: v['fp-answer-2'], newPassword: v['rp-pass'] });
+      update({ recoveryQuestions: null }); setValues({ 'fp-answer-1': '', 'fp-answer-2': '', 'rp-pass': '', 'rp-pass2': '' });
+      ui.toast({ type: 'success', title: 'Password updated', body: 'You can now sign in with your new password.' }); navigate('/signin.html');
+    },
     selectFPRole: (_args, meta) => update({ selectedRole: meta['data-role'] }),
     resendOTP: () => { throw new Error('The backend has no OTP delivery endpoint. No code was sent.'); },
     verifyOTP: () => { throw new Error('The backend has no OTP verification endpoint.'); },
     verifyFOTP: () => { throw new Error('The backend has no password recovery verification endpoint.'); },
-    resetPassword: () => { validatePasswordFields(v, 'rp-pass', 'rp-pass2'); throw new Error('The backend has no password recovery endpoint. Your password has not changed.'); },
+    resetPassword: () => { validatePasswordFields(v, 'rp-pass', 'rp-pass2'); throw new Error('Start password recovery from Forgot Password to verify your security answers.'); },
     checkStrength: () => {},
   };
 }

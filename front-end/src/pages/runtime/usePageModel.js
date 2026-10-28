@@ -172,7 +172,7 @@ export default function usePageModel(route) {
     const meta = { ...spec, label: actionLabel || '' };
     const events = { ...actions };
     if (pageForm) {
-      const submit = { 'join-volunteer-12': ['submitVolunteerForm'], contactForm: ['submitIncoming','contactForm'], feedbackForm: ['submitIncoming','feedbackForm'], emergencyRequestForm: ['submitIncoming','emergencyRequestForm'], 'request-form': ['submitIncoming','request-form'], 'ngo-register-form': ['registerNgo'], resourceDonationForm: ['submitResourceDonation'], profileForm: ['saveProfile'], passForm: ['changePassword'], 'form-org': ['submitOrg'], 'form-volunteer': ['submitVolunteer'], 'form-donor': ['submitDonor'], 'form-beneficiary': ['submitBeneficiary'], 'form-seller': ['submitSeller'] }[key] || (route.path === '/signin.html' ? ['signIn'] : null);
+      const submit = { 'join-volunteer-12': ['submitVolunteerForm'], contactForm: ['submitIncoming','contactForm'], feedbackForm: ['submitIncoming','feedbackForm'], emergencyRequestForm: ['submitIncoming','emergencyRequestForm'], 'request-form': ['submitIncoming','request-form'], 'ngo-register-form': ['registerNgo'], resourceDonationForm: ['submitResourceDonation'], profileForm: ['saveProfile'], recoveryQuestionsForm: ['saveRecoveryQuestions'], passForm: ['changePassword'], 'form-org': ['submitOrg'], 'form-volunteer': ['submitVolunteer'], 'form-donor': ['submitDonor'], 'form-beneficiary': ['submitBeneficiary'], 'form-seller': ['submitSeller'] }[key] || (route.path === '/signin.html' ? ['signIn'] : null);
       if (submit) { events.submit = { name: submit[0], args: submit.slice(1) }; attrs.noValidate = true; attrs['data-react-form'] = true; attrs['aria-busy'] = state.busy; }
     }
     const defaultActions = {

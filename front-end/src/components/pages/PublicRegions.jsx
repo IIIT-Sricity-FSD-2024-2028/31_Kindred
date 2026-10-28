@@ -28,7 +28,8 @@ export function OrganizationCards({ records, compact: small = false, partners = 
 export function ProgramCards({ records, campaign = false, portal = false, management = false }) {
   const ui = usePage();
   return records.map((p) => {
-    const percentage = Math.min(100, Math.round(Number(p.raised || 0)/Math.max(Number(p.budget),1)*100));
+    const fundingPercentage = Math.min(100, Math.round(Number(p.raised || 0)/Math.max(Number(p.budget),1)*100));
+    const percentage = campaign ? fundingPercentage : Math.min(100, Number(p.taskProgress || 0));
     const color = ['#00c9a7','#3b82f6','#8b5cf6','#059669'][records.indexOf(p)%4];
     const application = ui.data('applications').find((a) => a.programId === p.id);
     if (campaign) return <div className="campaign-card" key={p.id}><div className="campaign-org"><div className="campaign-org-avatar" style={{ background: '#6366f1' }}>{p.org?.[0]}</div><span className="campaign-org-name">{p.org}</span></div>
@@ -39,7 +40,8 @@ export function ProgramCards({ records, campaign = false, portal = false, manage
     if (management || portal) return <article className={portal ? 'portal-card' : `program-card status-${p.status}`} key={p.id} data-program-id={p.id}>
       <div className="program-header"><h3>{p.name}</h3><span className={`status-badge ${p.status}`}>{p.status}</span></div>
       {management && <p className="field-hint">Public listing: {p.listingStatus || 'unlisted'}</p>}<p className="program-org">{p.org} • {focusText(p.focus)}</p><p>{p.description}</p><p>📍 {p.location || '—'}</p>
-      <div className="program-stats"><span>👥 {p.volunteers || 0}/{p.volunteerGoal || 0} volunteers</span><span>Budget {money(p.budget)}</span></div>
+      <div className="program-stats"><span>👥 {p.volunteers || 0}/{p.volunteerGoal || 0} volunteers</span><span>Tasks {p.completedTasks || 0}/{p.totalTasks || 0} complete</span><span>Budget {money(p.budget)}</span><span>Donations {money(p.raised)}</span></div>
+      <div className="program-task-progress-label"><span>Task progress</span><strong>{percentage}%</strong></div>
       <div className="progress-bar-bg"><div className="progress-bar-fill bg-cyan" style={{ width: percentage+'%' }} /></div>
       <div className="page-skill-tags">{(p.requiredSkills || []).map((skill) => <span key={skill} className="skill-tag">{skill}</span>)}</div>
       <div className="page-record-actions">
@@ -51,7 +53,7 @@ export function ProgramCards({ records, campaign = false, portal = false, manage
     return <div className="program-feature-card" key={p.id}>
       <div className="prog-cover-img" style={{ backgroundImage: `url("${p.image || programImages[[p.focus].flat()[0]] || '/images/program-disaster.png'}")` }}><span className={`status-pill ${p.status === 'active' ? 'active-pill' : ''}`}>{p.status}</span></div>
       <div className="prog-card-content"><div className="prog-header"><div className="prog-titles"><h3>{p.name}</h3><span className="prog-ngo">by {p.org}</span></div></div>
-        <p>{p.description}</p><div className="page-record-actions"><button type="button" className="program-donate-button" onClick={() => ui.action('openDonation',[p.org,p.id])}>Donate</button>{!['admin','superuser'].includes(ui.session?.role) && <button type="button" className="btn-outline-sm" disabled={p.openForApplications === false || ui.data('applications').some((a) => a.programId === p.id) || ui.data('assignments').some((a) => a.programId === p.id && ['pending','active'].includes(a.status))} onClick={() => ui.action('joinPublicProgram',[p.id])}>Join as Volunteer</button>}</div><div className="org-stats"><span className="stat">📍 {p.location}</span><span className="stat">👥 {p.volunteers} volunteers</span></div>
+        <p>{p.description}</p><div className="page-record-actions"><button type="button" className="program-donate-button" onClick={() => ui.action('openDonation',[p.org,p.id])}>Donate</button><button type="button" className="btn-outline-sm" onClick={() => ui.action('joinPublicProgram',[p.id])}>Join as Volunteer</button></div><div className="org-stats"><span className="stat">📍 {p.location}</span><span className="stat">👥 {p.volunteers} volunteers</span></div>
         <div className="prog-progress"><div className="progress-labels"><span>Progress</span><span>{percentage}%</span></div><div className="progress-bar-bg"><div className="progress-bar-fill bg-cyan" style={{ width: percentage+'%' }} /></div></div>
       </div>
     </div>;
