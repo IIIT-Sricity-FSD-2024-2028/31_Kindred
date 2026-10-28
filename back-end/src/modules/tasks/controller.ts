@@ -26,7 +26,7 @@ export class TasksController {
   }
 
   @Get('by-volunteer/:email')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Get tasks assigned to a volunteer' })
   @ApiResponse({ status: 200, description: 'Tasks retrieved' })
   @ApiResponse({ status: 403, description: 'Access denied' })
@@ -35,7 +35,7 @@ export class TasksController {
   }
 
   @Get('by-program/:programId')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Get tasks for a specific program' })
   @ApiResponse({ status: 200, description: 'Program tasks retrieved' })
   findByProgram(@Param('programId') programId: string) {
@@ -43,7 +43,7 @@ export class TasksController {
   }
 
   @Get(':id')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Get task by ID' })
   @ApiResponse({ status: 200, description: 'Task retrieved' })
   @ApiResponse({ status: 404, description: 'Task not found' })
@@ -53,7 +53,7 @@ export class TasksController {
   }
 
   @Post()
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Create a new task', description: 'Assign a task to a volunteer' })
   @ApiResponse({ status: 201, description: 'Task created successfully' })
   @ApiResponse({ status: 400, description: 'Validation failed' })
@@ -63,7 +63,7 @@ export class TasksController {
   }
 
   @Patch(':id')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Update a task', description: 'Update task details, status, or notes. Status transitions are enforced.' })
   @ApiResponse({ status: 200, description: 'Task updated' })
   @ApiResponse({ status: 400, description: 'Invalid status transition' })

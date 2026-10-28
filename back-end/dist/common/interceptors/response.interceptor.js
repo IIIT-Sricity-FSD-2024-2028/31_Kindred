@@ -12,8 +12,11 @@ const operators_1 = require("rxjs/operators");
 let ResponseInterceptor = class ResponseInterceptor {
     intercept(context, next) {
         return next.handle().pipe((0, operators_1.map)((data) => {
-            if (data && typeof data === 'object' && 'success' in data && 'message' in data) {
-                return data;
+            if (data && typeof data === 'object' && typeof data.success === 'boolean' && 'data' in data) {
+                return {
+                    ...data,
+                    message: data.message ?? 'Operation completed successfully',
+                };
             }
             return {
                 success: true,

@@ -87,7 +87,7 @@ export default function AdminUsersPage() {
                {"Role"}
              </th>
              <th {...ui.props("admin-users-29", {})}>
-               {"Status"}
+              {"Verification / Approval"}
              </th>
              <th {...ui.props("admin-users-30", {})}>
                {"Source"}

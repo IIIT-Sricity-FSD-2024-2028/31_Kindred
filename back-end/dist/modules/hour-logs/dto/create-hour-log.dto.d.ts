@@ -1,4 +1,5 @@
 export declare class CreateHourLogDto {
+    id?: string;
     volunteerEmail: string;
     volunteerName?: string;
     hours: number;

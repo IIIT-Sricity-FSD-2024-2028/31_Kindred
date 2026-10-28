@@ -13,6 +13,7 @@ exports.CreateHourLogDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateHourLogDto {
+    id;
     volunteerEmail;
     volunteerName;
     hours;
@@ -22,6 +23,12 @@ class CreateHourLogDto {
     programName;
 }
 exports.CreateHourLogDto = CreateHourLogDto;
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Client-provided ID for synchronized dashboard records' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateHourLogDto.prototype, "id", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'Email of the volunteer', example: 'neha.kapoor@gmail.com' }),
     (0, class_validator_1.IsString)(),

@@ -1,10 +1,15 @@
+import { ProofStore } from '../proofs/store';
+import { Inject } from '@nestjs/common';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ResourceDonation } from './entities/resource-donation.entity';
 import { CreateResourceDonationDto } from './dto/create-resource-donation.dto';
 import { UpdateResourceDonationDto } from './dto/update-resource-donation.dto';
+import { OrganizationsService } from '../organizations/service';
+import { ProgramsService } from '../programs/service';
 
 @Injectable()
 export class ResourceDonationsService {
+  @Inject(ProofStore) private readonly proofs!: ProofStore;
   private donations: ResourceDonation[] = [
     {
       id: 'rdon_001', donorName: 'Rajesh Gupta', donorEmail: 'donor@kindred.org', donorPhone: '9876543210',
@@ -55,6 +60,23 @@ export class ResourceDonationsService {
   ];
   private counter = 100;
 
+  constructor(private readonly organizations:OrganizationsService,private readonly programs:ProgramsService) { for (const donation of this.donations) donation.orgName = 'HopeConnect'; }
+
+  releaseDelivery(id: string) {
+    const donation = this.donations.find(d => d.id === id);
+    if (!donation) throw new NotFoundException('Donation not found');
+    donation.assignedVolunteerEmail=''; donation.assignedVolunteerName=''; donation.status='submitted'; donation.assignedAt=null; donation.pickedUpAt=null;
+  }
+
+  completeSharedDelivery(id: string) {
+    const donation = this.donations.find(d => d.id === id);
+    if (!donation) throw new NotFoundException('Donation not found');
+    donation.status='completed'; donation.deliveredAt=new Date().toISOString();
+  }
+  recordReceipt(id: string) {
+    const donation=this.donations.find(d=>d.id===id);if(!donation)throw new NotFoundException('Donation not found');donation.status='received';
+  }
+
   private generateId(): string {
     return `rdon_${Date.now()}_${this.counter++}`;
   }
@@ -77,7 +99,7 @@ export class ResourceDonationsService {
     return this.donations.filter((d) => d.assignedVolunteerEmail && d.assignedVolunteerEmail.toLowerCase() === email.toLowerCase());
   }
 
-  findByOrg(orgName: string): ResourceDonation[] { return this.donations.filter((d) => !d.orgName || (d.orgName || '').toLowerCase() === orgName.toLowerCase()); }
+  findByOrg(orgName: string): ResourceDonation[] { return this.donations.filter((d) => (d.orgName || '').toLowerCase() === orgName.toLowerCase()); }
 
   findByProgram(programId: string): ResourceDonation[] {
     return this.donations.filter((d) => d.programId === programId);
@@ -96,9 +118,16 @@ export class ResourceDonationsService {
   }
 
   create(dto: CreateResourceDonationDto): ResourceDonation {
+    if (dto.category !== 'Shop Delivery') {
+      const program=dto.programId ? this.programs.findById(dto.programId) : undefined;
+      const org=this.organizations.findAll().find(o=>o.name===(dto.orgName||program?.org));
+      if(!org||org.status!=='active'||(program&&program.org!==org.name))throw new BadRequestException('Select an active recipient organization and a matching program');
+      dto={...dto,orgName:org.name,orgId:org.id,programName:program?.name||''};
+    }
     const newDon: ResourceDonation = {
       id: dto.id || this.generateId(),
       donorName: dto.donorName,
+      image: dto.image,
       donorEmail: dto.donorEmail,
       donorPhone: dto.donorPhone,
       category: dto.category,
@@ -126,6 +155,7 @@ export class ResourceDonationsService {
   update(id: string, dto: UpdateResourceDonationDto): ResourceDonation {
     const idx = this.donations.findIndex((d) => d.id === id);
     if (idx === -1) throw new NotFoundException(`Resource donation with id '${id}' not found`);
+    if (['delivered','completed'].includes(dto.status || '')) this.proofs.assertVerified('resource-donations', id);
     this.donations[idx] = { ...this.donations[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
     return { ...this.donations[idx] };
   }
@@ -151,6 +181,7 @@ export class ResourceDonationsService {
   markDelivered(id: string): ResourceDonation {
     const idx = this.donations.findIndex((d) => d.id === id);
     if (idx === -1) throw new NotFoundException(`Resource donation with id '${id}' not found`);
+    this.proofs.assertVerified('resource-donations', id);
     this.donations[idx].status = 'delivered';
     this.donations[idx].deliveredAt = new Date().toISOString();
     return { ...this.donations[idx] };
@@ -159,6 +190,7 @@ export class ResourceDonationsService {
   markCompleted(id: string): ResourceDonation {
     const idx = this.donations.findIndex((d) => d.id === id);
     if (idx === -1) throw new NotFoundException(`Resource donation with id '${id}' not found`);
+    this.proofs.assertVerified('resource-donations', id);
     this.donations[idx].status = 'completed';
     return { ...this.donations[idx] };
   }

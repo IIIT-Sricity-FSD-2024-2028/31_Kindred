@@ -9,6 +9,24 @@ export declare class ProgramsController {
         data: import("./entities/program.entity").Program[];
         message: string;
     };
+    manage(role: string, org: string): {
+        success: boolean;
+        data: import("./entities/program.entity").Program[];
+    };
+    uploadImage(file: any): {
+        success: boolean;
+        data: {
+            url: string;
+        };
+    };
+    approveListing(id: string): {
+        success: boolean;
+        data: import("./entities/program.entity").Program;
+    };
+    rejectListing(id: string): {
+        success: boolean;
+        data: import("./entities/program.entity").Program;
+    };
     findByOrg(org: string): {
         success: boolean;
         data: import("./entities/program.entity").Program[];
@@ -19,12 +37,12 @@ export declare class ProgramsController {
         data: import("./entities/program.entity").Program;
         message: string;
     };
-    create(dto: CreateProgramDto): {
+    create(dto: CreateProgramDto, role: string, org: string): {
         success: boolean;
         data: import("./entities/program.entity").Program;
         message: string;
     };
-    update(id: string, dto: UpdateProgramDto): {
+    update(id: string, dto: UpdateProgramDto, role: string, org: string): {
         success: boolean;
         data: import("./entities/program.entity").Program;
         message: string;

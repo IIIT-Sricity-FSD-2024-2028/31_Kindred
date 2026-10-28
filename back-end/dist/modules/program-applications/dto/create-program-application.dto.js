@@ -13,6 +13,7 @@ exports.CreateProgramApplicationDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateProgramApplicationDto {
+    id;
     programId;
     programName;
     volunteerEmail;
@@ -20,6 +21,12 @@ class CreateProgramApplicationDto {
     message;
 }
 exports.CreateProgramApplicationDto = CreateProgramApplicationDto;
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Client-provided ID for synchronized dashboard records' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateProgramApplicationDto.prototype, "id", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'Program ID to apply for', example: 'prog_002' }),
     (0, class_validator_1.IsString)(),

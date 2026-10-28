@@ -24,12 +24,12 @@ test('cancelled assignments resend an invitation without a duplicate create', as
   assert.deepEqual(writes,[['/program-assignments/existing',{status:'pending'}]]);
 });
 test('registration retries only the failed second step and retains no password in progress', async () => {
-  const state={files:{},customSkills:[]}; let users=0,sellers=0;
-  const ui={values:{'seller-name':'Test Seller','seller-email':'seller@example.test','seller-phone':'9812345678','seller-pass':'Valid@123','seller-pass2':'Valid@123','seller-business':'Test Shop'},state,
+  const state={files:{},customSkills:[],verificationToken:'verified-registration-token'}; let users=0,sellers=0;
+  const ui={values:{'seller-name':'Test Seller','seller-email':'seller@example.test','seller-phone':'9812345678','seller-pass':'Valid@123','seller-pass2':'Valid@123','seller-business':'Test Shop','seller-location':'Pune','security-question-1':'first_school','security-answer-1':'One','security-question-2':'first_pet','security-answer-2':'Two'},state,
     update:patch=>Object.assign(state,patch), api:{post:async (path) => {
       if(path==='/users/register') {users++;return {id:'created',name:'Test',email:'seller@example.test',role:'seller',status:'pending',password:'SECRET'};}
       sellers++; if(sellers===1) throw new Error('Temporary outage'); return {};
-    }},navigate() {}};
+    }},navigate() {},toast() {}};
   await assert.rejects(authActions(ui).submitSeller(),/Retry this form/);
   assert.equal(state.registrationProgress.user.password,undefined);
   await authActions(ui).submitSeller(); assert.equal(users,1); assert.equal(sellers,2);

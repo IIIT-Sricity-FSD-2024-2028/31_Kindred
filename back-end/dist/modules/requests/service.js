@@ -47,7 +47,7 @@ let RequestsService = class RequestsService {
         const idx = this.requests.findIndex((r) => r.id === id);
         if (idx === -1)
             throw new common_1.NotFoundException(`Request with id '${id}' not found`);
-        this.requests[idx] = { ...this.requests[idx], ...dto };
+        this.requests[idx] = { ...this.requests[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
         return { ...this.requests[idx] };
     }
     approve(id) {

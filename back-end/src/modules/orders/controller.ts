@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { FulfillmentService } from '../fulfillment/service';
+import { Body, Controller, ForbiddenException, Get, Headers, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiHeader, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -10,7 +11,7 @@ import { OrdersService } from './service';
 @Controller('orders')
 @UseGuards(RolesGuard)
 export class OrdersController {
-  constructor(private readonly service: OrdersService) {}
+  constructor(private readonly service: OrdersService, private readonly fulfillment: FulfillmentService) {}
 
   @Post()
   @ApiOperation({ summary: 'Complete a shop payment/order; updates stock, seller balance, and creates delivery allocation' })
@@ -42,7 +43,8 @@ export class OrdersController {
   @Get('by-volunteer/:email')
   @Roles('admin', 'superuser', 'volunteer')
   @ApiOperation({ summary: 'Get delivery orders assigned to a volunteer' })
-  findByVolunteer(@Param('email') email: string) {
+  findByVolunteer(@Param('email') email: string, @Headers('role') role:string, @Headers('user-email') caller:string) {
+    if (role === 'volunteer' && email.toLowerCase() !== String(caller).toLowerCase()) throw new ForbiddenException('You can only view your own assigned deliveries');
     return { success: true, data: this.service.findByVolunteer(email), message: 'Volunteer delivery orders retrieved' };
   }
 
@@ -55,14 +57,15 @@ export class OrdersController {
   @Patch(':id/assign-volunteer')
   @Roles('admin', 'superuser')
   @ApiOperation({ summary: 'Assign a volunteer to deliver an order' })
-  assignVolunteer(@Param('id') id: string, @Body() body: { volunteerEmail: string; volunteerName: string }) {
-    return { success: true, data: this.service.assignVolunteer(id, body.volunteerEmail, body.volunteerName), message: 'Volunteer assigned for delivery' };
+  assignVolunteer(@Param('id') id: string, @Body() body: { volunteerEmail: string; volunteerName: string }, @Headers() h: Record<string,string>) {
+    return { success: true, data: this.fulfillment.offer({kind:'order',sourceId:id,mode:'direct',volunteerEmail:body.volunteerEmail},{role:h.role,email:h['user-email'],org:h.organization}), message: 'Volunteer assigned for delivery' };
   }
 
   @Patch(':id/delivery-status')
   @Roles('admin', 'superuser', 'volunteer')
   @ApiOperation({ summary: 'Update delivery status of an order. Valid transitions are enforced.' })
-  updateDeliveryStatus(@Param('id') id: string, @Body() body: { status: string }) {
+  updateDeliveryStatus(@Param('id') id: string, @Body() body: { status: string }, @Headers() h: Record<string,string>) {
+    this.fulfillment.assertLegacyAvailable('order',id,{role:h.role,email:h['user-email'],org:h.organization});
     return { success: true, data: this.service.updateDeliveryStatus(id, body.status), message: 'Delivery status updated' };
   }
 }

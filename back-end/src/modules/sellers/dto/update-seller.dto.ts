@@ -6,6 +6,7 @@ export class UpdateSellerDto {
   @ApiPropertyOptional() @IsOptional() @IsString() phone?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() businessName?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() businessDescription?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() location?: string;
 
   @ApiPropertyOptional() @IsOptional() @IsObject() bankDetails?: { account: string; ifsc: string; bankName: string };
   @ApiPropertyOptional() @IsOptional() @IsNumber() @Min(0) salesBalance?: number;

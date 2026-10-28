@@ -13,5 +13,21 @@ export interface User {
   bio?: string;
   registeredAt: string;
   skills?: string[];
+  dateOfBirth?: string;
+  age?: number;
+  location?: string;
+  presentAddress?: string;
+  permanentAddress?: string;
+  availabilityDays?: string[];
+  businessName?: string;
+  businessDescription?: string;
+  verificationStatus?: 'not_required' | 'pending' | 'verified' | 'failed';
+  verificationMethod?: string;
+  verificationReference?: string;
+  approvalStatus?: 'pending' | 'approved' | 'rejected';
   team?: string;
+  securityQuestion1?: string;
+  securityAnswerHash1?: string;
+  securityQuestion2?: string;
+  securityAnswerHash2?: string;
 }

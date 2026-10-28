@@ -1,19 +1,29 @@
 import {
-  Controller, Get, Post, Patch,
-  Param, Body, UseGuards,
+  Controller, Get, Post, Patch, ForbiddenException,
+  Param, Body, UseGuards, UploadedFile, UseInterceptors, Headers,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiHeader } from '@nestjs/swagger';
 import { ReplacementsService } from './service';
 import { CreateReplacementDto } from './dto/create-replacement.dto';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { RolesGuard } from '../../common/guards/roles.guard';
+import { saveImage } from '../../common/utils/image-upload';
+import { SellersService } from '../sellers/service';
 
 @ApiTags('Replacements')
 @ApiHeader({ name: 'role', required: false })
 @Controller('replacements')
 @UseGuards(RolesGuard)
 export class ReplacementsController {
-  constructor(private readonly service: ReplacementsService) {}
+  constructor(private readonly service: ReplacementsService, private readonly sellers: SellersService) {}
+
+  @Post('upload-image')
+  @Roles('donor')
+  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 5 * 1024 * 1024 } }))
+  uploadImage(@UploadedFile() file: any) {
+    return { success: true, data: { url: saveImage(file, 'replacement-proof') }, message: 'Replacement photo uploaded' };
+  }
 
   @Post()
   @ApiOperation({ summary: 'Request a product replacement (buyer)' })
@@ -44,7 +54,8 @@ export class ReplacementsController {
   @Get('by-seller/:sellerId')
   @Roles('admin', 'superuser', 'seller')
   @ApiOperation({ summary: 'Get replacement requests by seller' })
-  findBySeller(@Param('sellerId') sellerId: string) {
+  findBySeller(@Param('sellerId') sellerId: string, @Headers('role') role: string, @Headers('user-email') email: string) {
+    if (role === 'seller' && this.sellers.findByEmail(email)?.id !== sellerId) throw new ForbiddenException('You can only view your own replacement requests');
     return { success: true, data: this.service.findBySeller(sellerId), message: 'Seller replacements retrieved' };
   }
 
@@ -76,9 +87,13 @@ export class ReplacementsController {
   }
 
   @Patch(':id/assign-volunteer')
-  @Roles('admin', 'superuser')
+  @Roles('admin', 'superuser', 'seller')
   @ApiOperation({ summary: 'Assign volunteer for replacement pickup/delivery' })
-  assignVolunteer(@Param('id') id: string, @Body() body: { volunteerEmail: string; volunteerName: string }) {
+  assignVolunteer(@Param('id') id: string, @Body() body: { volunteerEmail: string; volunteerName: string }, @Headers('role') role: string, @Headers('user-email') email: string) {
+    if (role === 'seller') {
+      const replacement = this.service.findById(id);
+      if (this.sellers.findByEmail(email)?.id !== replacement.sellerId) throw new ForbiddenException('You can only assign volunteers to your own replacement requests');
+    }
     return { success: true, data: this.service.assignVolunteer(id, body.volunteerEmail, body.volunteerName), message: 'Volunteer assigned for replacement' };
   }
 

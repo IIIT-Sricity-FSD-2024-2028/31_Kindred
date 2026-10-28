@@ -1,3 +1,5 @@
+import { ProofStore } from '../proofs/store';
+import { Inject } from '@nestjs/common';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { HourLog } from './entities/hour-log.entity';
 import { CreateHourLogDto } from './dto/create-hour-log.dto';
@@ -5,6 +7,7 @@ import { UpdateHourLogDto } from './dto/update-hour-log.dto';
 
 @Injectable()
 export class HourLogsService {
+  @Inject(ProofStore) private readonly proofs!: ProofStore;
   private hourLogs: HourLog[] = [];
   private counter = 100;
 
@@ -52,6 +55,7 @@ export class HourLogsService {
   update(id: string, dto: UpdateHourLogDto): HourLog {
     const idx = this.hourLogs.findIndex((l) => l.id === id);
     if (idx === -1) throw new NotFoundException(`Hour log with id '${id}' not found`);
+    if (dto.status === 'approved') this.proofs.assertVerified('hour-logs', id);
     this.hourLogs[idx] = { ...this.hourLogs[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
     return { ...this.hourLogs[idx] };
   }
@@ -59,6 +63,7 @@ export class HourLogsService {
   approve(id: string): HourLog {
     const idx = this.hourLogs.findIndex((l) => l.id === id);
     if (idx === -1) throw new NotFoundException(`Hour log with id '${id}' not found`);
+    this.proofs.assertVerified('hour-logs', id);
     this.hourLogs[idx].status = 'approved';
     this.hourLogs[idx].reviewedAt = new Date().toISOString();
     return { ...this.hourLogs[idx] };

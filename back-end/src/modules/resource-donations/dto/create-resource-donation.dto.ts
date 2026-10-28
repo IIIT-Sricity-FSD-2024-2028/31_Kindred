@@ -18,6 +18,7 @@ class DonationItemDto {
 }
 
 export class CreateResourceDonationDto {
+  @IsOptional() @IsString() image?: string;
   @ApiPropertyOptional({ description: 'Client-provided ID for synchronized dashboard records' })
   @IsOptional()
   @IsString()

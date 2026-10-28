@@ -13,6 +13,7 @@ exports.CreateTaskDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateTaskDto {
+    id;
     title;
     description;
     assignedToEmail;
@@ -21,8 +22,16 @@ class CreateTaskDto {
     dueDate;
     programId;
     programName;
+    location;
+    notes;
 }
 exports.CreateTaskDto = CreateTaskDto;
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Client-provided ID for synchronized dashboard records' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateTaskDto.prototype, "id", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'Task title', example: 'Distribute relief kits at Zone B' }),
     (0, class_validator_1.IsString)(),
@@ -46,7 +55,7 @@ __decorate([
     __metadata("design:type", String)
 ], CreateTaskDto.prototype, "assignedToName", void 0);
 __decorate([
-    (0, swagger_1.ApiPropertyOptional)({ description: 'Priority level (low, medium, high)', example: 'high' }),
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Priority level (normal, high, urgent)', example: 'high' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
@@ -69,4 +78,16 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateTaskDto.prototype, "programName", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Task location', example: 'Sector 62, Noida' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateTaskDto.prototype, "location", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Progress notes', example: 'Started preparation for distribution' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateTaskDto.prototype, "notes", void 0);
 //# sourceMappingURL=create-task.dto.js.map

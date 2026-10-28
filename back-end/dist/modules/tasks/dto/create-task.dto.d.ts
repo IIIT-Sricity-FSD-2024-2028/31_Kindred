@@ -1,4 +1,5 @@
 export declare class CreateTaskDto {
+    id?: string;
     title: string;
     description?: string;
     assignedToEmail: string;
@@ -7,4 +8,6 @@ export declare class CreateTaskDto {
     dueDate?: string;
     programId?: string;
     programName?: string;
+    location?: string;
+    notes?: string;
 }

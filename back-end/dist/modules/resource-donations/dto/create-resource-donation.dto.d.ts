@@ -4,6 +4,8 @@ declare class DonationItemDto {
     condition: string;
 }
 export declare class CreateResourceDonationDto {
+    image?: string;
+    id?: string;
     donorName: string;
     donorEmail: string;
     donorPhone: string;
@@ -15,5 +17,8 @@ export declare class CreateResourceDonationDto {
     pickupTimeSlot: string;
     programId?: string;
     programName?: string;
+    orgId?: string;
+    orgName?: string;
+    notes?: string;
 }
 export {};

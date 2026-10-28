@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
 export class CreateReplacementDto {
   @ApiProperty({ description: 'Original order ID' })
@@ -14,8 +14,7 @@ export class CreateReplacementDto {
   @IsString()
   description!: string;
 
-  @ApiPropertyOptional({ description: 'Image URL showing the issue' })
-  @IsOptional()
+  @ApiProperty({ description: 'Uploaded photo URL showing the issue' })
   @IsString()
   imageUrl?: string;
 

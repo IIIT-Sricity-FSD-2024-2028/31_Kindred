@@ -1,6 +1,6 @@
 import {
   Controller, Get, Post, Patch, Delete,
-  Param, Body, UseGuards,
+  Param, Body, Headers, ForbiddenException, UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiHeader, ApiResponse } from '@nestjs/swagger';
 import { ProgramApplicationsService } from './service';
@@ -24,6 +24,16 @@ export class ProgramApplicationsController {
     return { success: true, data: this.service.findAll(), message: 'Applications retrieved' };
   }
 
+  @Get('by-org/:org')
+  @Roles('admin', 'superuser')
+  @ApiOperation({ summary: 'Get program applications for one organization' })
+  findByOrg(@Param('org') org: string, @Headers('role') role: string, @Headers('organization') requestOrg: string) {
+    if (role === 'admin' && (!requestOrg || org.toLowerCase() !== requestOrg.toLowerCase())) {
+      throw new ForbiddenException('Organization administrators can review applications for their own organization only.');
+    }
+    return { success: true, data: this.service.findByOrg(org), message: 'Organization applications retrieved' };
+  }
+
   @Get('pending')
   @Roles('admin', 'superuser')
   @ApiOperation({ summary: 'Get pending applications awaiting review' })
@@ -43,7 +53,7 @@ export class ProgramApplicationsController {
   }
 
   @Get('by-volunteer/:email')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Get applications submitted by a volunteer' })
   @ApiResponse({ status: 200, description: 'Applications retrieved' })
   @ApiResponse({ status: 403, description: 'Access denied' })
@@ -52,7 +62,7 @@ export class ProgramApplicationsController {
   }
 
   @Get('has-applied/:programId/:email')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Check if volunteer has already applied to a program' })
   @ApiResponse({ status: 200, description: 'Check completed — returns true/false' })
   @ApiResponse({ status: 403, description: 'Access denied' })
@@ -61,7 +71,7 @@ export class ProgramApplicationsController {
   }
 
   @Get(':id')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Get application by ID' })
   @ApiResponse({ status: 200, description: 'Application retrieved' })
   @ApiResponse({ status: 404, description: 'Application not found' })
@@ -71,12 +81,13 @@ export class ProgramApplicationsController {
   }
 
   @Post()
-  @Roles('volunteer', 'admin', 'superuser')
+  @Roles('volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Submit a program application', description: 'Volunteer applies to join a program' })
   @ApiResponse({ status: 201, description: 'Application submitted successfully' })
   @ApiResponse({ status: 400, description: 'Validation failed' })
   @ApiResponse({ status: 403, description: 'Access denied — requires volunteer, admin, or superuser role' })
-  create(@Body() dto: CreateProgramApplicationDto) {
+  create(@Body() dto: CreateProgramApplicationDto, @Headers('user-email') email: string) {
+    if (!email || email.toLowerCase() !== dto.volunteerEmail.toLowerCase()) throw new ForbiddenException('Submit join requests as yourself');
     return { success: true, data: this.service.create(dto), message: 'Application submitted successfully' };
   }
 

@@ -1,14 +1,24 @@
 import { ResourceDonation } from './entities/resource-donation.entity';
 import { CreateResourceDonationDto } from './dto/create-resource-donation.dto';
 import { UpdateResourceDonationDto } from './dto/update-resource-donation.dto';
+import { OrganizationsService } from '../organizations/service';
+import { ProgramsService } from '../programs/service';
 export declare class ResourceDonationsService {
+    private readonly organizations;
+    private readonly programs;
+    private readonly proofs;
     private donations;
     private counter;
+    constructor(organizations: OrganizationsService, programs: ProgramsService);
+    releaseDelivery(id: string): void;
+    completeSharedDelivery(id: string): void;
+    recordReceipt(id: string): void;
     private generateId;
     findAll(): ResourceDonation[];
     findById(id: string): ResourceDonation;
     findByDonor(email: string): ResourceDonation[];
     findByVolunteer(email: string): ResourceDonation[];
+    findByOrg(orgName: string): ResourceDonation[];
     findByProgram(programId: string): ResourceDonation[];
     findByStatus(status: string): ResourceDonation[];
     getPending(): ResourceDonation[];

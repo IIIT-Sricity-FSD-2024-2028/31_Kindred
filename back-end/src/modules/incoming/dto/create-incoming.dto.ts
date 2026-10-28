@@ -30,4 +30,5 @@ export class CreateIncomingDto {
   location?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() phone?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() beneficiaryEmail?: string;
+  @ApiPropertyOptional({ description: 'Uploaded emergency photo URL' }) @IsOptional() @IsString() photoUrl?: string;
 }

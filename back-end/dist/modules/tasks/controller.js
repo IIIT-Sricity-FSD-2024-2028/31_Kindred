@@ -31,6 +31,9 @@ let TasksController = class TasksController {
     findByVolunteer(email) {
         return { success: true, data: this.service.findByVolunteer(email), message: 'Tasks retrieved' };
     }
+    findByProgram(programId) {
+        return { success: true, data: this.service.findByProgram(programId), message: 'Program tasks retrieved' };
+    }
     findOne(id) {
         return { success: true, data: this.service.findById(id), message: 'Task retrieved successfully' };
     }
@@ -58,7 +61,7 @@ __decorate([
 ], TasksController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)('by-volunteer/:email'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Get tasks assigned to a volunteer' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Tasks retrieved' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
@@ -68,8 +71,18 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TasksController.prototype, "findByVolunteer", null);
 __decorate([
+    (0, common_1.Get)('by-program/:programId'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get tasks for a specific program' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Program tasks retrieved' }),
+    __param(0, (0, common_1.Param)('programId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], TasksController.prototype, "findByProgram", null);
+__decorate([
     (0, common_1.Get)(':id'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Get task by ID' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Task retrieved' }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Task not found' }),
@@ -81,7 +94,7 @@ __decorate([
 ], TasksController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)(),
-    (0, roles_decorator_1.Roles)('admin', 'superuser'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Create a new task', description: 'Assign a task to a volunteer' }),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Task created successfully' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Validation failed' }),
@@ -93,9 +106,10 @@ __decorate([
 ], TasksController.prototype, "create", null);
 __decorate([
     (0, common_1.Patch)(':id'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
-    (0, swagger_1.ApiOperation)({ summary: 'Update a task', description: 'Update task details or mark as completed' }),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
+    (0, swagger_1.ApiOperation)({ summary: 'Update a task', description: 'Update task details, status, or notes. Status transitions are enforced.' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Task updated' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Invalid status transition' }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Task not found' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
     __param(0, (0, common_1.Param)('id')),

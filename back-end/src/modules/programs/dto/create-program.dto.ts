@@ -2,6 +2,8 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsOptional, IsNumber, IsBoolean, IsArray } from 'class-validator';
 
 export class CreateProgramDto {
+  @ApiPropertyOptional() @IsOptional() @IsBoolean() requestListing?: boolean;
+  @ApiPropertyOptional() @IsOptional() @IsString() image?: string;
   @ApiPropertyOptional({ description: 'Client-provided ID for synchronized dashboard records' })
   @IsOptional()
   @IsString()

@@ -57,7 +57,7 @@ let VolunteersService = class VolunteersService {
         const idx = this.volunteers.findIndex((v) => v.id === id);
         if (idx === -1)
             throw new common_1.NotFoundException(`Volunteer with id '${id}' not found`);
-        this.volunteers[idx] = { ...this.volunteers[idx], ...dto };
+        this.volunteers[idx] = { ...this.volunteers[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
         return { ...this.volunteers[idx] };
     }
     delete(id) {

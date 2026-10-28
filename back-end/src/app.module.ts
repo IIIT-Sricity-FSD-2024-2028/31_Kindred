@@ -1,3 +1,6 @@
+import { FulfillmentModule } from './modules/fulfillment/module';
+import { ProofStoreModule } from './modules/proofs/store';
+import { ProofsModule } from './modules/proofs/module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { UsersModule } from './modules/users/module';
 import { OrganizationsModule } from './modules/organizations/module';
@@ -32,6 +35,7 @@ import { ProgramAssignmentsController } from './modules/program-assignments/cont
 
 @Module({
   imports: [
+    ProofStoreModule, FulfillmentModule, ProofsModule,
     UsersModule,
     OrganizationsModule,
     VolunteersModule,

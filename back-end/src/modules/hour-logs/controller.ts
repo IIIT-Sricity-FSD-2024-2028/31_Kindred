@@ -35,7 +35,7 @@ export class HourLogsController {
   }
 
   @Get('by-volunteer/:email')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Get hour logs by volunteer email' })
   @ApiResponse({ status: 200, description: 'Hour logs retrieved' })
   @ApiResponse({ status: 403, description: 'Access denied' })
@@ -44,7 +44,7 @@ export class HourLogsController {
   }
 
   @Get(':id')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Get hour log by ID' })
   @ApiResponse({ status: 200, description: 'Hour log retrieved' })
   @ApiResponse({ status: 404, description: 'Hour log not found' })
@@ -54,7 +54,7 @@ export class HourLogsController {
   }
 
   @Post()
-  @Roles('volunteer', 'admin', 'superuser')
+  @Roles('volunteer', 'admin', 'superuser', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Submit a new hour log', description: 'Volunteer submits hours for approval' })
   @ApiResponse({ status: 201, description: 'Hour log submitted successfully' })
   @ApiResponse({ status: 400, description: 'Validation failed' })

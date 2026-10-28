@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { enableLocalState } from './common/local-state';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -10,6 +11,7 @@ import express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  enableLocalState(app);
 
   const uploadsDir = path.join(process.cwd(), 'uploads');
   if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
@@ -19,7 +21,7 @@ async function bootstrap() {
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type,Accept,Authorization,role',
+    allowedHeaders: 'Content-Type,Accept,Authorization,role,user-email,organization',
   });
 
   // ── Global Validation Pipe ──────────────────────────────────

@@ -16,12 +16,19 @@ const swagger_2 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class UpdateTaskDto extends (0, swagger_1.PartialType)(create_task_dto_1.CreateTaskDto) {
     status;
+    notes;
 }
 exports.UpdateTaskDto = UpdateTaskDto;
 __decorate([
-    (0, swagger_2.ApiPropertyOptional)({ example: 'in-progress' }),
+    (0, swagger_2.ApiPropertyOptional)({ example: 'in-progress', description: 'Task status: pending | in-progress | pending_review | completed | cancelled' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UpdateTaskDto.prototype, "status", void 0);
+__decorate([
+    (0, swagger_2.ApiPropertyOptional)({ example: 'Completed 50% of distribution', description: 'Progress notes from volunteer' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateTaskDto.prototype, "notes", void 0);
 //# sourceMappingURL=update-task.dto.js.map

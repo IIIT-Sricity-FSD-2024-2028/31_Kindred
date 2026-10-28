@@ -25,6 +25,8 @@ __decorate([
 ], DonationItemDto.prototype, "name", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'Quantity', example: 10 }),
+    (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.Min)(1),
     __metadata("design:type", Number)
 ], DonationItemDto.prototype, "quantity", void 0);
 __decorate([
@@ -33,6 +35,8 @@ __decorate([
     __metadata("design:type", String)
 ], DonationItemDto.prototype, "condition", void 0);
 class CreateResourceDonationDto {
+    image;
+    id;
     donorName;
     donorEmail;
     donorPhone;
@@ -44,8 +48,22 @@ class CreateResourceDonationDto {
     pickupTimeSlot;
     programId;
     programName;
+    orgId;
+    orgName;
+    notes;
 }
 exports.CreateResourceDonationDto = CreateResourceDonationDto;
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateResourceDonationDto.prototype, "image", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Client-provided ID for synchronized dashboard records' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateResourceDonationDto.prototype, "id", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'Donor full name', example: 'Vikram Malhotra' }),
     (0, class_validator_1.IsString)(),
@@ -105,4 +123,22 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateResourceDonationDto.prototype, "programName", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateResourceDonationDto.prototype, "orgId", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateResourceDonationDto.prototype, "orgName", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateResourceDonationDto.prototype, "notes", void 0);
 //# sourceMappingURL=create-resource-donation.dto.js.map

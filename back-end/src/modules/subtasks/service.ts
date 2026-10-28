@@ -1,3 +1,6 @@
+import { ProofStore } from '../proofs/store';
+import { Inject } from '@nestjs/common';
+import { ProgramAssignmentsService } from '../program-assignments/service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Subtask } from './entities/subtask.entity';
 import { CreateSubtaskDto } from './dto/create-subtask.dto';
@@ -5,6 +8,8 @@ import { UpdateSubtaskDto } from './dto/update-subtask.dto';
 
 @Injectable()
 export class SubtasksService {
+  @Inject(ProofStore) private readonly proofs!: ProofStore;
+  constructor(private readonly assignments: ProgramAssignmentsService) {}
   private subtasks: Subtask[] = [
     { id: 'st_001', programId: 'prog_001', title: 'Set up emergency shelters', description: 'Erect 50 temporary shelters in affected zones', assignedToEmail: 'volunteer@kindred.org', assignedToName: 'Priya Singh', status: 'in-progress', progress: 65, createdAt: '2024-01-15' },
     { id: 'st_002', programId: 'prog_001', title: 'Distribute medical kits', description: 'Deliver 200 medical kits to flood-affected villages', assignedToEmail: 'amit.sharma@email.com', assignedToName: 'Amit Sharma', status: 'in-progress', progress: 40, createdAt: '2024-01-18' },
@@ -51,6 +56,7 @@ export class SubtasksService {
   }
 
   create(dto: CreateSubtaskDto): Subtask {
+    this.assignments.assertActive(dto.programId, dto.assignedToEmail);
     const newSt: Subtask = {
       id: dto.id || this.generateId(),
       programId: dto.programId,
@@ -58,8 +64,8 @@ export class SubtasksService {
       description: dto.description || '',
       assignedToEmail: dto.assignedToEmail,
       assignedToName: dto.assignedToName || '',
-      status: dto.status || 'pending',
-      progress: dto.progress ?? 0,
+      status: 'pending',
+      progress: 0,
       createdAt: new Date().toISOString().split('T')[0],
     };
     this.subtasks.push(newSt);
@@ -69,6 +75,9 @@ export class SubtasksService {
   update(id: string, dto: UpdateSubtaskDto): Subtask {
     const idx = this.subtasks.findIndex((s) => s.id === id);
     if (idx === -1) throw new NotFoundException(`Subtask with id '${id}' not found`);
+    const programId = dto.programId ?? this.subtasks[idx].programId;
+    this.assignments.assertActive(programId, dto.assignedToEmail ?? this.subtasks[idx].assignedToEmail);
+    if (dto.status === 'completed' || (dto.progress ?? 0) >= 100) this.proofs.assertVerified('subtasks', id);
     this.subtasks[idx] = { ...this.subtasks[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
     return { ...this.subtasks[idx] };
   }

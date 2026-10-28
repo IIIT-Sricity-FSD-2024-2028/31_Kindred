@@ -64,3 +64,20 @@
 .toast-stack .toast-title { font-size: 13.5px; font-weight: 700; margin-bottom: 2px; }
 .toast-stack .toast-body { font-size: 12.5px; color: #64748b; }
 .toast-stack .toast-close { margin-left: auto; background: none; border: none; color: #64748b; font-size: 18px; line-height: 1; cursor: pointer; }
+.signup-verification-panel { margin: 18px 0; padding: 16px; border: 1px solid #bae6fd; border-radius: 12px; background: #f0f9ff; }
+.verification-challenge { margin-top: 12px; padding: 12px; border-radius: 10px; background: #fff; border: 1px solid #7dd3fc; color: #0c4a6e; }
+.development-code { letter-spacing: .03em; }
+.aadhaar-verification-title { margin: 10px 0 6px; color: #0c4a6e; }
+.aadhaar-consent { display: flex; align-items: flex-start; gap: 9px; margin-top: 14px; color: #334155; line-height: 1.45; }
+.aadhaar-consent input { margin-top: 3px; flex: 0 0 auto; }
+.availability-days { margin: 18px 0; padding: 14px; border: 1px solid #dbe4ee; border-radius: 10px; }
+.availability-days legend { padding: 0 6px; font-weight: 700; }
+.day-checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(125px, 1fr)); gap: 10px; }
+.day-checkbox-grid label { display: flex; gap: 7px; align-items: center; }
+.verification-confirmed { margin-top: 10px; background: #dcfce7; color: #166534; }
+.registration-rejected { margin-top: 10px; background: #fee2e2; color: #991b1b; }
+.applicant-review-card { align-items: flex-start; gap: 18px; }
+.applicant-review-card > div:first-child { flex: 1; min-width: 0; }
+.applicant-statuses { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.applicant-review-card .action-btns { flex-wrap: wrap; }
+@media (max-width: 640px) { .day-checkbox-grid { grid-template-columns: 1fr 1fr; } }

@@ -33,6 +33,7 @@ export function normalizeSession(user) {
     initials: typeof user.initials === 'string' ? user.initials : user.name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2),
     avatar: typeof user.avatar === 'string' ? user.avatar : '#1a3b5c',
     dashboard: ROLE_DASHBOARDS[user.role],
+    authToken: typeof user.authToken === 'string' && user.authToken.length >= 32 ? user.authToken : null,
     loginTime: Number.isFinite(user.loginTime) ? user.loginTime : Date.now(),
   };
 }

@@ -5,6 +5,7 @@ export interface Seller {
   phone?: string;
   businessName: string;
   businessDescription?: string;
+  location?: string;
   organizationId?: string;
   organizationName?: string;
   status: string; // pending | approved | rejected

@@ -5,10 +5,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ResourceDonationsService = void 0;
+const store_1 = require("../proofs/store");
 const common_1 = require("@nestjs/common");
+const common_2 = require("@nestjs/common");
+const service_1 = require("../organizations/service");
+const service_2 = require("../programs/service");
 let ResourceDonationsService = class ResourceDonationsService {
+    organizations;
+    programs;
+    proofs;
     donations = [
         {
             id: 'rdon_001', donorName: 'Rajesh Gupta', donorEmail: 'donor@kindred.org', donorPhone: '9876543210',
@@ -58,6 +68,35 @@ let ResourceDonationsService = class ResourceDonationsService {
         },
     ];
     counter = 100;
+    constructor(organizations, programs) {
+        this.organizations = organizations;
+        this.programs = programs;
+        for (const donation of this.donations)
+            donation.orgName = 'HopeConnect';
+    }
+    releaseDelivery(id) {
+        const donation = this.donations.find(d => d.id === id);
+        if (!donation)
+            throw new common_2.NotFoundException('Donation not found');
+        donation.assignedVolunteerEmail = '';
+        donation.assignedVolunteerName = '';
+        donation.status = 'submitted';
+        donation.assignedAt = null;
+        donation.pickedUpAt = null;
+    }
+    completeSharedDelivery(id) {
+        const donation = this.donations.find(d => d.id === id);
+        if (!donation)
+            throw new common_2.NotFoundException('Donation not found');
+        donation.status = 'completed';
+        donation.deliveredAt = new Date().toISOString();
+    }
+    recordReceipt(id) {
+        const donation = this.donations.find(d => d.id === id);
+        if (!donation)
+            throw new common_2.NotFoundException('Donation not found');
+        donation.status = 'received';
+    }
     generateId() {
         return `rdon_${Date.now()}_${this.counter++}`;
     }
@@ -67,7 +106,7 @@ let ResourceDonationsService = class ResourceDonationsService {
     findById(id) {
         const don = this.donations.find((d) => d.id === id);
         if (!don)
-            throw new common_1.NotFoundException(`Resource donation with id '${id}' not found`);
+            throw new common_2.NotFoundException(`Resource donation with id '${id}' not found`);
         return { ...don };
     }
     findByDonor(email) {
@@ -76,6 +115,7 @@ let ResourceDonationsService = class ResourceDonationsService {
     findByVolunteer(email) {
         return this.donations.filter((d) => d.assignedVolunteerEmail && d.assignedVolunteerEmail.toLowerCase() === email.toLowerCase());
     }
+    findByOrg(orgName) { return this.donations.filter((d) => (d.orgName || '').toLowerCase() === orgName.toLowerCase()); }
     findByProgram(programId) {
         return this.donations.filter((d) => d.programId === programId);
     }
@@ -89,9 +129,17 @@ let ResourceDonationsService = class ResourceDonationsService {
         return this.donations.filter((d) => d.status === 'pending_pickup' || d.status === 'in_transit');
     }
     create(dto) {
+        if (dto.category !== 'Shop Delivery') {
+            const program = dto.programId ? this.programs.findById(dto.programId) : undefined;
+            const org = this.organizations.findAll().find(o => o.name === (dto.orgName || program?.org));
+            if (!org || org.status !== 'active' || (program && program.org !== org.name))
+                throw new common_2.BadRequestException('Select an active recipient organization and a matching program');
+            dto = { ...dto, orgName: org.name, orgId: org.id, programName: program?.name || '' };
+        }
         const newDon = {
-            id: this.generateId(),
+            id: dto.id || this.generateId(),
             donorName: dto.donorName,
+            image: dto.image,
             donorEmail: dto.donorEmail,
             donorPhone: dto.donorPhone,
             category: dto.category,
@@ -102,13 +150,14 @@ let ResourceDonationsService = class ResourceDonationsService {
             pickupTimeSlot: dto.pickupTimeSlot,
             programId: dto.programId || '',
             programName: dto.programName || '',
+            orgId: dto.orgId || '', orgName: dto.orgName || '',
             status: 'submitted',
             assignedVolunteerEmail: '',
             assignedVolunteerName: '',
             assignedAt: null,
             pickedUpAt: null,
             deliveredAt: null,
-            notes: '',
+            notes: dto.notes || '',
             createdAt: new Date().toISOString(),
         };
         this.donations.push(newDon);
@@ -117,14 +166,16 @@ let ResourceDonationsService = class ResourceDonationsService {
     update(id, dto) {
         const idx = this.donations.findIndex((d) => d.id === id);
         if (idx === -1)
-            throw new common_1.NotFoundException(`Resource donation with id '${id}' not found`);
-        this.donations[idx] = { ...this.donations[idx], ...dto };
+            throw new common_2.NotFoundException(`Resource donation with id '${id}' not found`);
+        if (['delivered', 'completed'].includes(dto.status || ''))
+            this.proofs.assertVerified('resource-donations', id);
+        this.donations[idx] = { ...this.donations[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
         return { ...this.donations[idx] };
     }
     assignVolunteer(id, volName, volEmail) {
         const idx = this.donations.findIndex((d) => d.id === id);
         if (idx === -1)
-            throw new common_1.NotFoundException(`Resource donation with id '${id}' not found`);
+            throw new common_2.NotFoundException(`Resource donation with id '${id}' not found`);
         this.donations[idx].assignedVolunteerEmail = volEmail;
         this.donations[idx].assignedVolunteerName = volName;
         this.donations[idx].assignedAt = new Date().toISOString();
@@ -134,7 +185,7 @@ let ResourceDonationsService = class ResourceDonationsService {
     startPickup(id) {
         const idx = this.donations.findIndex((d) => d.id === id);
         if (idx === -1)
-            throw new common_1.NotFoundException(`Resource donation with id '${id}' not found`);
+            throw new common_2.NotFoundException(`Resource donation with id '${id}' not found`);
         this.donations[idx].status = 'in_transit';
         this.donations[idx].pickedUpAt = new Date().toISOString();
         return { ...this.donations[idx] };
@@ -142,7 +193,8 @@ let ResourceDonationsService = class ResourceDonationsService {
     markDelivered(id) {
         const idx = this.donations.findIndex((d) => d.id === id);
         if (idx === -1)
-            throw new common_1.NotFoundException(`Resource donation with id '${id}' not found`);
+            throw new common_2.NotFoundException(`Resource donation with id '${id}' not found`);
+        this.proofs.assertVerified('resource-donations', id);
         this.donations[idx].status = 'delivered';
         this.donations[idx].deliveredAt = new Date().toISOString();
         return { ...this.donations[idx] };
@@ -150,14 +202,15 @@ let ResourceDonationsService = class ResourceDonationsService {
     markCompleted(id) {
         const idx = this.donations.findIndex((d) => d.id === id);
         if (idx === -1)
-            throw new common_1.NotFoundException(`Resource donation with id '${id}' not found`);
+            throw new common_2.NotFoundException(`Resource donation with id '${id}' not found`);
+        this.proofs.assertVerified('resource-donations', id);
         this.donations[idx].status = 'completed';
         return { ...this.donations[idx] };
     }
     allocateToProgram(id, programId, programName) {
         const idx = this.donations.findIndex((d) => d.id === id);
         if (idx === -1)
-            throw new common_1.NotFoundException(`Resource donation with id '${id}' not found`);
+            throw new common_2.NotFoundException(`Resource donation with id '${id}' not found`);
         this.donations[idx].programId = programId;
         this.donations[idx].programName = programName;
         return { ...this.donations[idx] };
@@ -165,13 +218,18 @@ let ResourceDonationsService = class ResourceDonationsService {
     delete(id) {
         const idx = this.donations.findIndex((d) => d.id === id);
         if (idx === -1)
-            throw new common_1.NotFoundException(`Resource donation with id '${id}' not found`);
+            throw new common_2.NotFoundException(`Resource donation with id '${id}' not found`);
         this.donations.splice(idx, 1);
         return true;
     }
 };
 exports.ResourceDonationsService = ResourceDonationsService;
+__decorate([
+    (0, common_1.Inject)(store_1.ProofStore),
+    __metadata("design:type", store_1.ProofStore)
+], ResourceDonationsService.prototype, "proofs", void 0);
 exports.ResourceDonationsService = ResourceDonationsService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_2.Injectable)(),
+    __metadata("design:paramtypes", [service_1.OrganizationsService, service_2.ProgramsService])
 ], ResourceDonationsService);
 //# sourceMappingURL=service.js.map

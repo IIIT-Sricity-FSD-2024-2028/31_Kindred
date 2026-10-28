@@ -4,6 +4,7 @@ export interface ResourceDonationItem {
     condition: string;
 }
 export interface ResourceDonation {
+    image?: string;
     id: string;
     donorName: string;
     donorEmail: string;
@@ -16,6 +17,8 @@ export interface ResourceDonation {
     pickupTimeSlot: string;
     programId: string;
     programName: string;
+    orgId?: string;
+    orgName?: string;
     status: string;
     assignedVolunteerEmail: string;
     assignedVolunteerName: string;

@@ -13,69 +13,92 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ResourceDonationsController = void 0;
+const service_1 = require("../fulfillment/service");
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
-const service_1 = require("./service");
+const service_2 = require("./service");
 const create_resource_donation_dto_1 = require("./dto/create-resource-donation.dto");
 const update_resource_donation_dto_1 = require("./dto/update-resource-donation.dto");
+const platform_express_1 = require("@nestjs/platform-express");
+const image_upload_1 = require("../../common/utils/image-upload");
 const roles_decorator_1 = require("../../common/decorators/roles.decorator");
 const roles_guard_1 = require("../../common/guards/roles.guard");
 let ResourceDonationsController = class ResourceDonationsController {
     service;
-    constructor(service) {
+    fulfillment;
+    constructor(service, fulfillment) {
         this.service = service;
+        this.fulfillment = fulfillment;
     }
+    uploadImage(file) { return { success: true, data: { url: (0, image_upload_1.saveImage)(file, 'resource-donation') } }; }
     findAll() {
         return { success: true, data: this.service.findAll(), message: 'Resource donations retrieved' };
     }
     getPending() {
         return { success: true, data: this.service.getPending(), message: 'Pending donations retrieved' };
     }
-    getActivePickups() {
-        return { success: true, data: this.service.getActivePickups(), message: 'Active pickups retrieved' };
+    getActivePickups(h) {
+        return { success: true, data: this.fulfillment.visibleDonations(this.service.getActivePickups(), { role: h.role, email: h['user-email'], org: h.organization }), message: 'Active pickups retrieved' };
     }
     findByDonor(email) {
-        return { success: true, data: this.service.findByDonor(email), message: 'Donations retrieved' };
+        return { success: true, data: this.service.findByDonor(email).map(d => ({ ...d, inventory: this.fulfillment.donationProgress(d.id) })), message: 'Donations retrieved' };
     }
-    findByVolunteer(email) {
-        return { success: true, data: this.service.findByVolunteer(email), message: 'Donations retrieved' };
+    findByVolunteer(email, h) {
+        return { success: true, data: this.fulfillment.visibleDonations(this.service.findByVolunteer(email), { role: h.role, email: h['user-email'], org: h.organization }), message: 'Donations retrieved' };
     }
+    findByOrg(orgName) { return { success: true, data: this.service.findByOrg(orgName), message: 'Organization resource donations retrieved' }; }
     findByProgram(programId) {
         return { success: true, data: this.service.findByProgram(programId), message: 'Donations retrieved' };
     }
     findByStatus(status) {
         return { success: true, data: this.service.findByStatus(status), message: 'Donations retrieved' };
     }
-    findOne(id) {
+    findOne(id, h) {
+        if (!this.fulfillment.visibleDonations([this.service.findById(id)], { role: h.role, email: h['user-email'], org: h.organization }).length)
+            throw new common_1.ForbiddenException('This donation is not assigned to you');
         return { success: true, data: this.service.findById(id), message: 'Donation retrieved' };
     }
     create(dto) {
         return { success: true, data: this.service.create(dto), message: 'Resource donation submitted successfully' };
     }
-    update(id, dto) {
+    update(id, dto, h) {
+        this.fulfillment.assertDonationEditable(id, { role: h.role, email: h['user-email'], org: h.organization });
         return { success: true, data: this.service.update(id, dto), message: 'Donation updated' };
     }
-    assignVolunteer(id, body) {
-        return { success: true, data: this.service.assignVolunteer(id, body.volunteerName, body.volunteerEmail), message: 'Volunteer assigned for pickup' };
+    assignVolunteer(id, body, h) {
+        return { success: true, data: this.fulfillment.offer({ kind: 'collection', sourceId: id, mode: 'direct', volunteerEmail: body.volunteerEmail }, { role: h.role, email: h['user-email'], org: h.organization }), message: 'Volunteer assigned for pickup' };
     }
-    startPickup(id) {
+    startPickup(id, h) {
+        this.fulfillment.assertLegacyAvailable('collection', id, { role: h.role, email: h['user-email'], org: h.organization });
         return { success: true, data: this.service.startPickup(id), message: 'Pickup started' };
     }
-    markDelivered(id) {
+    markDelivered(id, h) {
+        this.fulfillment.assertLegacyAvailable('collection', id, { role: h.role, email: h['user-email'], org: h.organization });
         return { success: true, data: this.service.markDelivered(id), message: 'Marked as delivered' };
     }
-    markCompleted(id) {
+    markCompleted(id, h) {
+        this.fulfillment.assertLegacyAvailable('collection', id, { role: h.role, email: h['user-email'], org: h.organization });
         return { success: true, data: this.service.markCompleted(id), message: 'Marked as completed' };
     }
-    allocateToProgram(id, body) {
-        return { success: true, data: this.service.allocateToProgram(id, body.programId, body.programName), message: 'Allocated to program' };
+    allocateToProgram(id, body, h) {
+        return { success: true, data: this.fulfillment.allocateDonation(id, body.programId, { role: h.role, email: h['user-email'], org: h.organization }), message: 'Allocated to program' };
     }
-    remove(id) {
+    remove(id, h) {
+        this.fulfillment.assertDonationEditable(id, { role: h.role, email: h['user-email'], org: h.organization });
         this.service.delete(id);
         return { success: true, data: null, message: 'Donation deleted' };
     }
 };
 exports.ResourceDonationsController = ResourceDonationsController;
+__decorate([
+    (0, common_1.Post)('upload-image'),
+    (0, roles_decorator_1.Roles)('donor', 'admin', 'superuser'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', { limits: { fileSize: 5 * 1024 * 1024 } })),
+    __param(0, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], ResourceDonationsController.prototype, "uploadImage", null);
 __decorate([
     (0, common_1.Get)(),
     (0, roles_decorator_1.Roles)('admin', 'superuser'),
@@ -102,8 +125,9 @@ __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Get active pickups assigned to volunteers' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Active pickups retrieved' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
+    __param(0, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], ResourceDonationsController.prototype, "getActivePickups", null);
 __decorate([
@@ -124,10 +148,19 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Donations retrieved' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
     __param(0, (0, common_1.Param)('email')),
+    __param(1, (0, common_1.Headers)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], ResourceDonationsController.prototype, "findByVolunteer", null);
+__decorate([
+    (0, common_1.Get)('by-org/:orgName'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser'),
+    __param(0, (0, common_1.Param)('orgName')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], ResourceDonationsController.prototype, "findByVolunteer", null);
+], ResourceDonationsController.prototype, "findByOrg", null);
 __decorate([
     (0, common_1.Get)('by-program/:programId'),
     (0, roles_decorator_1.Roles)('admin', 'superuser'),
@@ -158,8 +191,9 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Donation not found' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], ResourceDonationsController.prototype, "findOne", null);
 __decorate([
@@ -183,8 +217,9 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_resource_donation_dto_1.UpdateResourceDonationDto]),
+    __metadata("design:paramtypes", [String, update_resource_donation_dto_1.UpdateResourceDonationDto, Object]),
     __metadata("design:returntype", void 0)
 ], ResourceDonationsController.prototype, "update", null);
 __decorate([
@@ -196,8 +231,9 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String, Object, Object]),
     __metadata("design:returntype", void 0)
 ], ResourceDonationsController.prototype, "assignVolunteer", null);
 __decorate([
@@ -208,8 +244,9 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Donation not found' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], ResourceDonationsController.prototype, "startPickup", null);
 __decorate([
@@ -220,8 +257,9 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Donation not found' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], ResourceDonationsController.prototype, "markDelivered", null);
 __decorate([
@@ -232,8 +270,9 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Donation not found' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], ResourceDonationsController.prototype, "markCompleted", null);
 __decorate([
@@ -245,8 +284,9 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String, Object, Object]),
     __metadata("design:returntype", void 0)
 ], ResourceDonationsController.prototype, "allocateToProgram", null);
 __decorate([
@@ -257,8 +297,9 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Donation not found' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Headers)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], ResourceDonationsController.prototype, "remove", null);
 exports.ResourceDonationsController = ResourceDonationsController = __decorate([
@@ -266,6 +307,6 @@ exports.ResourceDonationsController = ResourceDonationsController = __decorate([
     (0, swagger_1.ApiHeader)({ name: 'role', required: true, description: 'User role for RBAC', enum: ['superuser', 'admin', 'volunteer', 'donor', 'beneficiary'] }),
     (0, common_1.Controller)('resource-donations'),
     (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
-    __metadata("design:paramtypes", [service_1.ResourceDonationsService])
+    __metadata("design:paramtypes", [service_2.ResourceDonationsService, service_1.FulfillmentService])
 ], ResourceDonationsController);
 //# sourceMappingURL=controller.js.map

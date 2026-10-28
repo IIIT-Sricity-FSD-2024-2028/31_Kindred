@@ -1,8 +1,10 @@
 import { usePage } from '../runtime/PageContext.js';
 import PageExtras from '../../components/pages/PageExtras.jsx';
+import { readStored } from '../../services/storage.js';
 
 export default function RegistrationPendingPage() {
   const ui = usePage();
+  const registration = readStored('kindred_registration') || {};
   return <>
    <main {...ui.props("registration-pending-1", {"data-react-page": "/registration-pending.html"})}>
      <div {...ui.props("registration-pending-2", {"className": "page-wrap"})}>
@@ -27,6 +29,8 @@ export default function RegistrationPendingPage() {
              </span>
              {" Pending Admin Approval "}
            </div>
+           {registration.verificationStatus === 'verified' && <div className="status-pill verification-confirmed">Verification Confirmed (development simulation)</div>}
+           {registration.approvalStatus === 'rejected' && <div className="status-pill registration-rejected">Registration Rejected</div>}
          </div>
          <div {...ui.props("registration-pending-13", {"className": "steps-section"})}>
            <h4 {...ui.props("registration-pending-14", {})}>
