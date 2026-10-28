@@ -77,7 +77,7 @@ __decorate([
 ], HourLogsController.prototype, "getPending", null);
 __decorate([
     (0, common_1.Get)('by-volunteer/:email'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Get hour logs by volunteer email' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Hour logs retrieved' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
@@ -88,7 +88,7 @@ __decorate([
 ], HourLogsController.prototype, "findByVolunteer", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Get hour log by ID' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Hour log retrieved' }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Hour log not found' }),
@@ -100,7 +100,7 @@ __decorate([
 ], HourLogsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)(),
-    (0, roles_decorator_1.Roles)('volunteer', 'admin', 'superuser'),
+    (0, roles_decorator_1.Roles)('volunteer', 'admin', 'superuser', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Submit a new hour log', description: 'Volunteer submits hours for approval' }),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Hour log submitted successfully' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Validation failed' }),

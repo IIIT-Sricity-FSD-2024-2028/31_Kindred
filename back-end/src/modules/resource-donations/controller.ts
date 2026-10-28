@@ -1,11 +1,14 @@
+import { FulfillmentService } from '../fulfillment/service';
 import {
   Controller, Get, Post, Patch, Delete,
-  Param, Body, Query, UseGuards,
+  Param, Body, Query, Headers, ForbiddenException, UseGuards, UploadedFile, UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiHeader, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { ResourceDonationsService } from './service';
 import { CreateResourceDonationDto } from './dto/create-resource-donation.dto';
 import { UpdateResourceDonationDto } from './dto/update-resource-donation.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { saveImage } from '../../common/utils/image-upload';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { RolesGuard } from '../../common/guards/roles.guard';
 
@@ -14,7 +17,8 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 @Controller('resource-donations')
 @UseGuards(RolesGuard)
 export class ResourceDonationsController {
-  constructor(private readonly service: ResourceDonationsService) {}
+  constructor(private readonly service: ResourceDonationsService, private readonly fulfillment: FulfillmentService) {}
+  @Post('upload-image') @Roles('donor','admin','superuser') @UseInterceptors(FileInterceptor('file',{limits:{fileSize:5*1024*1024}})) uploadImage(@UploadedFile() file:any){return {success:true,data:{url:saveImage(file,'resource-donation')}};}
 
   @Get()
   @Roles('admin', 'superuser')
@@ -39,8 +43,8 @@ export class ResourceDonationsController {
   @ApiOperation({ summary: 'Get active pickups assigned to volunteers' })
   @ApiResponse({ status: 200, description: 'Active pickups retrieved' })
   @ApiResponse({ status: 403, description: 'Access denied' })
-  getActivePickups() {
-    return { success: true, data: this.service.getActivePickups(), message: 'Active pickups retrieved' };
+  getActivePickups(@Headers() h: Record<string,string>) {
+    return { success: true, data: this.fulfillment.visibleDonations(this.service.getActivePickups(),{role:h.role,email:h['user-email'],org:h.organization}), message: 'Active pickups retrieved' };
   }
 
   @Get('by-donor/:email')
@@ -49,7 +53,7 @@ export class ResourceDonationsController {
   @ApiResponse({ status: 200, description: 'Donations retrieved' })
   @ApiResponse({ status: 403, description: 'Access denied' })
   findByDonor(@Param('email') email: string) {
-    return { success: true, data: this.service.findByDonor(email), message: 'Donations retrieved' };
+    return { success: true, data: this.service.findByDonor(email).map(d => ({...d,inventory:this.fulfillment.donationProgress(d.id)})), message: 'Donations retrieved' };
   }
 
   @Get('by-volunteer/:email')
@@ -57,8 +61,8 @@ export class ResourceDonationsController {
   @ApiOperation({ summary: 'Get donations assigned to volunteer for pickup' })
   @ApiResponse({ status: 200, description: 'Donations retrieved' })
   @ApiResponse({ status: 403, description: 'Access denied' })
-  findByVolunteer(@Param('email') email: string) {
-    return { success: true, data: this.service.findByVolunteer(email), message: 'Donations retrieved' };
+  findByVolunteer(@Param('email') email: string, @Headers() h: Record<string,string>) {
+    return { success: true, data: this.fulfillment.visibleDonations(this.service.findByVolunteer(email),{role:h.role,email:h['user-email'],org:h.organization}), message: 'Donations retrieved' };
   }
 
   @Get('by-org/:orgName')
@@ -89,7 +93,8 @@ export class ResourceDonationsController {
   @ApiResponse({ status: 200, description: 'Donation retrieved' })
   @ApiResponse({ status: 404, description: 'Donation not found' })
   @ApiResponse({ status: 403, description: 'Access denied' })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string, @Headers() h: Record<string,string>) {
+    if (!this.fulfillment.visibleDonations([this.service.findById(id)],{role:h.role,email:h['user-email'],org:h.organization}).length) throw new ForbiddenException('This donation is not assigned to you');
     return { success: true, data: this.service.findById(id), message: 'Donation retrieved' };
   }
 
@@ -109,7 +114,8 @@ export class ResourceDonationsController {
   @ApiResponse({ status: 200, description: 'Donation updated' })
   @ApiResponse({ status: 404, description: 'Donation not found' })
   @ApiResponse({ status: 403, description: 'Access denied' })
-  update(@Param('id') id: string, @Body() dto: UpdateResourceDonationDto) {
+  update(@Param('id') id: string, @Body() dto: UpdateResourceDonationDto, @Headers() h: Record<string,string>) {
+    this.fulfillment.assertDonationEditable(id,{role:h.role,email:h['user-email'],org:h.organization});
     return { success: true, data: this.service.update(id, dto), message: 'Donation updated' };
   }
 
@@ -119,8 +125,8 @@ export class ResourceDonationsController {
   @ApiResponse({ status: 200, description: 'Volunteer assigned for pickup' })
   @ApiResponse({ status: 404, description: 'Donation not found' })
   @ApiResponse({ status: 403, description: 'Access denied' })
-  assignVolunteer(@Param('id') id: string, @Body() body: { volunteerName: string; volunteerEmail: string }) {
-    return { success: true, data: this.service.assignVolunteer(id, body.volunteerName, body.volunteerEmail), message: 'Volunteer assigned for pickup' };
+  assignVolunteer(@Param('id') id: string, @Body() body: { volunteerName: string; volunteerEmail: string }, @Headers() h: Record<string,string>) {
+    return { success: true, data: this.fulfillment.offer({kind:'collection',sourceId:id,mode:'direct',volunteerEmail:body.volunteerEmail},{role:h.role,email:h['user-email'],org:h.organization}), message: 'Volunteer assigned for pickup' };
   }
 
   @Patch(':id/start-pickup')
@@ -129,7 +135,8 @@ export class ResourceDonationsController {
   @ApiResponse({ status: 200, description: 'Pickup started' })
   @ApiResponse({ status: 404, description: 'Donation not found' })
   @ApiResponse({ status: 403, description: 'Access denied' })
-  startPickup(@Param('id') id: string) {
+  startPickup(@Param('id') id: string, @Headers() h: Record<string,string>) {
+    this.fulfillment.assertLegacyAvailable('collection',id,{role:h.role,email:h['user-email'],org:h.organization});
     return { success: true, data: this.service.startPickup(id), message: 'Pickup started' };
   }
 
@@ -139,7 +146,8 @@ export class ResourceDonationsController {
   @ApiResponse({ status: 200, description: 'Marked as delivered' })
   @ApiResponse({ status: 404, description: 'Donation not found' })
   @ApiResponse({ status: 403, description: 'Access denied' })
-  markDelivered(@Param('id') id: string) {
+  markDelivered(@Param('id') id: string, @Headers() h: Record<string,string>) {
+    this.fulfillment.assertLegacyAvailable('collection',id,{role:h.role,email:h['user-email'],org:h.organization});
     return { success: true, data: this.service.markDelivered(id), message: 'Marked as delivered' };
   }
 
@@ -149,7 +157,8 @@ export class ResourceDonationsController {
   @ApiResponse({ status: 200, description: 'Marked as completed' })
   @ApiResponse({ status: 404, description: 'Donation not found' })
   @ApiResponse({ status: 403, description: 'Access denied' })
-  markCompleted(@Param('id') id: string) {
+  markCompleted(@Param('id') id: string, @Headers() h: Record<string,string>) {
+    this.fulfillment.assertLegacyAvailable('collection',id,{role:h.role,email:h['user-email'],org:h.organization});
     return { success: true, data: this.service.markCompleted(id), message: 'Marked as completed' };
   }
 
@@ -159,8 +168,8 @@ export class ResourceDonationsController {
   @ApiResponse({ status: 200, description: 'Allocated to program' })
   @ApiResponse({ status: 404, description: 'Donation not found' })
   @ApiResponse({ status: 403, description: 'Access denied' })
-  allocateToProgram(@Param('id') id: string, @Body() body: { programId: string; programName: string }) {
-    return { success: true, data: this.service.allocateToProgram(id, body.programId, body.programName), message: 'Allocated to program' };
+  allocateToProgram(@Param('id') id: string, @Body() body: { programId: string; programName: string }, @Headers() h: Record<string,string>) {
+    return { success: true, data: this.fulfillment.allocateDonation(id,body.programId,{role:h.role,email:h['user-email'],org:h.organization}), message: 'Allocated to program' };
   }
 
   @Delete(':id')
@@ -169,7 +178,8 @@ export class ResourceDonationsController {
   @ApiResponse({ status: 200, description: 'Donation deleted' })
   @ApiResponse({ status: 404, description: 'Donation not found' })
   @ApiResponse({ status: 403, description: 'Access denied' })
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string, @Headers() h: Record<string,string>) {
+    this.fulfillment.assertDonationEditable(id,{role:h.role,email:h['user-email'],org:h.organization});
     this.service.delete(id);
     return { success: true, data: null, message: 'Donation deleted' };
   }

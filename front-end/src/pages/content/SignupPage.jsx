@@ -3,6 +3,46 @@ import { usePage } from '../runtime/PageContext.js';
 import PageExtras from '../../components/pages/PageExtras.jsx';
 import { PageField } from '../runtime/PageElements.jsx';
 
+const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const displayAge = (value) => {
+  if (!value) return 'Select your date of birth to calculate age.';
+  const dob = new Date(`${value}T00:00:00`), today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  if (today.getMonth() < dob.getMonth() || (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())) age -= 1;
+  return Number.isFinite(age) && age >= 0 ? `Calculated age: ${age}` : 'Enter a valid date of birth.';
+};
+
+function VerificationPanel({ ui, role, prefix }) {
+  const challenge = ui.state.registrationChallenge?.role === role ? ui.state.registrationChallenge : null;
+  const aadhaar = ['volunteer', 'beneficiary'].includes(role);
+  return <section className="signup-verification-panel" aria-label="Development verification">
+    <div className="section-label">{aadhaar ? 'Aadhaar Verification' : 'Verification'}</div>
+    {role === 'donor' && <>
+      <div className="field"><label htmlFor="don-verification-method">Verification method *</label><PageField as="select" field="don-verification-method" spec={{ id: 'don-verification-method' }}><option value="">Choose a method</option><option value="upi_simulation">UPI ID simulation</option><option value="card_simulation">Card last-four simulation</option></PageField></div>
+      <div className="field"><label htmlFor="don-verification-reference">UPI ID or card last four digits *</label><PageField as="input" field="don-verification-reference" spec={{ id: 'don-verification-reference', type: 'text', placeholder: 'name@bank or 1234', autoComplete: 'off' }} /><p className="hint">Never enter a full card number, CVV, UPI PIN, card PIN, or password. No payment is initiated.</p></div>
+    </>}
+    {aadhaar && <>
+      <p className="aadhaar-verification-title"><strong>Aadhaar-linked mobile OTP verification — development simulation</strong></p>
+      <p className="hint">Use the Aadhaar-linked mobile number entered above. Kindred does not ask for or store your Aadhaar number, Aadhaar image, biometric data, or identity document. No UIDAI check or real SMS occurs in development.</p>
+      <label className="aadhaar-consent"><PageField as="input" field={`${prefix}-aadhaar-consent`} spec={{ id: `${prefix}-aadhaar-consent`, type: 'checkbox' }} /> I consent to this development-only Aadhaar-linked mobile OTP simulation. *</label>
+    </>}
+    {role === 'seller' && <p className="hint">Development-only phone OTP simulation. No real SMS is sent.</p>}
+    {challenge && <div className="verification-challenge" role="status">
+      <p><strong>Pending Verification</strong> — simulation challenge for {challenge.maskedReference}.</p>
+      {challenge.developmentCode && <p className="development-code">Development code: <strong>{challenge.developmentCode}</strong></p>}
+      <div className="field"><label htmlFor={`${prefix}-verification-code`}>6-digit verification code *</label><PageField as="input" field={`${prefix}-verification-code`} spec={{ id: `${prefix}-verification-code`, type: 'text', inputMode: 'numeric', maxLength: 6, autoComplete: 'one-time-code', placeholder: 'Enter 6-digit code' }} /></div>
+    </div>}
+  </section>;
+}
+
+function ProfileLocationFields({ prefix, includeDob = false }) {
+  const ui = usePage();
+  return <>
+    {includeDob && <div className="field-row"><div className="field mb-0"><label htmlFor={`${prefix}-dob`}>Date of birth *</label><PageField as="input" field={`${prefix}-dob`} spec={{ id: `${prefix}-dob`, type: 'date', max: new Date().toISOString().slice(0, 10) }} /><p className="hint">{displayAge(ui.values[`${prefix}-dob`])}</p></div><div className="field mb-0"><label htmlFor={`${prefix}-location`}>Location *</label><PageField as="input" field={`${prefix}-location`} spec={{ id: `${prefix}-location`, type: 'text', placeholder: 'City, State' }} /></div></div>}
+    {!includeDob && <div className="field"><label htmlFor={`${prefix}-location`}>Location *</label><PageField as="input" field={`${prefix}-location`} spec={{ id: `${prefix}-location`, type: 'text', placeholder: 'City, State' }} /></div>}
+  </>;
+}
+
 export default function SignupPage() {
   const ui = usePage();
   return <>
@@ -249,6 +289,11 @@ export default function SignupPage() {
                {"Required for OTP verification"}
              </p>
            </div>
+           <ProfileLocationFields prefix="vol" includeDob />
+           <div className="field"><label htmlFor="vol-present-address">Current / present address *</label><PageField as="textarea" field="vol-present-address" spec={{ id: 'vol-present-address', rows: 2, placeholder: 'Your current residential address' }} /></div>
+           <div className="field"><label htmlFor="vol-permanent-address">Permanent address *</label><PageField as="textarea" field="vol-permanent-address" spec={{ id: 'vol-permanent-address', rows: 2, placeholder: 'Your permanent address' }} /></div>
+           <fieldset className="availability-days"><legend>Available days *</legend><div className="day-checkbox-grid">{DAYS.map((day) => <label key={day}><PageField as="input" field={`vol-day-${day}`} spec={{ id: `vol-day-${day}`, type: 'checkbox' }} /> {day}</label>)}</div></fieldset>
+           <VerificationPanel ui={ui} role="volunteer" prefix="vol" />
            <div {...ui.props("signup-102", {"className": "field"})}>
              <label {...ui.props("signup-103", {})}>
                {"Gender *"}
@@ -341,6 +386,8 @@ export default function SignupPage() {
                {"Required for OTP verification"}
              </p>
            </div>
+           <ProfileLocationFields prefix="don" includeDob />
+           <VerificationPanel ui={ui} role="donor" prefix="don" />
            <div {...ui.props("signup-142", {"className": "field pass-wrap"})}>
              <label {...ui.props("signup-143", {})}>
                {"Password *"}
@@ -411,6 +458,8 @@ export default function SignupPage() {
                {"Required for OTP verification"}
              </p>
            </div>
+           <ProfileLocationFields prefix="ben" />
+           <VerificationPanel ui={ui} role="beneficiary" prefix="ben" />
            <div {...ui.props("signup-174", {"className": "field pass-wrap"})}>
              <label {...ui.props("signup-175", {})}>
                {"Password *"}
@@ -497,6 +546,8 @@ export default function SignupPage() {
                {"Required for OTP verification and customer contact"}
              </p>
            </div>
+           <ProfileLocationFields prefix="seller" />
+           <VerificationPanel ui={ui} role="seller" prefix="seller" />
            <div {...ui.props("signup-213", {"className": "field pass-wrap"})}>
              <label {...ui.props("signup-214", {})}>
                {"Password *"}

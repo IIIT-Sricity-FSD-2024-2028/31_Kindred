@@ -7,4 +7,17 @@ export declare class CreateUserDto {
     phone?: string;
     bio?: string;
     skills?: string[];
+    dateOfBirth?: string;
+    location?: string;
+    presentAddress?: string;
+    permanentAddress?: string;
+    availabilityDays?: string[];
+    verificationToken?: string;
+    verificationReference?: string;
+    businessName?: string;
+    businessDescription?: string;
+    securityQuestion1?: string;
+    securityAnswer1?: string;
+    securityQuestion2?: string;
+    securityAnswer2?: string;
 }

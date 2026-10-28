@@ -66,6 +66,7 @@ export class SellersService {
       phone: dto.phone,
       businessName: dto.businessName,
       businessDescription: dto.businessDescription,
+      location: dto.location,
       organizationId: dto.organizationId,
       organizationName: dto.organizationName,
       status: 'pending',

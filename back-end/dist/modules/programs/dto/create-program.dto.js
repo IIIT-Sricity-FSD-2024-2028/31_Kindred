@@ -13,11 +13,16 @@ exports.CreateProgramDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateProgramDto {
+    requestListing;
+    image;
+    id;
     name;
     org;
     focus;
     startDate;
     endDate;
+    status;
+    volunteers;
     budget;
     description;
     requiredSkills;
@@ -26,6 +31,24 @@ class CreateProgramDto {
     location;
 }
 exports.CreateProgramDto = CreateProgramDto;
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], CreateProgramDto.prototype, "requestListing", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateProgramDto.prototype, "image", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Client-provided ID for synchronized dashboard records' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateProgramDto.prototype, "id", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'Program name', example: 'Rural Literacy Drive 2025' }),
     (0, class_validator_1.IsString)(),
@@ -37,9 +60,9 @@ __decorate([
     __metadata("design:type", String)
 ], CreateProgramDto.prototype, "org", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ description: 'Focus area', example: 'Education' }),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
+    (0, swagger_1.ApiProperty)({ description: 'Focus area(s)', example: ['Education'] }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Object)
 ], CreateProgramDto.prototype, "focus", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'Start date (YYYY-MM-DD)', example: '2025-02-01' }),
@@ -47,10 +70,23 @@ __decorate([
     __metadata("design:type", String)
 ], CreateProgramDto.prototype, "startDate", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ description: 'End date (YYYY-MM-DD)', example: '2025-08-31' }),
+    (0, swagger_1.ApiPropertyOptional)({ description: 'End date (YYYY-MM-DD)', example: '2025-08-31' }),
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateProgramDto.prototype, "endDate", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Initial program status', example: 'active' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateProgramDto.prototype, "status", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Initial assigned volunteer count', example: 2 }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreateProgramDto.prototype, "volunteers", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'Total budget in INR', example: 850000 }),
     (0, class_validator_1.IsNumber)(),

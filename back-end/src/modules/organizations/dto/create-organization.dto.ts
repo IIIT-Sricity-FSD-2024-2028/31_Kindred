@@ -34,5 +34,7 @@ export class CreateOrganizationDto {
   @ApiPropertyOptional() @IsOptional() @IsString() bankIfsc?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() upiId?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() neededResources?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() certificateUrl?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() certificateName?: string;
 
 }

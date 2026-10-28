@@ -13,13 +13,22 @@ exports.CreateSubtaskDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateSubtaskDto {
+    id;
     programId;
     title;
     description;
     assignedToEmail;
+    status;
+    progress;
     assignedToName;
 }
 exports.CreateSubtaskDto = CreateSubtaskDto;
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Client-provided ID for synchronized dashboard records' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateSubtaskDto.prototype, "id", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'Parent program ID', example: 'prog_001' }),
     (0, class_validator_1.IsString)(),
@@ -41,6 +50,20 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateSubtaskDto.prototype, "assignedToEmail", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Initial status', example: 'pending' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateSubtaskDto.prototype, "status", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Initial progress 0-100', example: 0 }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(0),
+    (0, class_validator_1.Max)(100),
+    __metadata("design:type", Number)
+], CreateSubtaskDto.prototype, "progress", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ description: 'Name of assigned volunteer', example: 'Neha Kapoor' }),
     (0, class_validator_1.IsOptional)(),

@@ -1,3 +1,5 @@
+import { ProofStore } from '../proofs/store';
+import { Inject } from '@nestjs/common';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ProductsService } from '../products/service';
 import { SellersService } from '../sellers/service';
@@ -17,6 +19,7 @@ const VALID_DELIVERY_TRANSITIONS: Record<string, string[]> = {
 
 @Injectable()
 export class OrdersService {
+  @Inject(ProofStore) private readonly proofs!: ProofStore;
   private orders: ShopOrder[] = [];
   private counter = 100;
 
@@ -27,6 +30,18 @@ export class OrdersService {
   ) {}
 
   findAll(): ShopOrder[] { return this.orders.slice(); }
+
+  releaseDelivery(id: string) {
+    const order = this.orders.find(o => o.id === id);
+    if (!order || order.deliveryStatus === 'delivered') throw new BadRequestException('Cannot release a completed delivery');
+    order.assignedVolunteerEmail = ''; order.assignedVolunteerName = ''; order.deliveryStatus = 'awaiting_admin_assignment'; order.deliveryTimestamps = {};
+  }
+
+  completeSharedDelivery(id: string) {
+    const order = this.orders.find(o => o.id === id);
+    if (!order || order.deliveryStatus !== 'in_transit') throw new BadRequestException('Order is not out for delivery');
+    order.deliveryStatus = 'delivered'; order.deliveryTimestamps = {...order.deliveryTimestamps, deliveredAt:new Date().toISOString()};
+  }
 
   findBySeller(sellerId: string): ShopOrder[] {
     return this.orders.filter((o) => o.sellerId === sellerId);
@@ -123,6 +138,7 @@ export class OrdersService {
     if (idx === -1) throw new NotFoundException(`Order with id '${id}' not found`);
     const order = this.orders[idx];
 
+    if (newStatus === 'delivered') this.proofs.assertVerified('orders', id);
     if (!VALID_DELIVERY_STATUSES.includes(newStatus)) {
       throw new BadRequestException(`Invalid delivery status '${newStatus}'. Valid: ${VALID_DELIVERY_STATUSES.join(', ')}`);
     }

@@ -28,7 +28,7 @@ export function AuthProvider({ children }) {
   }, []);
   const updateSession = useCallback((patch) => {
     if (!session) return;
-    const next = writeSession({ ...session, ...patch, id: session.id, role: session.role, status: session.status });
+    const next = writeSession({ ...session, ...patch, id: session.id, role: session.role, status: session.status, authToken: session.authToken });
     setSession(next);
   }, [session]);
 

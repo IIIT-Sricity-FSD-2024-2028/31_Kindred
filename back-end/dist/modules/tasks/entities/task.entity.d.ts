@@ -9,5 +9,8 @@ export interface Task {
     dueDate?: string;
     programId?: string;
     programName?: string;
+    location?: string;
+    notes?: string;
     createdAt: string;
+    updatedAt?: string;
 }

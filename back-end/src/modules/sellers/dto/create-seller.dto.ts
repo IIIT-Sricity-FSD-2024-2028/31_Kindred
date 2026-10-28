@@ -24,6 +24,11 @@ export class CreateSellerDto {
   @IsString()
   businessDescription?: string;
 
+  @ApiPropertyOptional({ description: 'Seller city or operating location', example: 'Ongole, Andhra Pradesh' })
+  @IsOptional()
+  @IsString()
+  location?: string;
+
   @ApiPropertyOptional({ description: 'Partner organization ID', example: 'org_001' })
   @IsOptional()
   @IsString()

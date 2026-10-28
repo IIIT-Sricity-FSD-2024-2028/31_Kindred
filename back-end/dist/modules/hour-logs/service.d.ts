@@ -2,6 +2,7 @@ import { HourLog } from './entities/hour-log.entity';
 import { CreateHourLogDto } from './dto/create-hour-log.dto';
 import { UpdateHourLogDto } from './dto/update-hour-log.dto';
 export declare class HourLogsService {
+    private readonly proofs;
     private hourLogs;
     private counter;
     private generateId;

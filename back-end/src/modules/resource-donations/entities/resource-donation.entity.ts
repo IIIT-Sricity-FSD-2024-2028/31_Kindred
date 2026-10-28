@@ -5,6 +5,7 @@ export interface ResourceDonationItem {
 }
 
 export interface ResourceDonation {
+  image?: string;
   id: string;
   donorName: string;
   donorEmail: string;

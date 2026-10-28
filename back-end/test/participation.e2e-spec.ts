@@ -1,0 +1,126 @@
+import { Test } from '@nestjs/testing';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import request from 'supertest';
+import { AppModule } from '../src/app.module';
+import { ResponseInterceptor } from '../src/common/interceptors/response.interceptor';
+import { TasksService } from '../src/modules/tasks/service';
+import { SubtasksService } from '../src/modules/subtasks/service';
+import { ResourceDonationsService } from '../src/modules/resource-donations/service';
+import { OrdersService } from '../src/modules/orders/service';
+import { ReplacementsService } from '../src/modules/replacements/service';
+import { IncomingService } from '../src/modules/incoming/service';
+import { HourLogsService } from '../src/modules/hour-logs/service';
+
+describe('Program participation, completion proofs, and demo card donations', () => {
+  let app: INestApplication;
+  const admin = { role: 'admin', organization: 'HopeConnect', 'user-email': 'admin@hopeconnect.org' };
+  const platform = { role: 'superuser', 'user-email': 'super@kindred.org' };
+  const volunteer = { role: 'volunteer', 'user-email': 'volunteer@kindred.org' };
+  const donor = { role: 'donor', 'user-email': 'donor@kindred.org' };
+  const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jN1sAAAAASUVORK5CYII=', 'base64');
+  const data = (r: any) => r.body.data;
+  beforeEach(async () => {
+    const module = await Test.createTestingModule({ imports: [AppModule] }).compile();
+    app = module.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
+    app.useGlobalInterceptors(new ResponseInterceptor());
+    await app.init();
+    await request(app.getHttpServer()).patch('/organizations/org_001').set(admin).send({ bankAccountName: 'HopeConnect', bankAccountNumber: '12345678901', bankIfsc: 'SBIN0001234' }).expect(200);
+    await request(app.getHttpServer()).patch('/organizations/org_001/request-listing').set(admin).send({ bankAccountName: 'HopeConnect', bankAccountNumber: '12345678901', bankIfsc: 'SBIN0001234' }).expect(200);
+    await request(app.getHttpServer()).patch('/organizations/org_001/approve-listing').set(platform).send({}).expect(200);
+  });
+  afterEach(async () => { await app.close(); });
+
+  it('keeps requested programs private until platform approval and counts accepted invitations and joins exactly once', async () => {
+    const server = app.getHttpServer();
+    const program = data(await request(server).post('/programs').set(admin).send({ name: 'New Education Drive', org: 'HopeConnect', focus: ['Education'], startDate: '2026-10-16', budget: 1000, description: 'Community teaching', requestListing: true, volunteers: 500 }).expect(201));
+    expect(program.volunteers).toBe(0);
+    expect(program.listingStatus).toBe('pending');
+    expect(data(await request(server).get('/programs')).some((p: any) => p.id === program.id)).toBe(false);
+    expect(data(await request(server).get('/programs/manage').set(admin)).some((p: any) => p.id === program.id)).toBe(true);
+    await request(server).patch(`/programs/${program.id}`).set(admin).send({ listingStatus: 'approved' }).expect(400);
+    await request(server).patch(`/programs/${program.id}/approve-listing`).set(admin).send({}).expect(403);
+    await request(server).patch(`/programs/${program.id}/reject-listing`).set(platform).send({}).expect(200);
+    await request(server).patch(`/programs/${program.id}`).set(admin).send({ requestListing: true }).expect(200);
+    const invitation = data(await request(server).post('/program-assignments').set(admin).send({ programId: program.id, programName: program.name, volunteerEmail: volunteer['user-email'], volunteerName: 'Priya' }).expect(201));
+    const privatePrograms = data(await request(server).get('/program-assignments/my-programs').set(volunteer).expect(200));
+    expect(privatePrograms.some((p: any) => p.id === program.id)).toBe(true);
+    await request(server).patch(`/program-assignments/${invitation.id}/respond`).set(volunteer).send({ action: 'accepted' }).expect(200);
+    await request(server).patch(`/program-assignments/${invitation.id}/respond`).set(volunteer).send({ action: 'accepted' }).expect(400);
+    await request(server).patch(`/programs/${program.id}/approve-listing`).set(platform).send({}).expect(200);
+    expect(data(await request(server).get(`/programs/${program.id}`)).volunteers).toBe(1);
+    const application = data(await request(server).post('/program-applications').set(donor).send({ programId: program.id, programName: program.name, volunteerEmail: donor['user-email'], volunteerName: 'Donor volunteer' }).expect(201));
+    await request(server).post('/program-applications').set(admin).send({ programId: program.id, programName: program.name, volunteerEmail: admin['user-email'], volunteerName: 'Admin' }).expect(403);
+    await request(server).patch(`/program-applications/${application.id}/approve`).set(admin).send({}).expect(200);
+    const invitations = data(await request(server).get(`/program-assignments/by-volunteer/${donor['user-email']}`).set(donor));
+    expect(invitations[0].status).toBe('pending');
+    expect(data(await request(server).get(`/programs/${program.id}`)).volunteers).toBe(1);
+    await request(server).patch(`/program-assignments/${invitations[0].id}/respond`).set(donor).send({ action: 'accepted' }).expect(200);
+    expect(data(await request(server).get(`/programs/${program.id}`)).volunteers).toBe(2);
+    await request(server).patch(`/program-assignments/${invitation.id}`).set(admin).send({ status: 'cancelled' }).expect(200);
+    expect(data(await request(server).get(`/programs/${program.id}`)).volunteers).toBe(1);
+  });
+
+  it('requires a valid image from the assignee and organization verification before work completion; rejection allows resubmission', async () => {
+    const server = app.getHttpServer();
+    const task = data(await request(server).post('/tasks').set(admin).send({ title: 'Proof task', programId: 'prog_001', assignedToEmail: volunteer['user-email'] }).expect(201));
+    await request(server).patch(`/tasks/${task.id}`).set(volunteer).send({ status: 'in-progress' }).expect(200);
+    await request(server).patch(`/tasks/${task.id}`).set(volunteer).send({ status: 'completed' }).expect(400);
+    const upload = (identity: any, content: Buffer, mime = 'image/png') => request(server).post('/proofs').set(identity).field('collection','tasks').field('recordId',task.id).attach('file',content,{ filename: 'proof.png', contentType: mime });
+    await upload(donor,png).expect(403);
+    await upload(volunteer,Buffer.from('not an image')).expect(400);
+    const proof = data(await upload(volunteer,png).expect(201));
+    await request(server).patch(`/tasks/${task.id}`).set(admin).send({ status: 'completed' }).expect(400);
+    await request(server).patch(`/proofs/${proof.id}/approve`).set({ ...admin, organization: 'Other Organization' }).send({}).expect(403);
+    await request(server).patch(`/proofs/${proof.id}/approve`).set(platform).send({}).expect(403);
+    await request(server).patch(`/proofs/${proof.id}/reject`).set(admin).send({}).expect(200);
+    const replacement = data(await upload(volunteer,png).expect(201));
+    await request(server).patch(`/proofs/${replacement.id}/approve`).set(admin).send({}).expect(200);
+    expect(app.get(TasksService).findById(task.id).status).toBe('completed');
+    await request(server).patch(`/proofs/${replacement.id}/approve`).set(admin).send({}).expect(400);
+  });
+
+  it('blocks direct completion across deliveries, subtasks, resources, incoming work and hour logs', () => {
+    const subtasks = app.get(SubtasksService);
+    expect(() => subtasks.update('st_001', { status: 'completed', progress: 100 })).toThrow(/proof/i);
+    const resources = app.get(ResourceDonationsService);
+    expect(() => resources.markDelivered('rdon_001')).toThrow(/proof/i);
+    expect(() => resources.markCompleted('rdon_001')).toThrow(/proof/i);
+    expect(() => resources.update('rdon_001', { status: 'completed' })).toThrow(/proof/i);
+    const incoming = app.get(IncomingService);
+    incoming.assign('INC-001','Priya',volunteer['user-email']);
+    expect(() => incoming.resolve('INC-001')).toThrow(/proof/i);
+    const hours = app.get(HourLogsService);
+    const log = hours.create({ volunteerEmail: volunteer['user-email'], volunteerName: 'Priya', hours: 2, date: '2026-10-16', description: 'Teaching' });
+    expect(() => hours.approve(log.id)).toThrow(/proof/i);
+    const orders = app.get(OrdersService);
+    const order = orders.create({ productId: 'prod_001', quantity: 1, buyerName: 'Donor', buyerEmail: donor['user-email'], buyerPhone: '9812345678', address: 'Pune' });
+    orders.assignVolunteer(order.id,volunteer['user-email'],'Priya');
+    for (const status of ['pickup_started','picked_up','in_transit']) orders.updateDeliveryStatus(order.id,status);
+    expect(() => orders.updateDeliveryStatus(order.id,'delivered')).toThrow(/proof/i);
+    expect(app.get(ReplacementsService)).toBeDefined();
+  });
+
+  it('routes card-demo donations to the exact recipient, updates only its ledger and lets that organization issue a donor certificate', async () => {
+    const server = app.getHttpServer();
+    await request(server).patch('/organizations/org_001').set(admin).send({ bankAccountName: 'HopeConnect', bankAccountNumber: '12345678901', bankIfsc: 'SBIN0001234' }).expect(200);
+    const body = { org: 'HopeConnect', amount: 750, donor: 'Donor', email: donor['user-email'], cardLast4: '1111', cardType: 'Visa', programId: 'prog_001', status: 'paid' };
+    await request(server).post('/donations').send(body).expect(403);
+    await request(server).post('/donations').set(donor).send({ ...body, org: 'Hope' }).expect(400);
+    await request(server).post('/donations').set(donor).send({ ...body, org: 'MyTrust Foundation' }).expect(400);
+    const donation = data(await request(server).post('/donations').set(donor).send(body).expect(201));
+    expect(donation.orgId).toBe('org_001');
+    expect(donation.bankAccountName).toBe('HopeConnect');
+    expect(donation.paymentMode).toBe('card_demo');
+    expect(donation.taxReceiptEligible).toBe(false);
+    expect(data(await request(server).get('/donations/balance/HopeConnect').set(admin)).verifiedTotal).toBe(750);
+    expect(data(await request(server).get('/donations/by-org/Hope').set(platform))).toEqual([]);
+    expect(data(await request(server).get('/donations/by-org/MyTrust%20Foundation').set(platform))).toEqual([]);
+    await request(server).patch(`/donations/${donation.id}/issue-certificate`).set({ ...admin, organization: 'MyTrust Foundation' }).send({}).expect(403);
+    const certificate = data(await request(server).patch(`/donations/${donation.id}/issue-certificate`).set(admin).send({}).expect(200));
+    expect(certificate.certificateNumber).toMatch(/^THANKS-/);
+    const donorHistory = data(await request(server).get(`/donations/by-donor/${donor['user-email']}`).set(donor).expect(200));
+    expect(donorHistory[0].certificateNumber).toBe(certificate.certificateNumber);
+    expect(data(await request(server).get('/donations/balance/HopeConnect').set(admin)).verifiedTotal).toBe(750);
+  });
+});

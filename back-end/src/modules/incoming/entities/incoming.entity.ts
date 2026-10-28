@@ -9,6 +9,7 @@ export interface IncomingRequest {
   location: string;
   phone?: string;
   beneficiaryEmail?: string;
+  photoUrl?: string;
   assignedVolunteerName?: string;
   assignedVolunteerEmail?: string;
   resolvedAt?: string;

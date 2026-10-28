@@ -8,6 +8,11 @@ export declare class ProgramApplicationsController {
         data: import("./entities/program-application.entity").ProgramApplication[];
         message: string;
     };
+    findByOrg(org: string, role: string, requestOrg: string): {
+        success: boolean;
+        data: import("./entities/program-application.entity").ProgramApplication[];
+        message: string;
+    };
     getPending(): {
         success: boolean;
         data: import("./entities/program-application.entity").ProgramApplication[];
@@ -33,7 +38,7 @@ export declare class ProgramApplicationsController {
         data: import("./entities/program-application.entity").ProgramApplication;
         message: string;
     };
-    create(dto: CreateProgramApplicationDto): {
+    create(dto: CreateProgramApplicationDto, email: string): {
         success: boolean;
         data: import("./entities/program-application.entity").ProgramApplication;
         message: string;

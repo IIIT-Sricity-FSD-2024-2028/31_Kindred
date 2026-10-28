@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const service_1 = require("./service");
 const create_program_assignment_dto_1 = require("./dto/create-program-assignment.dto");
+const respond_assignment_dto_1 = require("./dto/respond-assignment.dto");
 const update_program_assignment_dto_1 = require("./dto/update-program-assignment.dto");
 const roles_decorator_1 = require("../../common/decorators/roles.decorator");
 const roles_guard_1 = require("../../common/guards/roles.guard");
@@ -28,6 +29,7 @@ let ProgramAssignmentsController = class ProgramAssignmentsController {
     findAll() {
         return { success: true, data: this.service.findAll(), message: 'Assignments retrieved' };
     }
+    myPrograms(email) { return { success: true, data: this.service.memberPrograms(email) }; }
     findByProgram(programId) {
         return { success: true, data: this.service.findByProgram(programId), message: 'Assignments retrieved' };
     }
@@ -39,6 +41,9 @@ let ProgramAssignmentsController = class ProgramAssignmentsController {
     }
     create(dto) {
         return { success: true, data: this.service.create(dto), message: 'Assignment created successfully' };
+    }
+    respond(id, email, dto) {
+        return { success: true, data: this.service.respond(id, email, dto.action), message: 'Invitation response saved' };
     }
     update(id, dto) {
         return { success: true, data: this.service.update(id, dto), message: 'Assignment updated' };
@@ -60,8 +65,16 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ProgramAssignmentsController.prototype, "findAll", null);
 __decorate([
+    (0, common_1.Get)('my-programs'),
+    (0, roles_decorator_1.Roles)('volunteer', 'donor', 'beneficiary', 'seller'),
+    __param(0, (0, common_1.Headers)('user-email')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ProgramAssignmentsController.prototype, "myPrograms", null);
+__decorate([
     (0, common_1.Get)('by-program/:programId'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Get assignments by program ID' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Assignments retrieved' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
@@ -72,7 +85,7 @@ __decorate([
 ], ProgramAssignmentsController.prototype, "findByProgram", null);
 __decorate([
     (0, common_1.Get)('by-volunteer/:email'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Get assignments by volunteer email' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Assignments retrieved' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
@@ -83,7 +96,7 @@ __decorate([
 ], ProgramAssignmentsController.prototype, "findByVolunteer", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Get assignment by ID' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Assignment retrieved' }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Assignment not found' }),
@@ -105,6 +118,16 @@ __decorate([
     __metadata("design:paramtypes", [create_program_assignment_dto_1.CreateProgramAssignmentDto]),
     __metadata("design:returntype", void 0)
 ], ProgramAssignmentsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Patch)(':id/respond'),
+    (0, roles_decorator_1.Roles)('volunteer', 'donor', 'beneficiary', 'seller'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Headers)('user-email')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, respond_assignment_dto_1.RespondAssignmentDto]),
+    __metadata("design:returntype", void 0)
+], ProgramAssignmentsController.prototype, "respond", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     (0, roles_decorator_1.Roles)('admin', 'superuser'),

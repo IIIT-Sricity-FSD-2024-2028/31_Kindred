@@ -67,7 +67,7 @@ __decorate([
 ], SubtasksController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)('by-program/:programId'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Get subtasks for a program' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Subtasks retrieved' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
@@ -78,7 +78,7 @@ __decorate([
 ], SubtasksController.prototype, "findByProgram", null);
 __decorate([
     (0, common_1.Get)('by-volunteer/:email'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Get subtasks assigned to a volunteer' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Subtasks retrieved' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
@@ -89,7 +89,7 @@ __decorate([
 ], SubtasksController.prototype, "findByVolunteer", null);
 __decorate([
     (0, common_1.Get)('by-program-and-volunteer/:programId/:email'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Get subtasks by program and volunteer' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Subtasks retrieved' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
@@ -101,7 +101,7 @@ __decorate([
 ], SubtasksController.prototype, "findByProgramAndVolunteer", null);
 __decorate([
     (0, common_1.Get)('program-progress/:programId'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Get overall program progress percentage' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Progress calculated' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
@@ -112,7 +112,7 @@ __decorate([
 ], SubtasksController.prototype, "getProgramProgress", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Get subtask by ID' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Subtask retrieved' }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Subtask not found' }),
@@ -136,7 +136,7 @@ __decorate([
 ], SubtasksController.prototype, "create", null);
 __decorate([
     (0, common_1.Patch)(':id'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Update a subtask', description: 'Update subtask details or mark as completed' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Subtask updated' }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Subtask not found' }),

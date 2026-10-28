@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProgramsController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const platform_express_1 = require("@nestjs/platform-express");
+const image_upload_1 = require("../../common/utils/image-upload");
 const service_1 = require("./service");
 const create_program_dto_1 = require("./dto/create-program.dto");
 const update_program_dto_1 = require("./dto/update-program.dto");
@@ -26,18 +28,29 @@ let ProgramsController = class ProgramsController {
         this.service = service;
     }
     findAll() {
-        return { success: true, data: this.service.findAll(), message: 'Programs retrieved successfully' };
+        return { success: true, data: this.service.findPublic(), message: 'Programs retrieved successfully' };
     }
+    manage(role, org) { return { success: true, data: role === 'superuser' ? this.service.findAll() : this.service.findByOrg(org) }; }
+    uploadImage(file) { return { success: true, data: { url: (0, image_upload_1.saveImage)(file, 'program') } }; }
+    approveListing(id) { return { success: true, data: this.service.reviewListing(id, true) }; }
+    rejectListing(id) { return { success: true, data: this.service.reviewListing(id, false) }; }
     findByOrg(org) {
-        return { success: true, data: this.service.findByOrg(org), message: 'Programs retrieved' };
+        return { success: true, data: this.service.findPublic().filter((p) => p.org === org), message: 'Programs retrieved' };
     }
     findOne(id) {
-        return { success: true, data: this.service.findById(id), message: 'Program retrieved successfully' };
+        const p = this.service.findPublic().find((program) => program.id === id);
+        if (!p)
+            throw new common_1.ForbiddenException('Program is not publicly listed');
+        return { success: true, data: p, message: 'Program retrieved successfully' };
     }
-    create(dto) {
+    create(dto, role, org) {
+        if (role === 'admin' && (!org || dto.org !== org))
+            throw new common_1.ForbiddenException('Create programs for your own organization');
         return { success: true, data: this.service.create(dto), message: 'Program created successfully' };
     }
-    update(id, dto) {
+    update(id, dto, role, org) {
+        if (role === 'admin' && (!org || this.service.findById(id).org !== org || (dto.org && dto.org !== org)))
+            throw new common_1.ForbiddenException('Edit only your own organization programs');
         return { success: true, data: this.service.update(id, dto), message: 'Program updated successfully' };
     }
     remove(id) {
@@ -54,6 +67,40 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ProgramsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('manage'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser'),
+    __param(0, (0, common_1.Headers)('role')),
+    __param(1, (0, common_1.Headers)('organization')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], ProgramsController.prototype, "manage", null);
+__decorate([
+    (0, common_1.Post)('upload-image'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', { limits: { fileSize: 5 * 1024 * 1024 } })),
+    __param(0, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], ProgramsController.prototype, "uploadImage", null);
+__decorate([
+    (0, common_1.Patch)(':id/approve-listing'),
+    (0, roles_decorator_1.Roles)('superuser'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ProgramsController.prototype, "approveListing", null);
+__decorate([
+    (0, common_1.Patch)(':id/reject-listing'),
+    (0, roles_decorator_1.Roles)('superuser'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ProgramsController.prototype, "rejectListing", null);
 __decorate([
     (0, common_1.Get)('by-org/:org'),
     (0, swagger_1.ApiOperation)({ summary: 'Get programs by organization name' }),
@@ -81,8 +128,10 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Validation failed' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied — requires admin or superuser role' }),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Headers)('role')),
+    __param(2, (0, common_1.Headers)('organization')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_program_dto_1.CreateProgramDto]),
+    __metadata("design:paramtypes", [create_program_dto_1.CreateProgramDto, String, String]),
     __metadata("design:returntype", void 0)
 ], ProgramsController.prototype, "create", null);
 __decorate([
@@ -94,8 +143,10 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Headers)('role')),
+    __param(3, (0, common_1.Headers)('organization')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_program_dto_1.UpdateProgramDto]),
+    __metadata("design:paramtypes", [String, update_program_dto_1.UpdateProgramDto, String, String]),
     __metadata("design:returntype", void 0)
 ], ProgramsController.prototype, "update", null);
 __decorate([

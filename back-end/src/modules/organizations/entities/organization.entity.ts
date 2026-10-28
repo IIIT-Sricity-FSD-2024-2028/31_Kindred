@@ -18,4 +18,8 @@ export interface Organization {
   bankIfsc?: string;
   upiId?: string;
   neededResources?: string;
+  listingStatus?: 'unlisted' | 'pending' | 'approved' | 'rejected';
+  listingRequestedAt?: string;
+  certificateUrl?: string;
+  certificateName?: string;
 }

@@ -6,7 +6,7 @@ test('uses the configured base URL, exact JSON body, and actual approved role', 
   let captured;
   const client = createApiClient({
     baseUrl: 'https://api.example.test///',
-    getSession: () => ({ role: 'donor', status: 'approved' }),
+    getSession: () => ({ role: 'donor', status: 'approved', authToken: 'secure-session-token' }),
     fetchImpl: async (url, options) => {
       captured = { url, options };
       return Response.json({ success: true, data: { id: 'new-id' }, message: 'Created' }, { status: 201 });
@@ -16,6 +16,7 @@ test('uses the configured base URL, exact JSON body, and actual approved role', 
   assert.equal(captured.url, 'https://api.example.test/donations');
   assert.equal(captured.options.method, 'POST');
   assert.equal(captured.options.headers.get('role'), 'donor');
+  assert.equal(captured.options.headers.get('Authorization'), 'Bearer secure-session-token');
   assert.equal(captured.options.body, '{"amount":10}');
 });
 

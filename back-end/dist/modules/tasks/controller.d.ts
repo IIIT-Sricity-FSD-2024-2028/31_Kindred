@@ -14,6 +14,11 @@ export declare class TasksController {
         data: import("./entities/task.entity").Task[];
         message: string;
     };
+    findByProgram(programId: string): {
+        success: boolean;
+        data: import("./entities/task.entity").Task[];
+        message: string;
+    };
     findOne(id: string): {
         success: boolean;
         data: import("./entities/task.entity").Task;

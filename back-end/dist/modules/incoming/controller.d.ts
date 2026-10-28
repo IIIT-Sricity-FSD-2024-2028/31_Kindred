@@ -13,17 +13,39 @@ export declare class IncomingController {
         data: import("./entities/incoming.entity").IncomingRequest[];
         message: string;
     };
+    findByBeneficiary(email: string): {
+        success: boolean;
+        data: import("./entities/incoming.entity").IncomingRequest[];
+        message: string;
+    };
+    byVolunteer(email: string): {
+        success: boolean;
+        data: import("./entities/incoming.entity").IncomingRequest[];
+    };
     findOne(id: string): {
         success: boolean;
         data: import("./entities/incoming.entity").IncomingRequest;
         message: string;
     };
-    create(dto: CreateIncomingDto): {
+    create(dto: CreateIncomingDto, file?: any): {
         success: boolean;
         data: import("./entities/incoming.entity").IncomingRequest;
         message: string;
     };
     accept(id: string): {
+        success: boolean;
+        data: import("./entities/incoming.entity").IncomingRequest;
+        message: string;
+    };
+    assignVolunteer(id: string, body: {
+        volunteerName: string;
+        volunteerEmail: string;
+    }): {
+        success: boolean;
+        data: import("./entities/incoming.entity").IncomingRequest;
+        message: string;
+    };
+    resolve(id: string): {
         success: boolean;
         data: import("./entities/incoming.entity").IncomingRequest;
         message: string;

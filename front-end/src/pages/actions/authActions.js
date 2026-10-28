@@ -10,11 +10,19 @@ export const demoCredentials = {
   master: ['super@kindred.org', 'Super@123'], team1: ['admin1@kindred.org', 'Admin1@123'], team2: ['admin2@kindred.org', 'Admin2@123'],
 };
 export const authRole = (role) => ({ platform: 'superuser', org: 'admin' }[role] || role);
+export const ageFromDateOfBirth = (value, today = new Date()) => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return null;
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return null;
+  let age = today.getFullYear() - date.getFullYear();
+  if (today.getMonth() < date.getMonth() || (today.getMonth() === date.getMonth() && today.getDate() < date.getDate())) age -= 1;
+  return age;
+};
 
 export function authActions(ui) {
   const { values: v, state, update, setValues, session, api, navigate, location } = ui;
   function selectRole(role) {
-    update({ selectedRole: role, error: '', fieldErrors: {}, ...(role === 'platform' ? { team: 'master' } : {}) });
+    update({ selectedRole: role, error: '', fieldErrors: {}, registrationChallenge: null, verificationToken: null, ...(role === 'platform' ? { team: 'master' } : {}) });
     const credentials = demoCredentials[role];
     if (credentials && ui.path === '/signin.html') setValues({ 'si-email': credentials[0], 'si-pass': credentials[1] });
   }
@@ -52,6 +60,50 @@ export function authActions(ui) {
       body.name = v['org-admin']; body.org = v['org-name'];
     }
     if (role === 'seller') requireFields(v, ['seller-business']);
+    if (['volunteer','donor','beneficiary','seller'].includes(role)) {
+      requireFields(v, [`${prefix}-location`]);
+      body.location = v[`${prefix}-location`].trim();
+      if (['volunteer','donor'].includes(role)) {
+        requireFields(v, [`${prefix}-dob`]);
+        const age = ageFromDateOfBirth(v[`${prefix}-dob`]);
+        if (age === null || age < 0 || age > 120) throw new FieldError(`${prefix}-dob`, 'Enter a valid date of birth.');
+        if (role === 'donor' && age < 15) throw new FieldError(`${prefix}-dob`, 'Donors must be at least 15 years old.');
+        body.dateOfBirth = v[`${prefix}-dob`];
+      }
+      if (role === 'volunteer') {
+        requireFields(v, ['vol-present-address', 'vol-permanent-address']);
+        if (!v['vol-aadhaar-consent']) throw new FieldError('vol-aadhaar-consent', 'Consent is required for the Aadhaar-linked mobile OTP simulation.');
+        const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].filter((day) => v[`vol-day-${day}`]);
+        if (!days.length) throw new FieldError('vol-day-Monday', 'Select at least one available day.');
+        body.presentAddress = v['vol-present-address'].trim(); body.permanentAddress = v['vol-permanent-address'].trim(); body.availabilityDays = days;
+      }
+      if (role === 'beneficiary' && !v['ben-aadhaar-consent']) throw new FieldError('ben-aadhaar-consent', 'Consent is required for the Aadhaar-linked mobile OTP simulation.');
+      if (role === 'seller') { body.businessName = v['seller-business'].trim(); body.businessDescription = (v['seller-desc'] || '').trim(); }
+
+      let verificationToken = state.verificationToken;
+      if (!verificationToken) {
+        const challenge = state.registrationChallenge;
+        if (!challenge || challenge.role !== role || challenge.email !== body.email) {
+          let method = { volunteer: 'aadhaar_otp_simulation', beneficiary: 'aadhaar_otp_simulation', seller: 'phone_otp_simulation' }[role];
+          let reference = body.phone;
+          if (role === 'donor') {
+            requireFields(v, ['don-verification-method', 'don-verification-reference']);
+            method = v['don-verification-method']; reference = v['don-verification-reference'].trim();
+            body.verificationReference = reference;
+          }
+          const started = await api.post('/users/verification/start', { role, method, reference, email: body.email, consent: method === 'aadhaar_otp_simulation' ? true : undefined });
+          update({ registrationChallenge: { ...started, role, email: body.email }, verificationToken: null });
+          ui.toast({ type: 'success', title: 'Development verification code created', body: 'Enter the displayed simulation code to continue. No real identity check, SMS, or payment occurred.' });
+          return;
+        }
+        requireFields(v, [`${prefix}-verification-code`]);
+        const completed = await api.post('/users/verification/complete', { challengeId: challenge.challengeId, code: v[`${prefix}-verification-code`] });
+        verificationToken = completed.verificationToken;
+        update({ verificationToken, registrationChallenge: { ...challenge, confirmed: true } });
+      }
+      body.verificationToken = verificationToken;
+      if (role === 'donor') body.verificationReference = v['don-verification-reference'].trim();
+    }
     if (prefix === 'jv') { if (!state.gender || !state.availability) throw new Error('Please select your gender and availability.'); body.bio = `Gender: ${state.gender}. Availability: ${state.availability}.`; }
     const previous = state.registrationProgress;
     if (previous && (previous.email !== body.email || previous.role !== role)) throw new Error('An account was already created in this form. Finish its registration before changing email or role.');
@@ -72,7 +124,7 @@ export function authActions(ui) {
     if (role === 'seller' && !previous?.relatedComplete) {
       try {
         await api.post('/sellers', { name: body.name, email: body.email, phone: body.phone,
-          businessName: v['seller-business'], businessDescription: v['seller-desc'] || '' });
+          businessName: v['seller-business'], businessDescription: v['seller-desc'] || '', location: body.location });
       } catch (error) {
         throw new Error(`Your account was created, but the seller profile failed: ${error.message} Retry this form to finish the remaining step.`, { cause: error });
       }
@@ -88,7 +140,7 @@ export function authActions(ui) {
       navigate(safeNotificationLink(new URLSearchParams(location?.search || '').get('redirect')) || signedIn.dashboard);
     } else {
       writeStored('kindred_signup_destination', safeNotificationLink(new URLSearchParams(location?.search || '').get('redirect')));
-      writeStored('kindred_registration', { name: user.name, email: user.email, role: user.role });
+      writeStored('kindred_registration', { name: user.name, email: user.email, role: user.role, verificationStatus: user.verificationStatus || 'not_required', approvalStatus: user.approvalStatus || user.status });
       navigate('/registration-pending.html');
     }
   }

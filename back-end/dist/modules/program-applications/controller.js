@@ -27,6 +27,12 @@ let ProgramApplicationsController = class ProgramApplicationsController {
     findAll() {
         return { success: true, data: this.service.findAll(), message: 'Applications retrieved' };
     }
+    findByOrg(org, role, requestOrg) {
+        if (role === 'admin' && (!requestOrg || org.toLowerCase() !== requestOrg.toLowerCase())) {
+            throw new common_1.ForbiddenException('Organization administrators can review applications for their own organization only.');
+        }
+        return { success: true, data: this.service.findByOrg(org), message: 'Organization applications retrieved' };
+    }
     getPending() {
         return { success: true, data: this.service.getPending(), message: 'Pending applications retrieved' };
     }
@@ -42,7 +48,9 @@ let ProgramApplicationsController = class ProgramApplicationsController {
     findOne(id) {
         return { success: true, data: this.service.findById(id), message: 'Application retrieved' };
     }
-    create(dto) {
+    create(dto, email) {
+        if (!email || email.toLowerCase() !== dto.volunteerEmail.toLowerCase())
+            throw new common_1.ForbiddenException('Submit join requests as yourself');
         return { success: true, data: this.service.create(dto), message: 'Application submitted successfully' };
     }
     approve(id) {
@@ -68,6 +76,17 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ProgramApplicationsController.prototype, "findAll", null);
 __decorate([
+    (0, common_1.Get)('by-org/:org'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get program applications for one organization' }),
+    __param(0, (0, common_1.Param)('org')),
+    __param(1, (0, common_1.Headers)('role')),
+    __param(2, (0, common_1.Headers)('organization')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", void 0)
+], ProgramApplicationsController.prototype, "findByOrg", null);
+__decorate([
     (0, common_1.Get)('pending'),
     (0, roles_decorator_1.Roles)('admin', 'superuser'),
     (0, swagger_1.ApiOperation)({ summary: 'Get pending applications awaiting review' }),
@@ -90,7 +109,7 @@ __decorate([
 ], ProgramApplicationsController.prototype, "findByProgram", null);
 __decorate([
     (0, common_1.Get)('by-volunteer/:email'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Get applications submitted by a volunteer' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Applications retrieved' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
@@ -101,7 +120,7 @@ __decorate([
 ], ProgramApplicationsController.prototype, "findByVolunteer", null);
 __decorate([
     (0, common_1.Get)('has-applied/:programId/:email'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Check if volunteer has already applied to a program' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Check completed — returns true/false' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied' }),
@@ -113,7 +132,7 @@ __decorate([
 ], ProgramApplicationsController.prototype, "hasApplied", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer'),
+    (0, roles_decorator_1.Roles)('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Get application by ID' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Application retrieved' }),
     (0, swagger_1.ApiResponse)({ status: 404, description: 'Application not found' }),
@@ -125,14 +144,15 @@ __decorate([
 ], ProgramApplicationsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)(),
-    (0, roles_decorator_1.Roles)('volunteer', 'admin', 'superuser'),
+    (0, roles_decorator_1.Roles)('volunteer', 'donor', 'beneficiary', 'seller'),
     (0, swagger_1.ApiOperation)({ summary: 'Submit a program application', description: 'Volunteer applies to join a program' }),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Application submitted successfully' }),
     (0, swagger_1.ApiResponse)({ status: 400, description: 'Validation failed' }),
     (0, swagger_1.ApiResponse)({ status: 403, description: 'Access denied — requires volunteer, admin, or superuser role' }),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Headers)('user-email')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_program_application_dto_1.CreateProgramApplicationDto]),
+    __metadata("design:paramtypes", [create_program_application_dto_1.CreateProgramApplicationDto, String]),
     __metadata("design:returntype", void 0)
 ], ProgramApplicationsController.prototype, "create", null);
 __decorate([

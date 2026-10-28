@@ -9,4 +9,18 @@ export interface MonetaryDonation {
   cardType: string;
   status: string;
   date: string;
+  panMasked?: string;
+  taxReceiptEligible: boolean;
+  receiptNumber?: string;
+  paymentMode: 'card_demo';
+  orgId: string;
+  programId?: string;
+  bankAccountName: string;
+  bankAccountNumber: string;
+  bankIfsc: string;
+  transferReference: string;
+  proofUrl: string;
+  verifiedAt?: string;
+  certificateNumber?: string;
+  certificateIssuedAt?: string;
 }

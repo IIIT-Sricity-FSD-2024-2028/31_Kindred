@@ -8,6 +8,9 @@ export interface Program {
   endDate: string;
   budget: number;
   raised: number;
+  taskProgress?: number;
+  totalTasks?: number;
+  completedTasks?: number;
   beneficiaries: number;
   volunteers: number;
   description: string;
@@ -15,4 +18,6 @@ export interface Program {
   volunteerGoal: number;
   openForApplications: boolean;
   location: string;
+  image?: string;
+  listingStatus?: 'unlisted' | 'pending' | 'approved' | 'rejected';
 }

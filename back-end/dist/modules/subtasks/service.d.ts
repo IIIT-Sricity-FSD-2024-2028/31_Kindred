@@ -1,7 +1,11 @@
+import { ProgramAssignmentsService } from '../program-assignments/service';
 import { Subtask } from './entities/subtask.entity';
 import { CreateSubtaskDto } from './dto/create-subtask.dto';
 import { UpdateSubtaskDto } from './dto/update-subtask.dto';
 export declare class SubtasksService {
+    private readonly assignments;
+    private readonly proofs;
+    constructor(assignments: ProgramAssignmentsService);
     private subtasks;
     private counter;
     private generateId;

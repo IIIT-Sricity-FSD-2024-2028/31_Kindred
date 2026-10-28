@@ -5,15 +5,48 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProgramsService = void 0;
 const common_1 = require("@nestjs/common");
+const service_1 = require("../organizations/service");
 let ProgramsService = class ProgramsService {
+    organizations;
     programs = [
-        { id: 'prog_001', name: 'Cyclone Relief Fund', org: 'HopeConnect', focus: 'Disaster Relief', status: 'active', startDate: '2024-01-10', endDate: '2024-06-30', budget: 1200000, raised: 850000, beneficiaries: 1500, volunteers: 120, description: 'Emergency shelter, food and medical aid for cyclone victims in coastal Odisha.', requiredSkills: ['Field Work', 'Medical Aid', 'Logistics', 'Construction'], volunteerGoal: 150, openForApplications: true, location: 'Coastal Odisha' },
-        { id: 'prog_002', name: 'Clean Water Initiative', org: 'HopeConnect', focus: 'Healthcare', status: 'active', startDate: '2024-02-01', endDate: '2024-12-31', budget: 800000, raised: 650000, beneficiaries: 3200, volunteers: 80, description: 'Installing water purification units in 50 villages across rural Maharashtra.', requiredSkills: ['Technology', 'Construction', 'Community Outreach', 'Environment'], volunteerGoal: 100, openForApplications: true, location: 'Rural Maharashtra' },
-        { id: 'prog_003', name: 'Skill Development Workshop', org: 'HopeConnect', focus: 'Education', status: 'completed', startDate: '2023-09-01', endDate: '2024-01-31', budget: 500000, raised: 500000, beneficiaries: 800, volunteers: 40, description: 'Vocational training for unemployed youth in digital skills and entrepreneurship.', requiredSkills: ['Teaching', 'Technology', 'Administration'], volunteerGoal: 50, openForApplications: false, location: 'Delhi NCR' },
+        { id: 'prog_001', name: 'Cyclone Relief Fund', org: 'HopeConnect', focus: 'Disaster Relief', status: 'active', startDate: '2024-01-10', endDate: '2024-06-30', budget: 1200000, raised: 850000, taskProgress: 0, totalTasks: 0, completedTasks: 0, beneficiaries: 1500, volunteers: 120, description: 'Emergency shelter, food and medical aid for cyclone victims in coastal Odisha.', requiredSkills: ['Field Work', 'Medical Aid', 'Logistics', 'Construction'], volunteerGoal: 150, openForApplications: true, location: 'Coastal Odisha' },
+        { id: 'prog_002', name: 'Clean Water Initiative', org: 'HopeConnect', focus: 'Healthcare', status: 'active', startDate: '2024-02-01', endDate: '2024-12-31', budget: 800000, raised: 650000, taskProgress: 0, totalTasks: 0, completedTasks: 0, beneficiaries: 3200, volunteers: 80, description: 'Installing water purification units in 50 villages across rural Maharashtra.', requiredSkills: ['Technology', 'Construction', 'Community Outreach', 'Environment'], volunteerGoal: 100, openForApplications: true, location: 'Rural Maharashtra' },
+        { id: 'prog_003', name: 'Skill Development Workshop', org: 'HopeConnect', focus: 'Education', status: 'completed', startDate: '2023-09-01', endDate: '2024-01-31', budget: 500000, raised: 500000, taskProgress: 0, totalTasks: 0, completedTasks: 0, beneficiaries: 800, volunteers: 40, description: 'Vocational training for unemployed youth in digital skills and entrepreneurship.', requiredSkills: ['Teaching', 'Technology', 'Administration'], volunteerGoal: 50, openForApplications: false, location: 'Delhi NCR' },
     ];
+    constructor(organizations) {
+        this.organizations = organizations;
+        this.programs.forEach((p) => { p.listingStatus = 'approved'; });
+    }
+    findPublic() { return this.findAll().filter((p) => p.status === 'active' && p.listingStatus === 'approved' && this.organizations.findPublic().some((o) => o.name === p.org)); }
+    setVolunteerCount(id, count) { const p = this.programs.find((p) => p.id === id); if (p)
+        p.volunteers = count; }
+    creditDonation(id, amount) { const p = this.programs.find((p) => p.id === id); if (p)
+        p.raised += amount; }
+    setTaskProgress(id, totalTasks, completedTasks) {
+        const program = this.programs.find((p) => p.id === id);
+        if (!program)
+            return;
+        program.totalTasks = totalTasks;
+        program.completedTasks = completedTasks;
+        program.taskProgress = totalTasks ? Math.round(completedTasks / totalTasks * 100) : 0;
+    }
+    reviewListing(id, approved) {
+        const p = this.programs.find((p) => p.id === id);
+        if (!p)
+            throw new common_1.NotFoundException('Program not found');
+        if (approved)
+            this.organizations.requireBankDetails(p.org);
+        if (p.listingStatus !== 'pending')
+            throw new common_1.BadRequestException('Only pending public listing requests can be reviewed');
+        p.listingStatus = approved ? 'approved' : 'rejected';
+        return { ...p };
+    }
     counter = 100;
     generateId() {
         return `prog_${Date.now()}_${this.counter++}`;
@@ -31,23 +64,29 @@ let ProgramsService = class ProgramsService {
         return this.programs.filter((p) => p.org === org);
     }
     create(dto) {
+        if (dto.requestListing)
+            this.organizations.requireBankDetails(dto.org);
         const newProg = {
-            id: this.generateId(),
+            id: dto.id || this.generateId(),
             name: dto.name,
             org: dto.org,
             focus: dto.focus,
             startDate: dto.startDate,
-            endDate: dto.endDate,
+            endDate: dto.endDate || '',
             budget: dto.budget,
             description: dto.description,
             requiredSkills: dto.requiredSkills || [],
             volunteerGoal: dto.volunteerGoal || 0,
             openForApplications: dto.openForApplications !== undefined ? dto.openForApplications : true,
             location: dto.location || '',
-            status: 'active',
+            status: dto.status || 'active',
             raised: 0,
+            taskProgress: 0,
+            totalTasks: 0,
+            completedTasks: 0,
             beneficiaries: 0,
             volunteers: 0,
+            image: dto.image || '', listingStatus: dto.requestListing ? 'pending' : 'unlisted',
         };
         this.programs.push(newProg);
         return { ...newProg };
@@ -56,7 +95,12 @@ let ProgramsService = class ProgramsService {
         const idx = this.programs.findIndex((p) => p.id === id);
         if (idx === -1)
             throw new common_1.NotFoundException(`Program with id '${id}' not found`);
-        this.programs[idx] = { ...this.programs[idx], ...dto };
+        const { requestListing, volunteers, ...changes } = dto;
+        if (requestListing || dto.image !== undefined && this.programs[idx].listingStatus === 'approved')
+            this.organizations.requireBankDetails(dto.org || this.programs[idx].org);
+        if (requestListing || (dto.image !== undefined && dto.image !== this.programs[idx].image && this.programs[idx].listingStatus === 'approved'))
+            this.programs[idx].listingStatus = 'pending';
+        this.programs[idx] = { ...this.programs[idx], ...Object.fromEntries(Object.entries(changes).filter(([, value]) => value !== undefined)) };
         return { ...this.programs[idx] };
     }
     delete(id) {
@@ -69,6 +113,7 @@ let ProgramsService = class ProgramsService {
 };
 exports.ProgramsService = ProgramsService;
 exports.ProgramsService = ProgramsService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [service_1.OrganizationsService])
 ], ProgramsService);
 //# sourceMappingURL=service.js.map

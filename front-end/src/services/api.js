@@ -15,6 +15,7 @@ export function createApiClient({ baseUrl = API_BASE_URL, getSession = () => nul
     const session = getSession();
     if (session?.status === 'approved' && session.role) {
       headers.set('role', session.role);
+      if (session.authToken) headers.set('Authorization', `Bearer ${session.authToken}`);
       if (session.email) headers.set('user-email', session.email);
       if (session.org) headers.set('organization', session.org);
     }

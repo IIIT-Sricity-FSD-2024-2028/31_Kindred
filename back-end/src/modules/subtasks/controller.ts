@@ -26,7 +26,7 @@ export class SubtasksController {
   }
 
   @Get('by-program/:programId')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Get subtasks for a program' })
   @ApiResponse({ status: 200, description: 'Subtasks retrieved' })
   @ApiResponse({ status: 403, description: 'Access denied' })
@@ -35,7 +35,7 @@ export class SubtasksController {
   }
 
   @Get('by-volunteer/:email')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Get subtasks assigned to a volunteer' })
   @ApiResponse({ status: 200, description: 'Subtasks retrieved' })
   @ApiResponse({ status: 403, description: 'Access denied' })
@@ -44,7 +44,7 @@ export class SubtasksController {
   }
 
   @Get('by-program-and-volunteer/:programId/:email')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Get subtasks by program and volunteer' })
   @ApiResponse({ status: 200, description: 'Subtasks retrieved' })
   @ApiResponse({ status: 403, description: 'Access denied' })
@@ -53,7 +53,7 @@ export class SubtasksController {
   }
 
   @Get('program-progress/:programId')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Get overall program progress percentage' })
   @ApiResponse({ status: 200, description: 'Progress calculated' })
   @ApiResponse({ status: 403, description: 'Access denied' })
@@ -62,7 +62,7 @@ export class SubtasksController {
   }
 
   @Get(':id')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Get subtask by ID' })
   @ApiResponse({ status: 200, description: 'Subtask retrieved' })
   @ApiResponse({ status: 404, description: 'Subtask not found' })
@@ -82,7 +82,7 @@ export class SubtasksController {
   }
 
   @Patch(':id')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Update a subtask', description: 'Update subtask details or mark as completed' })
   @ApiResponse({ status: 200, description: 'Subtask updated' })
   @ApiResponse({ status: 404, description: 'Subtask not found' })

@@ -1,10 +1,11 @@
 import {
   Controller, Get, Post, Patch, Delete,
-  Param, Body, UseGuards,
+  Param, Body, Headers, UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiHeader, ApiResponse } from '@nestjs/swagger';
 import { ProgramAssignmentsService } from './service';
 import { CreateProgramAssignmentDto } from './dto/create-program-assignment.dto';
+import { RespondAssignmentDto } from './dto/respond-assignment.dto';
 import { UpdateProgramAssignmentDto } from './dto/update-program-assignment.dto';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -25,8 +26,12 @@ export class ProgramAssignmentsController {
     return { success: true, data: this.service.findAll(), message: 'Assignments retrieved' };
   }
 
+  @Get('my-programs')
+  @Roles('volunteer', 'donor', 'beneficiary', 'seller')
+  myPrograms(@Headers('user-email') email: string) { return { success: true, data: this.service.memberPrograms(email) }; }
+
   @Get('by-program/:programId')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Get assignments by program ID' })
   @ApiResponse({ status: 200, description: 'Assignments retrieved' })
   @ApiResponse({ status: 403, description: 'Access denied' })
@@ -35,7 +40,7 @@ export class ProgramAssignmentsController {
   }
 
   @Get('by-volunteer/:email')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Get assignments by volunteer email' })
   @ApiResponse({ status: 200, description: 'Assignments retrieved' })
   @ApiResponse({ status: 403, description: 'Access denied' })
@@ -44,7 +49,7 @@ export class ProgramAssignmentsController {
   }
 
   @Get(':id')
-  @Roles('admin', 'superuser', 'volunteer')
+  @Roles('admin', 'superuser', 'volunteer', 'donor', 'beneficiary', 'seller')
   @ApiOperation({ summary: 'Get assignment by ID' })
   @ApiResponse({ status: 200, description: 'Assignment retrieved' })
   @ApiResponse({ status: 404, description: 'Assignment not found' })
@@ -61,6 +66,12 @@ export class ProgramAssignmentsController {
   @ApiResponse({ status: 403, description: 'Access denied' })
   create(@Body() dto: CreateProgramAssignmentDto) {
     return { success: true, data: this.service.create(dto), message: 'Assignment created successfully' };
+  }
+
+  @Patch(':id/respond')
+  @Roles('volunteer', 'donor', 'beneficiary', 'seller')
+  respond(@Param('id') id: string, @Headers('user-email') email: string, @Body() dto: RespondAssignmentDto) {
+    return { success: true, data: this.service.respond(id, email, dto.action), message: 'Invitation response saved' };
   }
 
   @Patch(':id')

@@ -1,3 +1,5 @@
+import { ProofStore } from '../proofs/store';
+import { Inject } from '@nestjs/common';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Replacement } from './entities/replacement.entity';
 import { CreateReplacementDto } from './dto/create-replacement.dto';
@@ -16,6 +18,7 @@ const VALID_TRANSITIONS: Record<string, string[]> = {
 
 @Injectable()
 export class ReplacementsService {
+  @Inject(ProofStore) private readonly proofs!: ProofStore;
   private replacements: Replacement[] = [];
   private counter = 100;
 
@@ -52,6 +55,7 @@ export class ReplacementsService {
   }
 
   create(dto: CreateReplacementDto): Replacement {
+    if (!dto.imageUrl?.trim()) throw new BadRequestException('A photo showing the reported issue is required');
     // Look up the original order to get product/seller/org info
     const order = this.ordersService.findById(dto.orderId);
     if (order.deliveryStatus !== 'delivered') {
@@ -90,8 +94,8 @@ export class ReplacementsService {
   assignVolunteer(id: string, email: string, name: string): Replacement {
     const idx = this.replacements.findIndex((r) => r.id === id);
     if (idx === -1) throw new NotFoundException(`Replacement with id '${id}' not found`);
-    if (this.replacements[idx].status !== 'approved') {
-      throw new BadRequestException('Volunteer can only be assigned to approved replacements');
+    if (!['requested', 'approved', 'volunteer_assigned'].includes(this.replacements[idx].status)) {
+      throw new BadRequestException('A volunteer can only be assigned to an open replacement request');
     }
     this.replacements[idx].assignedVolunteerEmail = email;
     this.replacements[idx].assignedVolunteerName = name;
@@ -105,6 +109,7 @@ export class ReplacementsService {
     if (idx === -1) throw new NotFoundException(`Replacement with id '${id}' not found`);
     const current = this.replacements[idx].status;
 
+    if (newStatus === 'replaced') this.proofs.assertVerified('replacements', id);
     if (!VALID_STATUSES.includes(newStatus)) {
       throw new BadRequestException(`Invalid status '${newStatus}'`);
     }

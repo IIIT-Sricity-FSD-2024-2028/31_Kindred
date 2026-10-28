@@ -13,13 +13,21 @@ exports.CreateProgramAssignmentDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateProgramAssignmentDto {
+    id;
     programId;
     programName;
     volunteerEmail;
     volunteerName;
+    status;
     role;
 }
 exports.CreateProgramAssignmentDto = CreateProgramAssignmentDto;
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Client-provided ID for synchronized dashboard records' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateProgramAssignmentDto.prototype, "id", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'Program ID', example: 'prog_001' }),
     (0, class_validator_1.IsString)(),
@@ -40,6 +48,12 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateProgramAssignmentDto.prototype, "volunteerName", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Assignment status', example: 'active' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateProgramAssignmentDto.prototype, "status", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ description: 'Role in the program', example: 'Field Coordinator' }),
     (0, class_validator_1.IsOptional)(),

@@ -13,13 +13,23 @@ exports.CreateIncomingDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateIncomingDto {
+    id;
     name;
     type;
     desc;
     urgency;
     location;
+    phone;
+    beneficiaryEmail;
+    photoUrl;
 }
 exports.CreateIncomingDto = CreateIncomingDto;
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Client-provided ID for synchronized dashboard records' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateIncomingDto.prototype, "id", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'Name of the person submitting', example: 'Sunita Devi' }),
     (0, class_validator_1.IsString)(),
@@ -47,4 +57,22 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateIncomingDto.prototype, "location", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateIncomingDto.prototype, "phone", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateIncomingDto.prototype, "beneficiaryEmail", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ description: 'Uploaded emergency photo URL' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateIncomingDto.prototype, "photoUrl", void 0);
 //# sourceMappingURL=create-incoming.dto.js.map
