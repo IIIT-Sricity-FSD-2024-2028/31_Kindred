@@ -14,6 +14,7 @@ async function setup(page, role, path, records = {}) {
   const writes = [];
   await page.route('http://localhost:3000/**', async (route) => {
     const req = route.request(), url = new URL(req.url()), key = url.pathname.split('/')[1];
+    if(url.pathname.includes('/brief'))return route.fulfill({json:{success:true,data:{program:{...program,startDate:'2099-01-01',endDate:'2099-01-07',version:1,description:'Teach children'},organization:org,membership:collections.assignments[1],eligibility:{eligible:true,reasons:[],warnings:[]}}}});
     const names = { 'program-assignments': 'assignments', 'hour-logs': 'hours', 'program-applications': 'applications', 'resource-donations': 'resources' };
     if (req.method() !== 'GET') {
       writes.push({ path: url.pathname, body: req.postDataJSON() });
@@ -89,9 +90,11 @@ test('task and subtask pickers contain only accepted program members', async ({ 
 
 test('volunteer accepts a program invitation before progress controls appear', async ({ page }) => {
   const writes = await setup(page, 'volunteer', '/volunteer-dashboard');
-  await expect(page.locator('.program-invitation-card')).toContainText('Community Teaching');
+  await expect(page.getByRole('region',{name:'Program participation'})).toContainText('Community Teaching');
   await expect(page.locator('.program-invitation-card').getByRole('button', { name: 'Report Progress' })).toHaveCount(0);
+  await page.getByRole('button',{name:'Review program & organization details'}).last().click();
+  await page.getByRole('dialog').getByRole('checkbox').check();
   await page.getByRole('button', { name: 'Accept Invitation', exact: true }).click();
   await expect(page.locator('.program-invitation-card')).toHaveCount(0);
-  expect(writes.find((w) => w.path.endsWith('/respond')).body).toEqual({ action: 'accepted' });
+  expect(writes.find((w) => w.path.endsWith('/respond')).body).toEqual({ action: 'accepted', version:1, attendanceConfirmed:true });
 });

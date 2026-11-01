@@ -45,7 +45,7 @@ export function contributionActions(ui) {
     const dashboard = ui.path === '/donor-dashboard.html';
     const fields = dashboard ? ['rd-name', 'rd-phone', 'rd-category', 'rd-desc', 'rd-address', 'rd-date', 'rd-timeslot'] : ['res-donor-name', 'res-donor-email', 'res-donor-phone', 'res-category', 'res-items', 'res-address', 'res-date', 'res-timeslot'];
     requireFields(v, fields);
-    const items = dashboard ? state.items.map((item) => ({ name: item.name.trim(), quantity: Number(item.quantity), condition: item.condition })) : [{ name: v['res-items'], quantity: 1, condition: 'New' }];
+    const items = dashboard ? state.items.map((item) => ({ name: item.name.trim(), quantity: Number(item.quantity), unit:(item.unit||'unit').trim().toLowerCase(), condition: item.condition })) : [{ name: v['res-items'], quantity: 1, condition: 'New' }];
     if (!items.length) throw new Error('Add at least one donation item.');
     if (dashboard) for (const [index,item] of items.entries()) {
       if (!item.name) throw new FieldError(`item-${state.items[index].id}-name`, 'Enter an item name.');
@@ -109,8 +109,12 @@ export function contributionActions(ui) {
     const card = validateCard(v, 'shop-');
     const product = state.product;
     if (!product) throw new Error('Please select a product.');
-    const receipt = await api.post('/orders', { productId: product.id, quantity: Number(v['checkout-qty']),
-      buyerName: v['checkout-name'], buyerEmail: v['checkout-email'], buyerPhone: v['checkout-phone'], address: v['checkout-address'], ...card });
+    let receipt;
+    try {
+      receipt = await api.post('/orders', { productId: product.id, quantity: Number(v['checkout-qty']),
+        buyerName: v['checkout-name'], buyerEmail: v['checkout-email'], buyerPhone: v['checkout-phone'], address: v['checkout-address'], ...card });
+    } catch (error) { ui.refresh(); throw error; }
+    ui.replaceCollection('products', ui.data('products').map((item) => item.id === product.id ? { ...item, quantity: Math.max(0, item.quantity - Number(v['checkout-qty'])) } : item));
     update({ shopStep: 'success', receipt }); setValues({ 'shop-card-number': '', 'shop-card-cvv': '' }); ui.refresh();
   }
   return {

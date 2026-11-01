@@ -25,6 +25,7 @@ async function setup(page, role, path, extra = {}) {
       if (url.pathname.endsWith('/issue-certificate')) { data.donations[0].certificateNumber = 'THANKS-001'; data.donations[0].certificateIssuedAt = '2026-10-16'; }
       return route.fulfill({ json: { success: true, data: result } });
     }
+    if(url.pathname==='/participation/candidates')return route.fulfill({json:{success:true,data:data.volunteers.map(v=>({...v,eligible:true,reasons:[],warnings:[]}))}});
     if (url.pathname === '/program-assignments/my-programs') return route.fulfill({ json: { success: true, data: data.programs } });
     if (url.pathname.startsWith('/program-assignments/by-program/')) return route.fulfill({ json: { success: true, data: data.assignments.filter((a) => a.programId === url.pathname.split('/').at(-1)) } });
     if (key === 'balance' || url.pathname.startsWith('/donations/balance/')) return route.fulfill({ json: { success: true, data: { verifiedTotal: data.donations.reduce((n,d) => n+d.amount,0) } } });
@@ -32,7 +33,7 @@ async function setup(page, role, path, extra = {}) {
   });
   await page.goto('/');
   if (role) await page.evaluate((session) => window.sessionStorage.setItem('kindred_session',JSON.stringify(session)), { id: 'test-user', name: 'Tester', email: role === 'volunteer' ? volunteer.email : `${role}@kindred.org`, role, org: org.name, status: 'approved' });
-  await page.goto(path);
+  await page.goto(path,{waitUntil:'domcontentloaded'});
   return writes;
 }
 
@@ -40,7 +41,7 @@ test('public programs offer guest donation signup and joining, including existin
   await setup(page,null,'/programs');
   await expect(page.getByRole('button',{ name: 'Donate', exact: true })).toBeVisible();
   await page.getByRole('button',{ name: 'Join as Volunteer', exact: true }).click();
-  await expect(page).toHaveURL(/signup\?role=volunteer/);
+  await expect(page).toHaveURL(/signin\?joinProgram=/);
   await page.evaluate(() => window.sessionStorage.setItem('kindred_session',JSON.stringify({ id:'vol',name:'Priya',email:'volunteer@kindred.org',role:'volunteer',status:'approved',org:'HopeConnect' })));
   await page.goto('/programs');
   await expect(page.getByRole('button',{ name: 'Join as Volunteer', exact: true })).toBeVisible();
@@ -53,15 +54,21 @@ test('public programs offer guest donation signup and joining, including existin
 
 test('creating a program sends invitations and requests public listing without requiring a photo', async ({ page }) => {
   const writes = await setup(page,'admin','/create-program', { volunteers: [{ ...volunteer, org: 'Another NGO', skills: ['Teaching'] }] });
+  await page.locator('#programTitle').fill('New Education Program');
+  await page.locator('#programLocation').fill('Pune');
+  await page.locator('#programBudget').fill('1000');
+  await page.locator('#programEndDate').fill('2027-10-16');
+  await page.getByLabel('Start date',{exact:true}).fill('2027-01-01');
+  await page.getByLabel('Shift starts').fill('09:00');await page.getByLabel('Shift ends').fill('12:00');
+  await page.getByLabel('Reporting time').fill('08:45');await page.getByLabel('Invitation deadline').fill('2026-12-31');
+  await page.getByLabel('Shift days',{exact:true}).selectOption(['Monday']);
+  await page.getByLabel('Meeting point',{exact:true}).fill('Community hall');await page.getByLabel('Coordinator name').fill('Anita');await page.getByLabel('Coordinator phone').fill('9812345678');
+  await page.getByLabel('Work to be done, expected hours, equipment and support').fill('Teach for two hours; training and materials provided');
   await page.getByRole('searchbox',{ name:'Search volunteers to invite' }).fill('Teaching');
   await expect(page.getByRole('checkbox',{ name:'Priya', exact:true })).toBeVisible();
   await page.getByRole('searchbox',{ name:'Search volunteers to invite' }).fill('No matching person');
   await expect(page.getByRole('checkbox',{ name:'Priya', exact:true })).toHaveCount(0);
   await page.getByRole('searchbox',{ name:'Search volunteers to invite' }).fill('Priya');
-  await page.locator('#programTitle').fill('New Education Program');
-  await page.locator('#programLocation').fill('Pune');
-  await page.locator('#programBudget').fill('1000');
-  await page.locator('#programEndDate').fill('2027-10-16');
   await page.locator('#volunteerGoal').fill('5');
   await page.locator('#programDesc').fill('Teaching children in the local community');
   await page.locator('#progCategoryContainer').getByLabel('Education',{ exact: true }).check();

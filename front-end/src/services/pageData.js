@@ -62,6 +62,8 @@ export function pageRequests(path, session) {
     if (['admin','superuser','seller'].includes(session.role)) jobs.deliveryVolunteers = '/fulfillment/volunteers';
     if (session.role === 'beneficiary') jobs.organizations = '/organizations';
   }
+  if(session && /dashboard|org-admin|platform-admin|shop/.test(path)){jobs.buyerOrders=`/orders/by-buyer/${enc(session.email)}`;jobs.buyerReplacements=`/replacements/by-buyer/${enc(session.email)}`;}
+  if(session?.role==='beneficiary')jobs.resourceCatalog='/fulfillment/catalog';
   if (['admin','superuser'].includes(session?.role) && path === '/profile.html') jobs.profile = `/users/${enc(session.id)}`;
   return jobs;
 }

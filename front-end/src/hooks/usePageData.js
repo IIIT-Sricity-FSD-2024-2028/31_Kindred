@@ -8,6 +8,7 @@ export default function usePageData(path, session, api) {
   const jobs = useMemo(() => pageRequests(path, session), [path, session]);
   const scope = collectionScope(path, session);
   const refresh = useCallback(() => setRevision((n) => n + 1), []);
+  const replaceCollection = (key, data) => setResults((previous) => ({ ...previous, [key]: { data, endpoint: jobs[key], error: null, revision, scope } }));
   useEffect(() => {
     const controller = new AbortController();
     const load = pageLoader(api, session, controller.signal);
@@ -25,7 +26,7 @@ export default function usePageData(path, session, api) {
     const visibleRefresh = () => { if (document.visibilityState === 'visible') refresh(); };
     window.addEventListener('focus', visibleRefresh);
     document.addEventListener('visibilitychange', visibleRefresh);
-    const timer = window.setInterval(visibleRefresh, 15000);
+    const timer = window.setInterval(visibleRefresh, jobs.products || jobs.volunteers || jobs.volunteer ? 5000 : 15000);
     return () => { window.clearInterval(timer); window.removeEventListener('focus', visibleRefresh); document.removeEventListener('visibilitychange', visibleRefresh); };
   }, [scope, session, jobs, refresh]);
   const collections = Object.fromEntries(Object.entries(jobs).map(([key, endpoint]) => {
@@ -41,5 +42,5 @@ export default function usePageData(path, session, api) {
     }
     return session?.role === 'admin' && ['orders','replacements'].includes(key) ? records.filter((r) => !r.organizationName || r.organizationName === session.org) : records;
   };
-  return { data, collections, jobs, revision, refresh };
+  return { data, collections, jobs, revision, refresh, replaceCollection };
 }

@@ -35,7 +35,7 @@ test('retrying program approval does not create a duplicate active assignment', 
   await executeConfirmation(api,{method:'patch',endpoint:'/program-applications/app-test/approve',body:{}});
   assert.equal(writes,0);
 });
-test('approval surfaces a failed related assignment instead of claiming the full workflow succeeded', async () => {
-  const api = { patch:async () => ({programId:'test',programName:'Test',volunteerEmail:'vol@example.test',volunteerName:'Volunteer'}),get:async () => [],post:async () => { throw new Error('Assignment failed'); } };
+test('approval surfaces a failed server-side invitation instead of claiming success', async () => {
+  const api = { patch:async () => {throw new Error('Assignment failed');},get:async () => {throw new Error('Unexpected client reconciliation');},post:async () => {throw new Error('Unexpected client write');} };
   await assert.rejects(executeConfirmation(api,{method:'patch',endpoint:'/program-applications/app-test/approve',body:{}}),/Assignment failed/);
 });

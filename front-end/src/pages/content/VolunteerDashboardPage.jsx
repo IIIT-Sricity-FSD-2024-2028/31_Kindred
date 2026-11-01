@@ -2,6 +2,7 @@ import { Link } from '../../routes/navigation.jsx';
 import { usePage } from '../runtime/PageContext.js';
 import PageExtras from '../../components/pages/PageExtras.jsx';
 import { PageField, PageModal, PageRegion } from '../runtime/PageElements.jsx';
+import VolunteerPresence from '../../components/pages/VolunteerPresence.jsx';
 
 export default function VolunteerDashboardPage() {
   const ui = usePage();
@@ -185,6 +186,7 @@ export default function VolunteerDashboardPage() {
        </div>
        </>)}
      </div>
+     <VolunteerPresence />
      <section className="volunteer-progress-section" aria-labelledby="volunteer-progress-title">
        <div className="volunteer-progress-heading"><div><span className="volunteer-progress-eyebrow">Your impact</span><h2 id="volunteer-progress-title">Volunteer Progress</h2></div><p>Track your programs, assigned work, and reported progress.</p></div>
        <h3 className="volunteer-progress-subheading">My Assigned Programs</h3>

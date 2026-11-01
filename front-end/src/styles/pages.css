@@ -305,3 +305,43 @@ main { min-width: 0; }
 .certificate-missing { margin: 0; color: #64748b; font: 400 .82rem/1.5 Arial,sans-serif; }
 @media(max-width:640px) { .volunteer-progress-section { padding:18px; }.volunteer-progress-heading { align-items:flex-start; flex-direction:column; }.volunteer-progress-heading h2 { font-size:1.25rem; }.volunteer-program-list,.volunteer-task-list { grid-template-columns:1fr; }.volunteer-program-card { padding:17px; }.volunteer-program-card-heading { flex-direction:column; } }
 @media(max-width:600px) { .organization-certificate-heading { align-items:flex-start; flex-direction:column; }.organization-certificate-preview iframe { height:320px; } }
+.volunteer-presence { padding: 22px; margin: 0 0 24px; border: 1px solid #dbe5e3; border-radius: 14px; background: #fff; }
+.volunteer-presence-heading { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; align-items: center; }
+.volunteer-presence h2 { margin: 0 0 6px; font-size: 1.1rem; }
+.volunteer-presence p { color: #526477; font-size: .85rem; }
+.presence-toggle { display: inline-flex; align-items: center; gap: 10px; border: 1px solid #cbd5e1; border-radius: 24px; padding: 10px 14px; background: #f8fafc; color: #475569; font-weight: 600; cursor: pointer; }
+.presence-toggle:disabled { opacity: .6; cursor: wait; }
+.presence-toggle-track { width: 36px; height: 22px; background: #94a3b8; border-radius: 12px; padding: 3px; }
+.presence-toggle-track span { display: block; width: 16px; height: 16px; background: #fff; border-radius: 50%; transition: transform .15s; }
+.presence-toggle.is-available .presence-toggle-track { background: #059669; }
+.presence-toggle.is-available .presence-toggle-track span { transform: translateX(14px); }
+.volunteer-location-form { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; margin-top: 18px; }
+.volunteer-location-form > div { flex: 1; min-width: 180px; }
+.volunteer-location-form label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: 6px; }
+.volunteer-location-form input { width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; font: inherit; }
+.presence-badge, .stock-badge { display: inline-block; padding: 4px 9px; border-radius: 6px; font-size: .78rem; font-weight: 600; background: #f1f5f9; color: #475569; }
+.presence-badge.is-available, .presence-toggle.is-available { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+.stock-badge { background: #fef2f2; color: #b91c1c; }
+.volunteer-presence-summary { margin-top: 8px; font-size: .8rem; line-height: 1.7; overflow-wrap: anywhere; }
+.volunteer-presence-summary small { color: #64748b; }
+.workflow-form-section { margin: 18px 0; padding: 18px; border: 1px solid #dbe5e3; border-radius: 12px; background: #f8fafc; }
+.workflow-form-section h3 { margin: 0 0 8px; }
+.workflow-field-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(190px,1fr)); gap: 14px; }
+.workflow-form-section label, .workflow-section form > label { display: block; font-size: .88rem; font-weight: 600; margin: 12px 0; }
+.workflow-form-section input:not([type=checkbox]), .workflow-form-section select, .workflow-form-section textarea, .workflow-section form textarea { width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; font:inherit; margin-top:6px; background:#fff; }
+.workflow-form-section select[multiple] { min-height:145px; }
+.candidate-card { display:flex; align-items:flex-start; gap:12px; border:1px solid #dbe5e3; border-radius:10px; padding:14px; margin:10px 0; background:white; overflow-wrap:anywhere; }
+.candidate-card input[type=checkbox] { margin-top:4px; }
+.candidate-card p { margin:5px 0; font-size:.82rem; font-weight:400; }
+.candidate-card small { font-weight:400; color:#77520b; }
+.workflow-error { color:#b91c1c; }
+.delivery-issue { border-left:4px solid #d97706; background:#fffbeb; padding:12px; margin:12px 0; }
+.workflow-section progress { width:100%; height:12px; accent-color:#059669; }
+.candidate-card > div { min-width:0; }
+.react-modal form > label { display:block; margin:14px 0; font-size:.9rem; }
+.react-modal form > label textarea, .react-modal form > label select, .react-modal form > label input:not([type=checkbox]):not([type=file]) { display:block; width:100%; border:1px solid #cbd5e1; border-radius:8px; padding:10px; margin-top:6px; font:inherit; }
+.react-modal form > label textarea { min-height:90px; }
+.purchase-workflows .replacement-record-card { display:block; }
+.workflow-section button.action-btn { width:auto; height:auto; min-height:38px; max-width:100%; display:inline-flex; align-items:center; justify-content:center; padding:9px 14px; border:1px solid #b8d9d4; border-radius:9px; background:#f0fdfa; color:#0f766e; font:600 .84rem/1.35 Arial,sans-serif; white-space:normal; cursor:pointer; }
+.workflow-section button.action-btn:disabled { opacity:.6; cursor:not-allowed; }
+.workflow-section .page-record-actions { align-items:flex-start; }

@@ -57,13 +57,14 @@ test('organization approves from inventory and offers delivery to all volunteers
  await expect(page.locator('.inventory-table tbody tr').first()).toContainText('2');
  await page.getByRole('button',{name:'Arrange Resource Delivery',exact:true}).click();
  modal=page.getByRole('dialog');
- await modal.getByLabel('Assignment Method').selectOption('direct');
- await modal.getByLabel('Volunteer Email').selectOption('volunteer@kindred.org');
- await modal.getByLabel('Assignment Method').selectOption('broadcast');
+ await modal.getByLabel('Delivery date',{exact:true}).fill('2099-01-01');
+ await modal.getByLabel('Window starts').fill('09:00');await modal.getByLabel('Window ends').fill('12:00');
+ await modal.getByLabel('Pickup area / city').fill('Mumbai');await modal.getByLabel('Destination area / city').fill('Pune');
+ await modal.getByLabel('Exact Organization Collection Address').fill('Mumbai warehouse');
  await modal.getByRole('button',{name:'Submit',exact:true}).click();
  await expect(page.locator('[data-delivery-id="delivery"]')).toContainText('Offered to all active volunteers');
  expect(writes.find(w=>w.path.endsWith('/respond')).body.allocations).toEqual([{stockId:stock.id,quantity:3}]);
- expect(writes.find(w=>w.path==='/fulfillment/deliveries').body).toEqual({kind:'resource',sourceId:resourceRequest.id,mode:'broadcast'});
+ expect(writes.find(w=>w.path==='/fulfillment/deliveries').body).toMatchObject({kind:'resource',sourceId:resourceRequest.id,mode:'broadcast',scheduledDate:'2099-01-01',shiftStart:'09:00',shiftEnd:'12:00'});
 });
 
 test('volunteer accepts a delivery before pickup, then uploads proof after starting delivery',async({page})=>{

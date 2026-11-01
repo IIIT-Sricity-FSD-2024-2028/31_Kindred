@@ -1,4 +1,5 @@
 import { hasBankDetails } from '../../services/organizations.js';
+import { ProgramScheduleFields } from '../../components/pages/ProgramParticipation.jsx';
 import { Link } from '../../routes/navigation.jsx';
 import { usePage } from '../runtime/PageContext.js';
 import PageExtras from '../../components/pages/PageExtras.jsx';
@@ -91,6 +92,7 @@ export default function CreateProgramPage() {
              </div>
            </div>
          </div>
+         <ProgramScheduleFields />
          <div {...ui.props("create-program-38", {"className": "form-group"})}>
            <label {...ui.props("create-program-39", {"className": "form-label", "htmlFor": "volunteerGoal"})}>
              <span {...ui.props("create-program-40", {"style": {"display": "flex", "alignItems": "center", "gap": "6px"}})}>
@@ -139,7 +141,7 @@ export default function CreateProgramPage() {
            </label>
            <p className="field-hint">Choose active volunteers from the directory. {ui.state.selectedVolunteers.length} selected. They must accept an invitation before receiving program tasks.</p>
            <PageField field="program-volunteer-search" spec={{ type: 'search', placeholder: 'Search volunteers by name, email or skills', 'aria-label': 'Search volunteers to invite', className: 'form-input' }} />
-           <div {...ui.props("progVolsContainer", {"id": "progVolsContainer", "style": {"maxHeight": "220px", "overflowY": "auto", "border": "1px solid #e2e8f0", "borderRadius": "10px", "background": "#fafbfc"}})}>
+           <div {...ui.props("progVolsContainer", {"id": "progVolsContainer", "style": {"maxHeight": "480px", "overflowY": "auto", "border": "1px solid #e2e8f0", "borderRadius": "10px", "background": "#fafbfc"}})}>
              <p className="field-hint">Selected volunteers receive invitations. They must accept before you can assign tasks or subtasks.</p><PageRegion name="progVolsContainer" />
            </div>
          </div>

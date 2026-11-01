@@ -31,7 +31,7 @@ export function ProgramCards({ records, campaign = false, portal = false, manage
     const fundingPercentage = Math.min(100, Math.round(Number(p.raised || 0)/Math.max(Number(p.budget),1)*100));
     const percentage = campaign ? fundingPercentage : Math.min(100, Number(p.taskProgress || 0));
     const color = ['#00c9a7','#3b82f6','#8b5cf6','#059669'][records.indexOf(p)%4];
-    const application = ui.data('applications').find((a) => a.programId === p.id);
+    const application = ui.data('applications').find((a) => a.programId === p.id && !['withdrawn','rejected'].includes(a.status));
     if (campaign) return <div className="campaign-card" key={p.id}><div className="campaign-org"><div className="campaign-org-avatar" style={{ background: '#6366f1' }}>{p.org?.[0]}</div><span className="campaign-org-name">{p.org}</span></div>
       <div className="campaign-title">{p.name}</div><div className="campaign-desc">{p.description}</div><div className="campaign-progress-bar"><div className="campaign-progress-fill" style={{ width: percentage+'%', background: color }} /></div>
       <div className="campaign-progress-info"><span><strong>₹{compact(p.raised || 0)}</strong> raised</span><span>{percentage}% of ₹{compact(p.budget || 0)}</span></div>
@@ -40,9 +40,10 @@ export function ProgramCards({ records, campaign = false, portal = false, manage
     if (management || portal) return <article className={portal ? 'portal-card' : `program-card status-${p.status}`} key={p.id} data-program-id={p.id}>
       <div className="program-header"><h3>{p.name}</h3><span className={`status-badge ${p.status}`}>{p.status}</span></div>
       {management && <p className="field-hint">Public listing: {p.listingStatus || 'unlisted'}</p>}<p className="program-org">{p.org} • {focusText(p.focus)}</p><p>{p.description}</p><p>📍 {p.location || '—'}</p>
-      <div className="program-stats"><span>👥 {p.volunteers || 0}/{p.volunteerGoal || 0} volunteers</span><span>Tasks {p.completedTasks || 0}/{p.totalTasks || 0} complete</span><span>Budget {money(p.budget)}</span><span>Donations {money(p.raised)}</span></div>
+      <div className="program-stats"><span>👥 {p.volunteers || 0}/{p.volunteerGoal || 0} volunteers</span><span>Work items {p.completedTasks || 0}/{p.totalTasks || 0} verified</span><span>Budget {money(p.budget)}</span><span>Donations {money(p.raised)}</span></div>
       <div className="program-task-progress-label"><span>Task progress</span><strong>{percentage}%</strong></div>
       <div className="progress-bar-bg"><div className="progress-bar-fill bg-cyan" style={{ width: percentage+'%' }} /></div>
+      <details><summary>Work, schedule and coordinator</summary><p>{p.workBrief||p.description}</p><p>{p.startDate} to {p.endDate} - {(p.shiftDays||[]).join(', ')} - {p.shiftStart||'Confirm shift'} to {p.shiftEnd||'Confirm shift'} (India time)</p><p>Reporting: {p.reportingTime} - Meeting point: {p.meetingPoint||p.location}</p><p>Coordinator: {p.contactName} {p.contactPhone}</p><p>Invitation deadline: {p.invitationDeadline||'Contact coordinator'}</p></details>
       <div className="page-skill-tags">{(p.requiredSkills || []).map((skill) => <span key={skill} className="skill-tag">{skill}</span>)}</div>
       <div className="page-record-actions">
         {portal && <button className="btn-primary-sm" disabled={Boolean(application) || p.openForApplications === false || p.status !== 'active'} onClick={() => ui.action('applyToProgram',[p.id])}>{application ? `Application ${application.status}` : p.openForApplications === false ? 'Applications Closed' : 'Apply Now'}</button>}
@@ -53,7 +54,7 @@ export function ProgramCards({ records, campaign = false, portal = false, manage
     return <div className="program-feature-card" key={p.id}>
       <div className="prog-cover-img" style={{ backgroundImage: `url("${p.image || programImages[[p.focus].flat()[0]] || '/images/program-disaster.png'}")` }}><span className={`status-pill ${p.status === 'active' ? 'active-pill' : ''}`}>{p.status}</span></div>
       <div className="prog-card-content"><div className="prog-header"><div className="prog-titles"><h3>{p.name}</h3><span className="prog-ngo">by {p.org}</span></div></div>
-        <p>{p.description}</p><div className="page-record-actions"><button type="button" className="program-donate-button" onClick={() => ui.action('openDonation',[p.org,p.id])}>Donate</button><button type="button" className="btn-outline-sm" onClick={() => ui.action('joinPublicProgram',[p.id])}>Join as Volunteer</button></div><div className="org-stats"><span className="stat">📍 {p.location}</span><span className="stat">👥 {p.volunteers} volunteers</span></div>
+        <p>{p.description}</p><details><summary>Work and schedule details</summary><p>{p.workBrief||p.description}</p><p>{p.startDate} to {p.endDate}, {p.shiftStart} to {p.shiftEnd} India time</p><p>Reporting: {p.reportingTime} - Meeting point: {p.meetingPoint||p.location}</p><p>Coordinator: {p.contactName} {p.contactPhone}</p></details><div className="page-record-actions"><button type="button" className="program-donate-button" onClick={() => ui.action('openDonation',[p.org,p.id])}>Donate</button>{!['admin','superuser'].includes(ui.session?.role)&&<button type="button" className="btn-outline-sm" disabled={!!application||ui.state.busy} onClick={() => ui.action('joinPublicProgram',[p.id])}>Join as Volunteer</button>}</div><div className="org-stats"><span className="stat">📍 {p.location}</span><span className="stat">👥 {p.volunteers} volunteers</span></div>
         <div className="prog-progress"><div className="progress-labels"><span>Progress</span><span>{percentage}%</span></div><div className="progress-bar-bg"><div className="progress-bar-fill bg-cyan" style={{ width: percentage+'%' }} /></div></div>
       </div>
     </div>;
@@ -73,13 +74,13 @@ export function ProductCards({ records, seller = false }) {
   const ui = usePage();
   return records.map((p) => <article className="shop-product-card" key={p.id}>
     {p.photos?.[0] ? <img src={p.photos[0]} alt={p.title} className="shop-product-photo" /> : <div className="shop-product-placeholder">🎁</div>}
-    <div className="shop-product-copy"><div className="shop-product-meta"><span>{p.category}</span><span>By <strong>{p.sellerName}</strong></span></div><h3>{p.title}</h3><p>{p.description}</p>{seller && <p>{p.quantity} in stock • {p.status}</p>}</div>
+    <div className="shop-product-copy"><div className="shop-product-meta"><span>{p.category}</span><span>By <strong>{p.sellerName}</strong></span></div><h3>{p.title}</h3><p>{p.description}</p>{p.quantity < 1 && <span className="stock-badge" role="status">Out of stock</span>}{seller && <p>{p.quantity} in stock • {p.status}</p>}</div>
     <div className="shop-product-actions"><strong>{money(p.price)}</strong>{seller ? <><button className="action-btn action-edit" onClick={() => ui.action('editProduct',[p.id])}>Edit</button><button className="action-btn action-danger" onClick={() => ui.action('mutateRecord',['products',p.id,'delete'])}>Delete</button></> : <button className="btn-buy" onClick={() => ui.action('openProductDetailModal',[p.id])}>View Details →</button>}</div>
   </article>);
 }
 
 export function ProductDetail() {
-  const ui = usePage(), p = ui.state.product;
+  const ui = usePage(), p = ui.data('products').find((product) => product.id === ui.state.product?.id) || ui.state.product;
   if (!p) return null;
   return <>{p.photos?.[0] && <img src={p.photos[0]} alt={p.title} className="shop-detail-photo" />}<span className="status-badge">{p.category}</span><h2>{p.title}</h2><h3>{money(p.price)}</h3><p>Sold & Handcrafted by: <strong>{p.sellerName}</strong></p><p>{p.description}</p><p>{p.quantity} available</p><button className="btn-buy" style={{ width: '100%', padding: 12 }} disabled={p.quantity < 1} onClick={() => ui.action('openCheckoutModal',[p.id])}>🛍️ Buy Now</button></>;
 }
