@@ -1,5 +1,6 @@
 import { Link } from '../../routes/navigation.jsx';
 import { usePage } from '../runtime/PageContext.js';
+import ResourceDonationTarget from '../../components/pages/ResourceDonationTarget.jsx';
 import PageExtras from '../../components/pages/PageExtras.jsx';
 import { PageField, PageModal, PageRegion } from '../runtime/PageElements.jsx';
 
@@ -511,7 +512,7 @@ export default function DonatePage() {
                  {"*"}
                </span>
              </label>
-             <PageField as="input" field="res-donor-email" spec={{"type": "email", "id": "res-donor-email", "style": {"width": "100%", "padding": "10px", "border": "1px solid #cbd5e1", "borderRadius": "8px"}, "placeholder": "Email"}} />
+             <PageField as="input" field="res-donor-email" spec={{"type": "email", "id": "res-donor-email", "readOnly": true, "style": {"width": "100%", "padding": "10px", "border": "1px solid #cbd5e1", "borderRadius": "8px"}, "placeholder": "Email"}} />
            </div>
            <div {...ui.props("donate-170", {"style": {"flex": "1"}})}>
              <label {...ui.props("donate-171", {"style": {"display": "block", "fontSize": ".85rem", "fontWeight": "600", "color": "#475569", "marginBottom": "6px"}})}>
@@ -523,20 +524,8 @@ export default function DonatePage() {
              <PageField as="input" field="res-donor-phone" spec={{"type": "tel", "id": "res-donor-phone", "style": {"width": "100%", "padding": "10px", "border": "1px solid #cbd5e1", "borderRadius": "8px"}, "placeholder": "Mobile Number"}} />
            </div>
          </div>
-         <div {...ui.props("donate-174", {"style": {"marginBottom": "16px"}})}>
-           <label {...ui.props("donate-175", {"style": {"display": "block", "fontSize": ".85rem", "fontWeight": "600", "color": "#475569", "marginBottom": "6px"}})}>
-             {"Donate Resources To "}
-             <span {...ui.props("donate-176", {"style": {"color": "#ef4444"}})}>
-               {"*"}
-             </span>
-           </label>
-            <label className="fulfillment-field">Resource Photo (optional)<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>ui.selectFile('resource-photo',e.target.files?.[0])}/></label>
-            <PageField as="select" field="res-org" spec={{"id": "res-org", "className": "donate-v2-select"}}>
-             <option {...ui.props("donate-178", {"value": ""})}>
-               {"Loading approved organizations…"}
-             </option>
-           </PageField>
-         </div>
+         <ResourceDonationTarget />
+         <label className="fulfillment-field">Resource Photo (optional)<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>ui.selectFile('resource-photo',e.target.files?.[0])}/></label>
          <div {...ui.props("donate-179", {"style": {"marginBottom": "16px"}})}>
            <label {...ui.props("donate-180", {"style": {"display": "block", "fontSize": ".85rem", "fontWeight": "600", "color": "#475569", "marginBottom": "6px"}})}>
              {"Category "}
@@ -565,16 +554,8 @@ export default function DonatePage() {
              </option>
            </PageField>
          </div>
-         <div {...ui.props("donate-189", {"style": {"marginBottom": "16px"}})}>
-           <label {...ui.props("donate-190", {"style": {"display": "block", "fontSize": ".85rem", "fontWeight": "600", "color": "#475569", "marginBottom": "6px"}})}>
-             {"Items & Quantities "}
-             <span {...ui.props("donate-191", {"style": {"color": "#ef4444"}})}>
-               {"*"}
-             </span>
-           </label>
-           <PageField as="textarea" field="res-items" spec={{"id": "res-items", "style": {"width": "100%", "padding": "10px", "border": "1px solid #cbd5e1", "borderRadius": "8px"}, "rows": "3", "placeholder": "e.g. 50 Blankets, 20 Rice Bags..."}}>
-           </PageField>
-         </div>
+         <div className="resource-items-editor"><label className="form-label">Items &amp; quantities *</label><PageRegion name="rd-items-container" /><button type="button" className="btn-outline-sm" onClick={()=>ui.action('addDonationItem')}>+ Add item</button></div>
+         <label className="fulfillment-field">Additional notes (optional)<PageField as="textarea" field="res-items" spec={{id:'res-items',rows:3,placeholder:'Pickup notes or additional details'}} /></label>
          <div {...ui.props("donate-193", {"style": {"marginBottom": "16px"}})}>
            <label {...ui.props("donate-194", {"style": {"display": "block", "fontSize": ".85rem", "fontWeight": "600", "color": "#475569", "marginBottom": "6px"}})}>
              {"Pickup Address "}

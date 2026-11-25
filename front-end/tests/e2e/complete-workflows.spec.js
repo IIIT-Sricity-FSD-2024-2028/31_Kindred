@@ -54,7 +54,7 @@ test('program planner exposes date and suitability context and excludes conflict
 });
 
 for(const role of ['volunteer','beneficiary','seller','admin'])test(`${role} can see and cancel their own purchase`,async({page})=>{
- const {writes}=await setup(page,role,role==='admin'?'/org-admin':`/${role}-dashboard`,{buyerOrders:[{id:'purchase-1',productTitle:'Handmade bag',quantity:1,total:100,address:'Mumbai',deliveryStatus:'awaiting_admin_assignment',paymentStatus:'paid'}]});
+ const {writes}=await setup(page,role,role==='admin'?'/shop':`/${role}-dashboard`,{buyerOrders:[{id:'purchase-1',createdAt:new Date().toISOString(),productTitle:'Handmade bag',quantity:1,total:100,address:'Mumbai',deliveryStatus:'awaiting_admin_assignment',paymentStatus:'paid'}]});
  const section=page.getByRole('region',{name:'Purchases and replacements'});await expect(section).toContainText('Handmade bag');await section.getByRole('button',{name:'Cancel purchase'}).click();await page.getByRole('dialog').getByLabel('Reason',{exact:true}).fill('Delivery no longer needed');await page.getByRole('dialog').getByRole('button',{name:'Confirm',exact:true}).click();await expect(section.getByRole('button',{name:'Cancel purchase'})).toHaveCount(0);expect(writes.find(w=>w.path==='/orders/purchase-1/cancel').body.reason).toBe('Delivery no longer needed');
 });
 

@@ -131,6 +131,7 @@ export default function CreateProgramPage() {
                {"No — Invite only"}
              </option>
            </PageField>
+           <p className="field-hint">Open programs appear in the volunteer portal. Display on the public Programs page is requested separately below.</p>
          </div>
          <div {...ui.props("create-program-54", {"className": "form-group"})}>
            <label {...ui.props("create-program-55", {"className": "form-label"})}>

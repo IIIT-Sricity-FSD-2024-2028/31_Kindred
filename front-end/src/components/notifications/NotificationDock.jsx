@@ -38,9 +38,11 @@ export default function NotificationDock() {
       } finally { inFlight = false; if (active) setLoading(false); }
     }
     load();
-    const interval = setInterval(load, 15000);
+    const interval = setInterval(load, 5000);
+    const changed=event=>{if(event.key==='kindred_data_revision')load();};
+    window.addEventListener('storage',changed);
     window.addEventListener('focus', load);
-    return () => { active = false; controller.abort(); clearInterval(interval); window.removeEventListener('focus', load); };
+    return () => { active = false; controller.abort(); clearInterval(interval); window.removeEventListener('focus', load); window.removeEventListener('storage',changed); };
   }, [api, session]);
   async function read(item) {
     if (reading.current) return;

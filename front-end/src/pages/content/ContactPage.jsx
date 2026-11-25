@@ -128,7 +128,7 @@ export default function ContactPage() {
              <label {...ui.props("contact-52", {"className": "form-label"})}>
                {"Phone (Optional)"}
              </label>
-             <PageField as="input" field="cf-phone" spec={{"type": "tel", "id": "cf-phone", "className": "form-input", "placeholder": "+91 98765 43210"}} />
+             <PageField as="input" field="cf-phone" spec={{"type": "tel", "id": "cf-phone", "className": "form-input", "placeholder": "9812345678"}} />
            </div>
            <div {...ui.props("contact-54", {"className": "form-group"})}>
              <label {...ui.props("contact-55", {"className": "form-label"})}>

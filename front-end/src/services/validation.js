@@ -8,17 +8,14 @@ export function requireFields(values, names) {
   for (const name of names) if (!String(values[name] ?? '').trim()) throw new FieldError(name, 'Please complete all required fields.');
 }
 export function validateEmail(value) {
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value))) throw new Error('Please enter a valid email address.');
+  if (!/^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/.test(String(value)) || String(value).length > 254 || String(value).split('@')[0].length > 64 || /\s/.test(String(value))) throw new Error('Please enter a valid email address.');
 }
 export function validatePhone(value) {
-  let digits = String(value).replace(/\D/g, '');
-  if (digits.length === 12 && digits.startsWith('91')) digits = digits.slice(2);
-  if (digits.length === 11 && digits.startsWith('0')) digits = digits.slice(1);
+  const digits = String(value);
+  if (!/^[0-9]+$/.test(digits)) throw new Error('Phone number must contain exactly 10 digits, without spaces or a country code');
   if (digits.length !== 10) throw new Error('Phone number must be exactly 10 digits');
   if (!/^[6-9]/.test(digits)) throw new Error('Phone number must start with 6, 7, 8, or 9');
-  if (/^(\d)\1{9}$/.test(digits)) throw new Error('Invalid number — all digits cannot be the same');
-  if (['1234567890','0123456789','9876543210','1111111111','1234512345'].includes(digits)) throw new Error('Please enter a real phone number — dummy patterns are not accepted');
-  if (/^(\d{2})\1{4}$/.test(digits) || /^(\d{3})\1{2}\d/.test(digits)) throw new Error('Invalid number — sequential repeated pattern detected');
+
 }
 export function validatePasswords(first, second) {
   if (String(first).length < 8) throw new Error('Password must be at least 8 characters');

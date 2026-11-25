@@ -4,6 +4,8 @@ import { PageField, PageModal, PageRegion } from '../runtime/PageElements.jsx';
 
 export default function VolunteerPortalPage() {
   const ui = usePage();
+  const selected = ui.data('programs').find(program=>program.id===ui.state.selectedProgram?.id);
+  const applicationsClosed = ui.state.modal === 'applyModal' && (!selected || selected.status !== 'active' || !selected.openForApplications);
   return <>
    <main data-react-page="/volunteer-portal.html">
    <section {...ui.props("volunteer-portal-1", {"className": "portal-hero"})}>
@@ -64,6 +66,7 @@ export default function VolunteerPortalPage() {
        <div {...ui.props("volunteer-portal-23", {"className": "modal-body"})}>
          <div {...ui.props("apply-prog-info", {"id": "apply-prog-info", "style": {"background": "#f0f9ff", "border": "1px solid #bae6fd", "borderRadius": "10px", "padding": "14px", "marginBottom": "16px"}})}>
            <PageRegion name="apply-prog-info" />
+           <button type="button" className="action-btn action-view" title="View organization and program details" onClick={() => ui.update({ programBriefId: ui.state.selectedProgram?.id })}>View Details</button>
          </div>
          <div {...ui.props("volunteer-portal-25", {"className": "field"})}>
            <label {...ui.props("volunteer-portal-26", {})}>
@@ -83,12 +86,13 @@ export default function VolunteerPortalPage() {
            <PageField as="textarea" field="apply-message" spec={{"id": "apply-message", "rows": "3", "placeholder": "Tell the org admin why you're a great fit for this program..."}}>
            </PageField>
          </div>
+         {applicationsClosed && <p role="alert">This program is no longer accepting applications.</p>}
          <PageField as="input" field="apply-prog-id" spec={{"type": "hidden", "id": "apply-prog-id"}} />
-         <div {...ui.props("volunteer-portal-33", {"className": "modal-actions"})}>
+         <div {...ui.props("volunteer-portal-33", {"className": "modal-actions portal-apply-actions"})}>
            <button {...ui.props("volunteer-portal-34", {"className": "btn-modal-cancel", "type": "button", "actionLabel": "Cancel"}, {"click": {"name": "closeApplyModal", "args": []}})}>
              {"Cancel"}
            </button>
-           <button {...ui.props("volunteer-portal-35", {"className": "btn-modal-save", "type": "button", "actionLabel": "🚀 Submit Application"}, {"click": {"name": "submitApplication", "args": []}})}>
+           <button {...ui.props("volunteer-portal-35", {"className": "btn-modal-save", "type": "button", "disabled": applicationsClosed, "actionLabel": "🚀 Submit Application"}, {"click": {"name": "submitApplication", "args": []}})}>
              {"🚀 Submit Application"}
            </button>
          </div>

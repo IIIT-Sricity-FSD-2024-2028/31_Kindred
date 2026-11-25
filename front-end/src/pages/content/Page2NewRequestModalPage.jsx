@@ -127,7 +127,7 @@ export default function Page2NewRequestModalPage() {
                    {"*"}
                  </span>
                </label>
-               <PageField as="input" field="phone" spec={{"type": "tel", "className": "form-control", "name": "phone", "placeholder": "+91 98765 43210", "required": true}} />
+               <PageField as="input" field="phone" spec={{"type": "tel", "className": "form-control", "name": "phone", "placeholder": "9812345678", "required": true}} />
              </div>
              <div {...ui.props("page2-new-request-modal-59", {"className": "form-group full"})}>
                <label {...ui.props("page2-new-request-modal-60", {"className": "form-label"})}>
