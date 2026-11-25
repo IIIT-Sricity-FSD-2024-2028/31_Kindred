@@ -5,6 +5,16 @@ import NotificationDock from '../components/notifications/NotificationDock.jsx';
 import { cloneElement, useLayoutEffect, useState } from 'react';
 import interactionStyles from '../pages/runtime/interactionStyles.json';
 import { activateRouteStyles } from '../routes/routeStyles.js';
+import '../styles/dashboards.css';
+
+const dashboardRoutes = new Set([
+  '/donor-dashboard.html', '/volunteer-dashboard.html', '/volunteer-portal.html',
+  '/platform-admin.html', '/org-admin.html', '/beneficiary-dashboard.html',
+  '/org-admin-overview.html', '/org-admin-organizations.html', '/org-admin-programs.html',
+  '/org-admin-requests.html', '/overview.html', '/admin-users.html', '/admin-inbox.html',
+  '/incoming.html', '/analytics.html', '/resources.html', '/volunteers.html',
+  '/requests.html', '/seller-dashboard.html',
+]);
 
 function LoadedLayout({ route, layout, children }) {
   const [failed, setFailed] = useState(false);
@@ -20,7 +30,7 @@ function LoadedLayout({ route, layout, children }) {
   const insideMain = route.path === '/org-admin-overview.html';
   return (
     <>
-      <div data-layout-frame="" data-route={route.path} className={route.path === '/contact-success.html' ? 'bg-gradient-blue' : ['/donate.html','/organizations.html','/organization-details.html','/programs.html','/register-ngo.html'].includes(route.path) ? 'bg-light-grey' : undefined}>
+      <div data-layout-frame="" data-route={route.path} data-dashboard={dashboardRoutes.has(route.path) ? '' : undefined} className={dashboardRoutes.has(route.path) ? 'dashboard-ui' : route.path === '/contact-success.html' ? 'bg-gradient-blue' : ['/donate.html','/organizations.html','/organization-details.html','/programs.html','/register-ngo.html'].includes(route.path) ? 'bg-light-grey' : undefined}>
       {failed && <p role="alert">Some page styles could not load. <button type="button" onClick={() => window.location.reload()}>Reload</button></p>}
       <Navbar key={`navbar:${route.path}`} showShop={layout.showShop} variant={route.path === '/incoming.html' ? 'organization' : 'standard'} />
       {insideMain ? cloneElement(children, { footer }) : children}

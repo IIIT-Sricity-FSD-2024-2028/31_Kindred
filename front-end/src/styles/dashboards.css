@@ -1,0 +1,218 @@
+/* Shared dashboard presentation. Scoped so public pages keep their own design. */
+.dashboard-ui[data-dashboard] {
+  --dash-ink: #17364b;
+  --dash-muted: #607587;
+  --dash-line: #e1e9ec;
+  --dash-accent: #087f75;
+  --dash-soft: #eef8f5;
+  background: #f4f7f8;
+  color: var(--dash-ink);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.dashboard-ui[data-dashboard] :where(main, dialog),
+.dashboard-ui[data-dashboard] :where(main, dialog) * { box-sizing: border-box; }
+.dashboard-ui[data-dashboard] main[data-react-page] {
+  flex: 1;
+  width: 100%;
+  max-width: 1440px;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 36px clamp(18px, 3.5vw, 54px) 64px;
+  background: transparent;
+  font-family: inherit;
+}
+.dashboard-ui[data-dashboard] main[data-react-page] > .main-content {
+  width: 100%; max-width: none; min-width: 0; margin: 0; padding: 0;
+}
+.dashboard-ui[data-dashboard] :is(h1,h2,h3,h4,h5,.section-title,.page-title) {
+  color: var(--dash-ink); font-family: inherit; letter-spacing: -.025em; line-height: 1.35;
+}
+.dashboard-ui[data-dashboard] h1 { font-size: clamp(25px, 2.5vw, 34px); font-weight: 750; }
+.dashboard-ui[data-dashboard] h2 { font-size: 21px; }
+.dashboard-ui[data-dashboard] :is(h3,h4) { font-size: 17px; }
+.dashboard-ui[data-dashboard] :is(p,small) { line-height: 1.65; }
+.dashboard-ui[data-dashboard] main p { overflow-wrap: anywhere; }
+.dashboard-ui[data-dashboard] .page-header {
+  display: flex; justify-content: space-between; align-items: center; gap: 20px;
+  padding: 0 0 26px; margin: 0 0 24px; border-bottom: 1px solid var(--dash-line);
+  background: transparent;
+}
+.dashboard-ui[data-dashboard] .page-header h1 { margin: 0 0 8px; }
+.dashboard-ui[data-dashboard] .page-header p { margin: 0; color: var(--dash-muted); font-size: 14px; max-width: 670px; }
+.dashboard-ui[data-dashboard] .page-header > div { min-width: 0; }
+.dashboard-ui[data-dashboard] :is(.header-actions,.platform-header-actions) { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.dashboard-ui[data-dashboard] .tabs {
+  display: flex; flex-wrap: nowrap; gap: 5px; width: 100%; max-width: 100%;
+  overflow-x: auto; padding: 6px; margin: 0 0 28px; border: 1px solid var(--dash-line);
+  border-radius: 13px; background: #eaf0f2; box-shadow: none; scrollbar-width: thin;
+}
+.dashboard-ui[data-dashboard] .tabs > :is(button,a) {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  gap: 7px; padding: 11px 17px; min-height: 43px; margin: 0; border: 0;
+  border-radius: 9px; background: transparent; color: #526b7c;
+  font: 600 13px/1.4 'Segoe UI', system-ui, sans-serif; text-decoration: none;
+  white-space: nowrap; transition: background .15s, color .15s;
+}
+.dashboard-ui[data-dashboard] .tabs > :is(button,a):hover { background: #f7fafb; color: var(--dash-ink); }
+.dashboard-ui[data-dashboard] .tabs > .active {
+  background: #fff; color: var(--dash-accent); box-shadow: 0 2px 5px #17364b0b;
+}
+.dashboard-ui[data-dashboard] :is(.stats-grid,.stat-cards) {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+  gap: 16px; margin: 0 0 28px;
+}
+.dashboard-ui[data-dashboard] :is(.stat-card,.stats-card) {
+  position: relative; min-width: 0; padding: 22px; border: 1px solid var(--dash-line);
+  border-radius: 15px; background: #fff; box-shadow: 0 3px 12px #17364b04;
+}
+.dashboard-ui[data-dashboard] :is(.stat-value,.stat-number) {
+  color: var(--dash-ink); font-size: clamp(26px, 2.7vw, 34px); font-weight: 750;
+  letter-spacing: -.045em; line-height: 1.25; font-variant-numeric: tabular-nums; margin: 10px 0 5px;
+}
+.dashboard-ui[data-dashboard] :is(.stat-label,.stat-title) { font-size: 13px; color: var(--dash-muted); font-weight: 500; }
+.dashboard-ui[data-dashboard] .stat-icon { border-radius: 12px; width: 42px; height: 42px; font-size: 19px; }
+.dashboard-ui[data-dashboard] .stat-change { font-size: 12px; margin-top: 10px; }
+.dashboard-ui[data-dashboard] :is(.section-card,.content-card,.table-card,.volunteers-section,.programs-section,.requests-section,.donations-section,.workflow-section,.volunteer-presence,.volunteer-progress-section,.saved-cards-section) {
+  min-width: 0; margin: 24px 0; padding: 26px; border: 1px solid var(--dash-line);
+  border-radius: 16px; background: #fff; box-shadow: 0 3px 16px #17364b04;
+}
+.dashboard-ui[data-dashboard] .workflow-section { width: 100%; max-width: none; font-family: inherit; }
+.dashboard-ui[data-dashboard] .workflow-section.participation-embedded { margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
+.dashboard-ui[data-dashboard] :is(.chart-card,.analytics-card) { min-width: 0; padding: 24px; border: 1px solid var(--dash-line); border-radius: 15px; background: #fff; box-shadow: 0 3px 12px #17364b04; }
+.dashboard-ui[data-dashboard] :is(.workflow-section,.volunteer-presence,.volunteer-progress-section) > :is(h2,h3) { margin: 0 0 8px; }
+.dashboard-ui[data-dashboard] :is(.section-title,.section-header,.volunteers-header,.programs-header,.requests-header,.table-header) {
+  gap: 14px; margin-bottom: 20px; font-family: inherit;
+}
+.dashboard-ui[data-dashboard] .section-title { font-size: 19px; font-weight: 700; }
+.dashboard-ui[data-dashboard] :is(.section-header,.volunteers-header,.programs-header,.requests-header,.table-header) {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+}
+.dashboard-ui[data-dashboard] :is(.section-header,.volunteers-header,.programs-header,.requests-header) .section-title { margin: 0; }
+.dashboard-ui[data-dashboard] :is(.page-record-card,.request-card,.payment-card,.task-card,.campaign-card,.portal-card,.program-card,.small-org-card) {
+  min-width: 0; padding: 22px; border: 1px solid var(--dash-line); border-radius: 13px;
+  background: #fff; box-shadow: 0 2px 8px #17364b03; overflow-wrap: anywhere;
+}
+.dashboard-ui[data-dashboard] :is(.page-record-card,.request-card,.payment-card,.task-card) { margin-bottom: 14px; }
+.dashboard-ui[data-dashboard] :is(.page-record-card,.request-card) :is(h3,h4) { margin: 0 0 8px; }
+.dashboard-ui[data-dashboard] :is(.page-record-card,.request-card) p { margin: 7px 0; color: var(--dash-muted); font-size: 14px; }
+.dashboard-ui[data-dashboard] .page-record-heading { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
+.dashboard-ui[data-dashboard] :is(.program-card,.portal-card) {
+  padding: 26px; margin-bottom: 18px; background: #fff;
+  border-left: 3px solid var(--dash-accent);
+}
+.dashboard-ui[data-dashboard] .program-card.status-active { background: #fff; border-color: var(--dash-line); border-left-color: var(--dash-accent); }
+.dashboard-ui[data-dashboard] .program-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 6px; }
+.dashboard-ui[data-dashboard] .program-header h3 { margin: 0; font-size: 19px; font-weight: 700; }
+.dashboard-ui[data-dashboard] .program-org { margin: 0 0 10px; color: var(--dash-accent); font-size: 13px; font-weight: 600; }
+.dashboard-ui[data-dashboard] .program-listing { margin: 6px 0 12px; color: var(--dash-muted); font-size: 12px; }
+.dashboard-ui[data-dashboard] .program-listing strong { font-weight: 600; text-transform: capitalize; }
+.dashboard-ui[data-dashboard] .program-description { max-width: 900px; margin: 12px 0; font-size: 14px; color: #526879; }
+.dashboard-ui[data-dashboard] .program-location { display: flex; gap: 7px; align-items: center; margin: 10px 0 18px; font-size: 13px; color: var(--dash-muted); }
+.dashboard-ui[data-dashboard] .program-location svg { flex: 0 0 16px; color: var(--dash-accent); }
+.dashboard-ui[data-dashboard] .program-stats {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;
+  padding: 18px 20px; margin: 18px 0; border: 1px solid #e6edef; border-radius: 11px; background: #f7fafb;
+}
+.dashboard-ui[data-dashboard] .program-stats div { min-width: 0; }
+.dashboard-ui[data-dashboard] .program-stats dt { font-size: 11px; font-weight: 650; color: #667c89; text-transform: uppercase; letter-spacing: .055em; margin-bottom: 5px; }
+.dashboard-ui[data-dashboard] .program-stats dd { margin: 0; color: var(--dash-ink); font-weight: 700; font-size: 17px; font-variant-numeric: tabular-nums; }
+.dashboard-ui[data-dashboard] .program-stats dd span { font-size: 13px; font-weight: 400; color: var(--dash-muted); }
+.dashboard-ui[data-dashboard] .program-task-progress-label { display: flex; justify-content: space-between; margin: 14px 0 8px; font-size: 12px; font-weight: 600; color: var(--dash-muted); }
+.dashboard-ui[data-dashboard] .program-task-progress-label strong { color: var(--dash-accent); }
+.dashboard-ui[data-dashboard] :is(.progress-bar-bg,.campaign-progress-bar) { height: 7px; border-radius: 20px; background: #e8eef0; overflow: hidden; }
+.dashboard-ui[data-dashboard] .progress-bar-fill { background: var(--dash-accent); border-radius: inherit; height: 100%; }
+.dashboard-ui[data-dashboard] .program-schedule { margin-top: 18px; border-block: 1px solid var(--dash-line); }
+.dashboard-ui[data-dashboard] .program-schedule summary { padding: 13px 0; font-size: 13px; font-weight: 650; color: #36596b; cursor: pointer; }
+.dashboard-ui[data-dashboard] .program-schedule summary::marker { color: var(--dash-accent); }
+.dashboard-ui[data-dashboard] .program-schedule-body { padding: 4px 16px 14px; background: #f8fafb; border-radius: 10px; margin-bottom: 12px; }
+.dashboard-ui[data-dashboard] .program-schedule-body p { font-size: 13px; margin: 10px 0; color: var(--dash-muted); }
+.dashboard-ui[data-dashboard] .program-schedule-body strong { color: var(--dash-ink); margin-right: 8px; }
+.dashboard-ui[data-dashboard] .page-skill-tags { display: flex; gap: 7px; flex-wrap: wrap; margin: 16px 0; }
+.dashboard-ui[data-dashboard] .skill-tag { padding: 4px 10px; font-size: 11px; font-weight: 600; border-radius: 6px; background: #f0f5f7; color: #526c7c; border: 1px solid #e0e9ed; }
+.dashboard-ui[data-dashboard] :is(.page-record-actions,.action-btns) { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.dashboard-ui[data-dashboard] .page-record-actions { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--dash-line); }
+.dashboard-ui[data-dashboard] :is(button,input,select,textarea) { font-family: inherit; }
+.dashboard-ui[data-dashboard] :is(.action-btn,.btn,.btn-primary,.btn-primary-sm,.btn-outline-sm,.btn-outline-full,.btn-modal-save,.btn-modal-cancel,.btn-approve,.btn-reject,.btn-new-request,.btn-add-org,.btn-announce) {
+  display: inline-flex; justify-content: center; align-items: center; gap: 7px;
+  width: auto; height: auto; min-height: 44px; max-width: 100%; padding: 10px 15px;
+  border-radius: 9px; font-family: inherit; font-size: 13px; font-weight: 650;
+  line-height: 1.4; text-decoration: none; white-space: normal; cursor: pointer;
+  box-shadow: none; transition: background .15s, border-color .15s, box-shadow .15s;
+}
+.dashboard-ui[data-dashboard] .volunteer-presence .btn-primary-sm { min-height: 44px; }
+.dashboard-ui[data-dashboard] :is(.action-btn,.btn-outline-sm,.btn-outline-full,.btn-modal-cancel) { border: 1px solid #d4e1e5; background: #fff; color: #315c70; }
+.dashboard-ui[data-dashboard] :is(.btn-primary,.btn-primary-sm,.btn-modal-save,.btn-new-request,.btn-add-org,.btn-approve) { background: var(--dash-accent); border: 1px solid var(--dash-accent); color: #fff; }
+.dashboard-ui[data-dashboard] .action-view { background: #eff7fa; border-color: #d5e8ef; color: #28647d; }
+.dashboard-ui[data-dashboard] .action-edit { background: #fffbef; border-color: #f0dfb7; color: #88621b; }
+.dashboard-ui[data-dashboard] :is(.action-danger,.btn-reject) { background: #fff5f5; border: 1px solid #f4d6d6; color: #b13d43; }
+.dashboard-ui[data-dashboard] .action-success { background: #edf9f2; border-color: #cce9d8; color: #277650; }
+.dashboard-ui[data-dashboard] :is(.action-btn,.btn-outline-sm,.btn-outline-full):hover { filter: brightness(.97); border-color: #95b7c1; }
+.dashboard-ui[data-dashboard] :is(.btn-primary,.btn-primary-sm,.btn-modal-save,.btn-new-request,.btn-add-org):hover { background: #06685f; box-shadow: 0 3px 8px #087f7518; }
+.dashboard-ui[data-dashboard] :is(button,a,input,select,textarea,summary):focus-visible { outline: 3px solid #66b8ad; outline-offset: 3px; }
+.dashboard-ui[data-dashboard] button:disabled { opacity: .5; cursor: not-allowed; }
+.dashboard-ui[data-dashboard] :is(.status-badge,.presence-badge,.stock-badge) { display: inline-flex; align-items: center; gap: 5px; width: fit-content; padding: 4px 10px; border-radius: 7px; font-size: 11px; font-weight: 650; line-height: 1.5; text-transform: capitalize; white-space: normal; }
+.dashboard-ui[data-dashboard] :is(.status-badge.active,.status-badge.approved,.status-badge.completed,.status-badge.delivered) { background: #e9f7ef; color: #23754b; }
+.dashboard-ui[data-dashboard] :is(.status-badge.pending,.status-badge.paused) { background: #fff4dd; color: #8b651a; }
+.dashboard-ui[data-dashboard] :is(.table-container,.table-wrapper,.table-wrap) { width: 100%; max-width: 100%; overflow-x: auto; border: 1px solid var(--dash-line); border-radius: 12px; }
+.dashboard-ui[data-dashboard] table { width: 100%; border-collapse: collapse; font-family: inherit; font-size: 13px; background: #fff; }
+.dashboard-ui[data-dashboard] th { background: #f5f8fa; color: #69808f; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .055em; text-align: left; padding: 15px 18px; border-bottom: 1px solid var(--dash-line); }
+.dashboard-ui[data-dashboard] td { padding: 17px 18px; border-bottom: 1px solid #edf1f3; vertical-align: middle; color: #486170; }
+.dashboard-ui[data-dashboard] tr:last-child td { border-bottom: 0; }
+.dashboard-ui[data-dashboard] tbody tr:hover { background: #f8fbfb; }
+.dashboard-ui[data-dashboard] td :is(strong,.org-name) { color: var(--dash-ink); font-weight: 650; }
+.dashboard-ui[data-dashboard] :is(.org-joined,.field-hint) { color: var(--dash-muted); font-size: 12px; }
+.dashboard-ui[data-dashboard] td .action-btn { min-height: 34px; padding: 7px 10px; font-size: 12px; }
+.dashboard-ui[data-dashboard] :is(input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]),select,textarea) {
+  min-height: 43px; min-width: 0; max-width: 100%; padding: 10px 12px;
+  border: 1px solid #cddde2; border-radius: 9px; background-color: #fff;
+  color: var(--dash-ink); font-family: inherit; font-size: 14px; line-height: 1.5;
+}
+.dashboard-ui[data-dashboard] textarea { min-height: 110px; resize: vertical; }
+.dashboard-ui[data-dashboard] input::placeholder,
+.dashboard-ui[data-dashboard] textarea::placeholder { color: #8296a2; }
+.dashboard-ui[data-dashboard] :is(input[type=checkbox],input[type=radio],progress) { accent-color: var(--dash-accent); }
+.dashboard-ui[data-dashboard] .workflow-field-grid { grid-template-columns: repeat(auto-fit,minmax(min(100%,220px),1fr)); gap: 16px; }
+.dashboard-ui[data-dashboard] .presence-preferences > .workflow-field-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.dashboard-ui[data-dashboard] .presence-weekdays .workflow-field-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px 12px; }
+.dashboard-ui[data-dashboard] :is(.workflow-form-section,.presence-preferences) { padding: 20px; border-radius: 12px; background: #f7fafb; border-color: var(--dash-line); }
+.dashboard-ui[data-dashboard] :is(.page-empty,.empty-state) { padding: 40px 24px; border: 1px dashed #cedde2; border-radius: 12px; background: #f8fbfb; color: #67808e; text-align: center; font-size: 14px; }
+.dashboard-ui[data-dashboard] td.page-empty { border: 0; border-radius: 0; }
+.dashboard-ui[data-dashboard] .react-modal { font-family: inherit; background: #102a3d80; backdrop-filter: blur(4px); padding: 20px; }
+.dashboard-ui[data-dashboard] .modal-box { max-width: min(720px,100%); border: 1px solid #dce6eb; border-radius: 18px; box-shadow: 0 24px 80px #0d293533; }
+.dashboard-ui[data-dashboard] .modal-header { padding: 22px 26px; border-bottom: 1px solid var(--dash-line); gap: 16px; }
+.dashboard-ui[data-dashboard] .modal-header h3 { margin: 0; font-size: 19px; }
+.dashboard-ui[data-dashboard] .modal-body { padding: 24px 26px; }
+.dashboard-ui[data-dashboard] :is(.modal-actions,.modal-footer) { gap: 10px; padding: 18px 26px; border-top: 1px solid var(--dash-line); background: #f9fbfc; }
+.dashboard-ui[data-dashboard] .notification-bell { box-shadow: 0 4px 14px #17364b0c; border-color: var(--dash-line); }
+@media (max-width: 900px) {
+  .dashboard-ui[data-dashboard] .page-header { align-items: flex-start; flex-wrap: wrap; }
+  .dashboard-ui[data-dashboard] .program-stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .dashboard-ui[data-dashboard] .stats-grid,
+  .dashboard-ui[data-dashboard] .stat-cards { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 600px) {
+  .dashboard-ui[data-dashboard] main[data-react-page] { padding: 24px 16px 40px; }
+  .dashboard-ui[data-dashboard] .page-header { gap: 16px; margin-bottom: 18px; padding-bottom: 20px; }
+  .dashboard-ui[data-dashboard] .page-header > div { max-width: 100%; }
+  .dashboard-ui[data-dashboard] .page-header-text > div { flex-wrap: wrap; }
+  .dashboard-ui[data-dashboard] :is(.section-card,.content-card,.table-card,.volunteers-section,.programs-section,.requests-section,.donations-section,.workflow-section,.volunteer-presence,.volunteer-progress-section,.saved-cards-section) { padding: 18px; margin: 18px 0; }
+  .dashboard-ui[data-dashboard] :is(.program-card,.portal-card,.page-record-card,.request-card,.campaign-card) { padding: 18px; }
+  .dashboard-ui[data-dashboard] .program-header h3 { font-size: 17px; }
+  .dashboard-ui[data-dashboard] .program-stats { padding: 14px; gap: 16px 12px; }
+  .dashboard-ui[data-dashboard] .program-stats dd { font-size: 16px; }
+  .dashboard-ui[data-dashboard] .program-stats dt { font-size: 10px; }
+  .dashboard-ui[data-dashboard] :is(.stats-grid,.stat-cards) { gap: 10px; }
+  .dashboard-ui[data-dashboard] .stat-card { padding: 16px; }
+  .dashboard-ui[data-dashboard] .page-record-actions > :is(button,a) { flex: 1 1 120px; }
+  .dashboard-ui[data-dashboard] :is(.section-header,.volunteers-header,.programs-header,.requests-header) > div { flex-wrap: wrap; max-width: 100%; }
+  .dashboard-ui[data-dashboard] .presence-preferences > .workflow-field-grid { grid-template-columns: minmax(0,1fr); }
+  .dashboard-ui[data-dashboard] .presence-weekdays .workflow-field-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .dashboard-ui[data-dashboard] .react-modal { padding: 10px; }
+  .dashboard-ui[data-dashboard] :is(.modal-header,.modal-body,.modal-footer,.modal-actions) { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-ui[data-dashboard] *, .dashboard-ui[data-dashboard] *::before, .dashboard-ui[data-dashboard] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
