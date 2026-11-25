@@ -1,5 +1,6 @@
 import { usePage } from '../runtime/PageContext.js';
 import PageExtras from '../../components/pages/PageExtras.jsx';
+import SellerPickupAddress from '../../components/pages/SellerPickupAddress.jsx';
 import { PageField, PageModal, PageRegion } from '../runtime/PageElements.jsx';
 
 export default function SellerDashboardPage() {
@@ -96,6 +97,7 @@ export default function SellerDashboardPage() {
          </div>
        </div>
      </div>
+     <SellerPickupAddress />
      <div {...ui.props("seller-dashboard-32", {"className": "section-card seller-bank-card", "style": {"marginBottom": "24px", "padding": "20px", "background": "#fff", "borderRadius": "14px", "border": "1px solid #e2e8f0"}})}>
        <h2 {...ui.props("seller-dashboard-33", {"style": {"fontSize": "1.15rem", "color": "#1e293b", "marginBottom": "12px"}})}>
          {"Bank Details"}

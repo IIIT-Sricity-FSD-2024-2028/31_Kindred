@@ -17,7 +17,8 @@ export function contributionActions(ui) {
     requireFields(v, ['checkout-name', 'checkout-email', 'checkout-phone', 'checkout-address']);
     validateField('checkout-email', validateEmail, v['checkout-email']); validateField('checkout-phone', validatePhone, v['checkout-phone']);
     if (!state.product) throw new Error('Please select a product.');
-    if (!Number.isInteger(Number(v['checkout-qty'])) || Number(v['checkout-qty']) < 1 || Number(v['checkout-qty']) > state.product.quantity) throw new FieldError('checkout-qty', 'Please select a valid quantity within the available stock.');
+    const product = ui.data('products').find(item => item.id === state.product.id) || state.product;
+    if (!Number.isInteger(Number(v['checkout-qty'])) || Number(v['checkout-qty']) < 1 || Number(v['checkout-qty']) > product.quantity) throw new FieldError('checkout-qty', `${product.quantity} item(s) of stock available. Select a whole-number quantity between 1 and ${product.quantity}.`);
   }
   function openDonation(org, programId = '') {
     if (!session) return navigate(`/signup?role=donor&redirect=${encodeURIComponent(programId ? '/programs' : '/organizations')}`);
@@ -43,11 +44,11 @@ export function contributionActions(ui) {
   async function resourceDonation() {
     if (!session || !['donor', 'admin', 'superuser'].includes(session.role)) throw new Error('Sign in as a donor to arrange a resource donation.');
     const dashboard = ui.path === '/donor-dashboard.html';
-    const fields = dashboard ? ['rd-name', 'rd-phone', 'rd-category', 'rd-desc', 'rd-address', 'rd-date', 'rd-timeslot'] : ['res-donor-name', 'res-donor-email', 'res-donor-phone', 'res-category', 'res-items', 'res-address', 'res-date', 'res-timeslot'];
-    requireFields(v, fields);
-    const items = dashboard ? state.items.map((item) => ({ name: item.name.trim(), quantity: Number(item.quantity), unit:(item.unit||'unit').trim().toLowerCase(), condition: item.condition })) : [{ name: v['res-items'], quantity: 1, condition: 'New' }];
+    const fields = dashboard ? ['rd-name', 'rd-phone', 'rd-category', 'rd-desc', 'rd-address', 'rd-date', 'rd-timeslot'] : ['res-donor-name', 'res-donor-email', 'res-donor-phone', 'res-category', 'res-address', 'res-date', 'res-timeslot'];
+    requireFields(v, ['res-org',...fields]);
+    const items = state.items.map((item) => ({ name: item.name.trim(), quantity: Number(item.quantity), unit:(item.unit||'unit').trim().toLowerCase(), condition: item.condition }));
     if (!items.length) throw new Error('Add at least one donation item.');
-    if (dashboard) for (const [index,item] of items.entries()) {
+    for (const [index,item] of items.entries()) {
       if (!item.name) throw new FieldError(`item-${state.items[index].id}-name`, 'Enter an item name.');
       if (!Number.isInteger(item.quantity) || item.quantity < 1) throw new FieldError(`item-${state.items[index].id}-quantity`, 'Enter a whole-number quantity of at least 1.');
     }
@@ -55,18 +56,20 @@ export function contributionActions(ui) {
     if (!dashboard) validateField('res-donor-email', validateEmail, v['res-donor-email']);
     const date = dashboard ? v['rd-date'] : v['res-date'];
     validateDate(date, { field: dashboard ? 'rd-date' : 'res-date', min: localDate() });
-    const program = ui.data('programs').find((p) => p.id === v['rd-program']);
-    const org = ui.data('organizations').find((o) => o.id === v['res-org']) || ui.data('organizations').find((o) => o.name === session.org);
-    if (!org && !program) throw new Error('Select the organization that should receive these resources.');
+    const options = ui.data('resourceOptions')[0];
+    const org = options?.organizations?.find(o=>o.id===v['res-org']);
+    const program = options?.programs?.find(p=>p.id===v['rd-program']&&p.status==='active');
+    if (!org) throw new FieldError('res-org','Select an available recipient organization.');
+    if (v['rd-program'] && !program) throw new FieldError('rd-program','Select an available program.');
     if (org && program && program.org !== org.name) throw new Error('Select a program belonging to the recipient organization.');
     let image;
     if (state.files['resource-photo']) { const upload = new FormData(); upload.append('file',state.files['resource-photo']); image = (await api.post('/resource-donations/upload-image',upload)).url; }
     await api.post('/resource-donations', {
-      donorName: dashboard ? v['rd-name'] : v['res-donor-name'], donorEmail: dashboard ? session.email : v['res-donor-email'], donorPhone: phone,
+      donorName: dashboard ? v['rd-name'] : v['res-donor-name'], donorEmail: session.email, donorPhone: phone,
       category: dashboard ? v['rd-category'] : v['res-category'], items, image,
-      description: dashboard ? v['rd-desc'] : v['res-items'], pickupAddress: dashboard ? v['rd-address'] : v['res-address'], pickupDate: date,
+      description: dashboard ? v['rd-desc'] : v['res-items'] || items.map(item=>`${item.quantity} ${item.unit} ${item.name}`).join(', '), pickupAddress: dashboard ? v['rd-address'] : v['res-address'], pickupDate: date,
       pickupTimeSlot: dashboard ? v['rd-timeslot'] : v['res-timeslot'], programId: program?.id || '', programName: program?.name || '',
-      orgId: org?.id || '', orgName: org?.name || program?.org || '',
+      orgId: org.id, orgName: org.name,
     });
     setValues(Object.fromEntries(Object.keys(v).filter((key) => /^(rd-|res-)/.test(key)).map((key) => [key, ''])));
     ui.clearFile('resource-photo');

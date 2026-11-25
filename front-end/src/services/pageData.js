@@ -59,12 +59,15 @@ export function pageRequests(path, session) {
     jobs.deliveries = '/fulfillment/deliveries';
     if (['beneficiary','admin','superuser'].includes(session.role)) jobs.resourceRequests = '/fulfillment/requests';
     if (['admin','superuser'].includes(session.role)) jobs.inventory = '/fulfillment/inventory';
-    if (['admin','superuser','seller'].includes(session.role)) jobs.deliveryVolunteers = '/fulfillment/volunteers';
+    if (['admin','superuser'].includes(session.role)) jobs.deliveryVolunteers = '/fulfillment/volunteers';
     if (session.role === 'beneficiary') jobs.organizations = '/organizations';
   }
   if(session && /dashboard|org-admin|platform-admin|shop/.test(path)){jobs.buyerOrders=`/orders/by-buyer/${enc(session.email)}`;jobs.buyerReplacements=`/replacements/by-buyer/${enc(session.email)}`;}
   if(session?.role==='beneficiary')jobs.resourceCatalog='/fulfillment/catalog';
   if (['admin','superuser'].includes(session?.role) && path === '/profile.html') jobs.profile = `/users/${enc(session.id)}`;
+  if (path === '/volunteer-portal.html') {jobs.programs = '/programs/portal';if(session?.role==='volunteer')jobs.deliveries='/fulfillment/portal';}
+  if (session?.role === 'volunteer' && path === '/profile.html') jobs.profile = '/volunteers/me/profile';
+  if (['/donate.html','/donor-dashboard.html'].includes(path)) jobs.resourceOptions = '/resource-donations/options';
   return jobs;
 }
 

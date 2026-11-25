@@ -59,10 +59,13 @@
       margin: 0 auto;
       padding: 32px;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
       gap: 20px;
     }
     .portal-card {
+      min-width: 0;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -109,11 +112,44 @@
       margin: 2px 0;
     }
     .portal-card .page-record-actions {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
       gap: 10px;
       margin-top: auto;
-      padding-top: 8px;
+      padding-top: 16px;
+    }
+    .portal-card .page-record-actions > button {
+      position: static;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      height: auto;
+      min-height: 44px;
+      box-sizing: border-box;
+      padding: 11px 14px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      font: 600 .88rem/1.4 'Sora', 'Segoe UI', sans-serif;
+      white-space: normal;
+      text-align: center;
+      cursor: pointer;
+    }
+    .portal-card .page-record-actions > .action-view {
+      color: #4338ca;
+      background: #eef2ff;
+      border-color: #c7d2fe;
+    }
+    .portal-card .page-record-actions > .action-view:hover {
+      color: #3730a3;
+      background: #e0e7ff;
+      border-color: #a5b4fc;
+    }
+    .portal-card .page-record-actions > button:focus-visible {
+      outline: 3px solid #818cf8;
+      outline-offset: 3px;
     }
     .portal-card .btn-primary-sm {
       min-height: 42px;
@@ -131,6 +167,48 @@
       background: #cbd5e1;
       color: #64748b;
       cursor: not-allowed;
+    }
+
+    [data-react-page="/volunteer-portal.html"] #apply-prog-info {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+    [data-react-page="/volunteer-portal.html"] #apply-prog-info h3,
+    [data-react-page="/volunteer-portal.html"] #apply-prog-info p {
+      margin: 0;
+    }
+    [data-react-page="/volunteer-portal.html"] #apply-prog-info > .action-view {
+      position: static;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      min-height: 44px;
+      box-sizing: border-box;
+      margin-top: 6px;
+      padding: 11px 14px;
+      border: 1px solid #c7d2fe;
+      border-radius: 9px;
+      background: #eef2ff;
+      color: #4338ca;
+      font: 600 .88rem/1.4 'Sora', 'Segoe UI', sans-serif;
+      white-space: normal;
+      text-align: center;
+      cursor: pointer;
+    }
+    [data-react-page="/volunteer-portal.html"] #apply-prog-info > .action-view:hover {
+      background: #e0e7ff;
+      border-color: #a5b4fc;
+    }
+    [data-react-page="/volunteer-portal.html"] #apply-prog-info > .action-view:focus-visible {
+      outline: 3px solid #818cf8;
+      outline-offset: 3px;
     }
 
     [data-layout-frame][data-route="/volunteer-portal.html"] > .navbar {
@@ -166,6 +244,8 @@
     .portal-empty .empty-icon { font-size: 3rem; margin-bottom: 12px; }
 
     @media (max-width: 480px) {
+      .portal-apply-actions { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+      .portal-apply-actions > button { width: 100%; min-height: 44px; margin: 0; box-sizing: border-box; }
       .portal-grid { grid-template-columns: 1fr; padding: 16px; }
       .portal-hero { padding: 40px 16px 32px; }
       .portal-hero h1 { font-size: 1.5rem; }

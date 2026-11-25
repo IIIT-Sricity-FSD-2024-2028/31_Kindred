@@ -37,7 +37,7 @@ export default function EmergencyRequestPage() {
                    {"*"}
                  </span>
                </label>
-               <PageField as="input" field="er-phone" spec={{"type": "tel", "id": "er-phone", "placeholder": "+91 98765 43210", "required": true}} />
+               <PageField as="input" field="er-phone" spec={{"type": "tel", "id": "er-phone", "placeholder": "9812345678", "required": true}} />
              </div>
            </div>
            <div {...ui.props("emergency-request-17", {"className": "field", "style": {"position": "relative"}})}>

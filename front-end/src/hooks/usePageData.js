@@ -7,7 +7,8 @@ export default function usePageData(path, session, api) {
   const [results, setResults] = useState({});
   const jobs = useMemo(() => pageRequests(path, session), [path, session]);
   const scope = collectionScope(path, session);
-  const refresh = useCallback(() => setRevision((n) => n + 1), []);
+  const refresh = useCallback(() => { setRevision(n=>n+1); try { localStorage.setItem('kindred_data_revision',`${Date.now()}:${Math.random()}`); } catch { /* Polling keeps other views current when storage is unavailable. */ } }, []);
+  useEffect(()=>{ const changed=event=>{if(event.key==='kindred_data_revision')setRevision(n=>n+1);};window.addEventListener('storage',changed);return()=>window.removeEventListener('storage',changed);},[]);
   const replaceCollection = (key, data) => setResults((previous) => ({ ...previous, [key]: { data, endpoint: jobs[key], error: null, revision, scope } }));
   useEffect(() => {
     const controller = new AbortController();
@@ -22,11 +23,11 @@ export default function usePageData(path, session, api) {
     return () => controller.abort();
   }, [jobs, api, revision, session, scope]);
   useEffect(() => {
-    if (!session || !Object.keys(jobs).length) return;
-    const visibleRefresh = () => { if (document.visibilityState === 'visible') refresh(); };
+    if (!Object.keys(jobs).length) return;
+    const visibleRefresh = () => { if (document.visibilityState === 'visible') setRevision(n=>n+1); };
     window.addEventListener('focus', visibleRefresh);
     document.addEventListener('visibilitychange', visibleRefresh);
-    const timer = window.setInterval(visibleRefresh, jobs.products || jobs.volunteers || jobs.volunteer ? 5000 : 15000);
+    const timer = window.setInterval(visibleRefresh, jobs.programs || jobs.products || jobs.volunteers || jobs.volunteer ? 5000 : 15000);
     return () => { window.clearInterval(timer); window.removeEventListener('focus', visibleRefresh); document.removeEventListener('visibilitychange', visibleRefresh); };
   }, [scope, session, jobs, refresh]);
   const collections = Object.fromEntries(Object.entries(jobs).map(([key, endpoint]) => {

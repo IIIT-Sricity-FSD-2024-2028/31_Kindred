@@ -6,6 +6,8 @@ import { PageField, PageModal, PageRegion } from '../runtime/PageElements.jsx';
 
 export default function ShopPage() {
   const ui = usePage();
+  const product = ui.data('products').find(item => item.id === ui.state.product?.id) || ui.state.product;
+  const exceedsStock = product && Number(ui.values['checkout-qty']) > product.quantity;
   return <>
    <main data-react-page="/shop.html">
    <div {...ui.props("shop-1", {"className": "main-content"})}>
@@ -98,13 +100,14 @@ export default function ShopPage() {
              <label {...ui.props("shop-35", {"style": {"fontSize": ".8rem", "fontWeight": "600", "color": "#475569", "marginBottom": "4px", "display": "block"}})}>
                {"Quantity"}
              </label>
-             <PageField as="input" field="checkout-qty" spec={{"type": "number", "id": "checkout-qty", "min": "1", "style": {"width": "100%", "padding": "9px 12px", "border": "1.5px solid #e2e8f0", "borderRadius": "8px", "fontFamily": "inherit", "fontSize": ".9rem", "outline": "none"}}} />
+             <PageField as="input" field="checkout-qty" spec={{"type": "number", "id": "checkout-qty", "min": "1", "max": product?.quantity, "aria-describedby": "checkout-stock", "aria-invalid": exceedsStock || undefined, "style": {"width": "100%", "padding": "9px 12px", "border": "1.5px solid #e2e8f0", "borderRadius": "8px", "fontFamily": "inherit", "fontSize": ".9rem", "outline": "none"}}} />
+           <p id="checkout-stock" role={exceedsStock ? "alert" : "status"}>{product?.quantity ?? 0} item(s) of stock available{exceedsStock ? ". Reduce the quantity to continue." : "."}</p>
            </div>
            <div {...ui.props("shop-37", {"className": "form-group", "style": {"margin": "0"}})}>
              <label {...ui.props("shop-38", {"style": {"fontSize": ".8rem", "fontWeight": "600", "color": "#475569", "marginBottom": "4px", "display": "block"}})}>
                {"Contact Phone *"}
              </label>
-             <PageField as="input" field="checkout-phone" spec={{"type": "text", "id": "checkout-phone", "placeholder": "+91 98765 43210", "style": {"width": "100%", "padding": "9px 12px", "border": "1.5px solid #e2e8f0", "borderRadius": "8px", "fontFamily": "inherit", "fontSize": ".9rem", "outline": "none"}}} />
+             <PageField as="input" field="checkout-phone" spec={{"type": "text", "id": "checkout-phone", "placeholder": "9812345678", "style": {"width": "100%", "padding": "9px 12px", "border": "1.5px solid #e2e8f0", "borderRadius": "8px", "fontFamily": "inherit", "fontSize": ".9rem", "outline": "none"}}} />
            </div>
          </div>
          <div {...ui.props("shop-40", {"className": "form-group", "style": {"marginBottom": "12px"}})}>

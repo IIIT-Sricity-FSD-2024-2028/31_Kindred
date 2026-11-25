@@ -18,13 +18,14 @@ export default function PageField({ as: Tag = 'input', field, spec, children }) 
   let value = ui.values[field] ?? '';
   const attrs = { ...spec, id: fieldId, ref: inputRef, 'aria-label': spec['aria-label'] || spec.placeholder || field.replaceAll('-',' '),
     disabled: spec.disabled || ui.state.busy,
-    'aria-invalid': error ? true : undefined,
+    'aria-invalid': error ? true : spec['aria-invalid'],
     'aria-describedby': [spec['aria-describedby'], error ? `${fieldId}-validation` : null].filter(Boolean).join(' ') || undefined,
     onChange: (event) => {
       if (type === 'file') return ui.selectFile(field, event.target.files?.[0]);
       let next = type === 'checkbox' ? event.target.checked : event.target.value;
       if (otp) next = String(next).replace(/\D/g,'').slice(-1);
       ui.change(field, next);
+      if(field==='res-org')ui.setValues({'rd-program':''});
       const placeholder = String(spec.placeholder || '').toLowerCase();
       let collection = { searchOrgs: 'organizations', searchUsers: 'users', searchInbox: 'inbox', volunteerSearch: 'volunteers', requestSearch: 'incoming', 'portal-search': 'programs', 'platform-admin-96': 'users', 'platform-admin-131': 'shop', 'platform-admin-162': 'inbox' }[field];
       if (!collection && /search/i.test(placeholder)) collection = /user/.test(placeholder) ? 'users' : /inbox|message|submission/.test(placeholder) ? 'inbox' : /product|artisan/.test(placeholder) ? 'catalog' : /volunteer/.test(placeholder) ? 'volunteers' : /program/.test(placeholder) ? 'programs' : 'organizations';
@@ -51,6 +52,10 @@ export default function PageField({ as: Tag = 'input', field, spec, children }) 
     };
   }
   delete attrs.radioValue;
+  if (Tag === 'input' && (type === 'tel' || /phone/i.test(field))) {
+    attrs.type = 'tel'; attrs.inputMode = 'numeric'; attrs.pattern = '[6-9][0-9]{9}';
+    attrs.maxLength = 10; attrs.minLength = 10; attrs.title = 'Enter 10 digits starting with 6, 7, 8, or 9';
+  }
   delete attrs.actionLabel;
   if (type === 'file') return <><Tag {...attrs} />{error && <span className="field-validation" id={`${fieldId}-validation`}>{error}</span>}</>;
   if (type === 'checkbox') { attrs.checked = Boolean(value); delete attrs.value; }
@@ -60,7 +65,7 @@ export default function PageField({ as: Tag = 'input', field, spec, children }) 
   if (field.endsWith('card-cvv')) { attrs.onFocus = () => ui.update({ cardFlipped: true }); attrs.onBlur = () => ui.update({ cardFlipped: false }); }
   if (otp) attrs.onPaste = (event) => { event.preventDefault(); ui.pasteOtp(event.clipboardData.getData('text').replace(/\D/g,'')); };
   if (Tag === 'select') {
-    const collection = { 'res-org': 'organizations', 'rd-program': 'programs', 'vt-prog': 'programs' }[field];
+    const collection = { 'vt-prog': 'programs' }[field];
     if (collection) children = <><option value="">{collection === 'programs' ? 'Select a program (optional)' : 'Select Organization'}</option>{ui.data(collection).filter((record) => field !== 'vt-prog' || ui.data('assignments').some((a) => a.programId === record.id && a.status === 'active')).map((record) => <option key={record.id} value={record.id}>{record.name}</option>)}</>;
     if (field === 'rd-category') children = <><option value="">— Select Category —</option>{['Clothing','Food','Medical Supplies','Electronics','Furniture','Books & Stationery','Blankets & Bedding','Hygiene Kits','Other'].map((category) => <option key={category}>{category}</option>)}</>;
     if (field === 'portal-skill-filter') children = <><option value="">All Skills</option>{[...new Set(ui.data('programs').flatMap((p) => p.requiredSkills || []))].sort().map((skill) => <option key={skill}>{skill}</option>)}</>;

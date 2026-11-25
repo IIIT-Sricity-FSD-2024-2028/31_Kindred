@@ -61,7 +61,7 @@ test('creating a program sends invitations and requests public listing without r
   await page.getByLabel('Start date',{exact:true}).fill('2027-01-01');
   await page.getByLabel('Shift starts').fill('09:00');await page.getByLabel('Shift ends').fill('12:00');
   await page.getByLabel('Reporting time').fill('08:45');await page.getByLabel('Invitation deadline').fill('2026-12-31');
-  await page.getByLabel('Shift days',{exact:true}).selectOption(['Monday']);
+  await page.getByRole('checkbox',{name:'Monday',exact:true}).check();
   await page.getByLabel('Meeting point',{exact:true}).fill('Community hall');await page.getByLabel('Coordinator name').fill('Anita');await page.getByLabel('Coordinator phone').fill('9812345678');
   await page.getByLabel('Work to be done, expected hours, equipment and support').fill('Teach for two hours; training and materials provided');
   await page.getByRole('searchbox',{ name:'Search volunteers to invite' }).fill('Teaching');

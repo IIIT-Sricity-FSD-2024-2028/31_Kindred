@@ -205,7 +205,7 @@ export default function BeneficiaryDashboardPage() {
                    {"*"}
                  </span>
                </label>
-               <PageField as="input" field="phone" spec={{"type": "tel", "className": "form-control", "name": "phone", "placeholder": "+91 98765 43210", "required": true}} />
+               <PageField as="input" field="phone" spec={{"type": "tel", "className": "form-control", "name": "phone", "placeholder": "9812345678", "required": true}} />
              </div>
              <div {...ui.props("beneficiary-dashboard-89", {"className": "form-group full"})}>
                <label {...ui.props("beneficiary-dashboard-90", {"className": "form-label"})}>
