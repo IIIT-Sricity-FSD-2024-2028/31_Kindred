@@ -1,5 +1,6 @@
 import { Link } from '../../routes/navigation.jsx';
 import { usePage } from '../runtime/PageContext.js';
+import ResourceDonationTarget from '../../components/pages/ResourceDonationTarget.jsx';
 import PageExtras from '../../components/pages/PageExtras.jsx';
 import { PageField, PageModal, PageTabs, PageRegion } from '../runtime/PageElements.jsx';
 
@@ -309,21 +310,8 @@ export default function DonorDashboardPage() {
                </div>
              </div>
            </div>
-           <div {...ui.props("donor-dashboard-110", {"className": "field"})}>
-             <label {...ui.props("donor-dashboard-111", {})}>
-               {"Allocate to Program "}
-               <span {...ui.props("donor-dashboard-112", {"style": {"fontWeight": "400", "fontSize": ".75rem", "color": "#64748b"}})}>
-                 {"(optional)"}
-               </span>
-             </label>
-              <label className="fulfillment-field">Recipient Organization<PageField as="select" field="res-org" spec={{id:'res-org',required:true,'aria-label':'Recipient Organization'}}><option value="">Select organization</option>{ui.data('organizations').map(o=><option key={o.id} value={o.id}>{o.name}</option>)}</PageField></label>
-              <label className="fulfillment-field">Resource Photo (optional)<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>ui.selectFile('resource-photo',e.target.files?.[0])}/></label>
-              <PageField as="select" field="rd-program" spec={{"id": "rd-program"}}>
-               <option {...ui.props("donor-dashboard-114", {"value": ""})}>
-                 {"— No specific program —"}
-               </option>
-             </PageField>
-           </div>
+           <ResourceDonationTarget />
+           <label className="fulfillment-field">Resource Photo (optional)<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>ui.selectFile('resource-photo',e.target.files?.[0])}/></label>
            <div {...ui.props("donor-dashboard-115", {"className": "modal-actions"})}>
              <button {...ui.props("donor-dashboard-116", {"type": "button", "className": "btn-modal-cancel", "actionLabel": "Cancel"}, {"click": {"name": "closeResourceDonationModal", "args": []}})}>
                {"Cancel"}

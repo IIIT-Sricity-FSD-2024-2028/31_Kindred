@@ -1,5 +1,5 @@
 import { FieldError, validateField, requireFields, validateEmail, validatePasswordFields, validatePhone } from '../../services/validation.js';
-import { readStored, writeStored } from '../../services/storage.js';
+import { writeStored } from '../../services/storage.js';
 import { safeNotificationLink } from '../../services/notifications.js';
 import { apiClient } from '../../services/auth.js';
 
@@ -38,9 +38,8 @@ export function authActions(ui) {
       await apiClient.post('/program-applications', { programId: program.id, programName: program.name, volunteerEmail: user.email, volunteerName: user.name, message: 'I would like to join this program as a volunteer.' });
       ui.toast({ type: 'success', title: 'Join request submitted', body: 'The organization admin can now review your request.' });
     }
-    const redirect = location.state?.from || params.get('redirect') || readStored('kindred_signup_destination');
     writeStored('kindred_signup_destination', null);
-    navigate(safeNotificationLink(redirect) || user.dashboard, { replace: true });
+    navigate(user.dashboard, { replace: true });
   }
   async function register(role, prefix) {
     requireFields(v, [`${prefix}-name`, `${prefix}-email`, `${prefix}-phone`, `${prefix}-pass`, `${prefix}-pass2`]);
@@ -137,7 +136,7 @@ export function authActions(ui) {
     update({ registrationProgress: { user, certificate, email: body.email, role, relatedComplete: true } });
     if (user.status === 'approved') {
       const signedIn = await ui.signIn({ email: body.email, password: body.password, role });
-      navigate(safeNotificationLink(new URLSearchParams(location?.search || '').get('redirect')) || signedIn.dashboard);
+      navigate(signedIn.dashboard);
     } else {
       writeStored('kindred_signup_destination', safeNotificationLink(new URLSearchParams(location?.search || '').get('redirect')));
       writeStored('kindred_registration', { name: user.name, email: user.email, role: user.role, verificationStatus: user.verificationStatus || 'not_required', approvalStatus: user.approvalStatus || user.status });
@@ -145,11 +144,18 @@ export function authActions(ui) {
     }
   }
   async function saveProfile() {
-    if (!['admin','superuser'].includes(session.role)) throw new Error('The current backend allows profile updates only for organization and platform administrators. Your changes have not been saved.');
+    if (!['admin','superuser','volunteer'].includes(session.role)) throw new Error('Profile updates are unavailable for this account.');
     requireFields(v, ['pf-name']);
     if (v['pf-name'].trim().length < 2) throw new FieldError('pf-name', 'Enter a name of at least 2 characters.');
     if (v['pf-phone']) validateField('pf-phone', validatePhone, v['pf-phone']);
-    const saved = await api.patch(`/users/${encodeURIComponent(session.id)}`, { name: v['pf-name'].trim(), phone: v['pf-phone'] || '', bio: v['pf-bio'] || '' });
+    const body = { name: v['pf-name'].trim(), phone: v['pf-phone'] || '', bio: v['pf-bio'] || '' };
+    if (session.role === 'volunteer') {
+      requireFields(v, ['pf-location','pf-dateOfBirth']);
+      const age = ageFromDateOfBirth(v['pf-dateOfBirth']);
+      if (age === null || age < 0 || age > 120) throw new FieldError('pf-dateOfBirth', 'Enter a valid date of birth.');
+      body.location = v['pf-location'].trim(); body.dateOfBirth = v['pf-dateOfBirth'];
+    }
+    const saved = await api.patch(session.role === 'volunteer' ? '/volunteers/me/profile' : `/users/${encodeURIComponent(session.id)}`, body);
     ui.updateSession(saved);
     ui.refresh(); ui.toast({ type: 'success', title: 'Profile saved' });
   }
@@ -177,11 +183,12 @@ export function authActions(ui) {
     submitDonor: () => register('donor', 'don'), submitBeneficiary: () => register('beneficiary', 'ben'),
     submitSeller: () => register('seller', 'seller'), submitVolunteerForm: () => register('volunteer', 'jv'),
     saveProfile, saveRecoveryQuestions,
-    resetForm: () => setValues({ 'pf-name': ui.savedProfile.name || session.name, 'pf-phone': ui.savedProfile.phone || '', 'pf-bio': ui.savedProfile.bio || session.bio || '' }),
+    resetForm: () => setValues({ 'pf-name': ui.savedProfile.name || session.name, 'pf-phone': ui.savedProfile.phone || '', 'pf-bio': ui.savedProfile.bio || session.bio || '', 'pf-location': ui.savedProfile.location || '', 'pf-dateOfBirth': ui.savedProfile.dateOfBirth || '' }),
     saveSkills: async () => {
-      if (!['admin','superuser'].includes(session.role)) throw new Error('The backend does not permit this role to update skills. Your changes have not been saved.');
-      const skills = Object.keys(v).filter((k) => k.startsWith('pf-skill-') && v[k]).map((k) => k.slice(9)).concat(state.customSkills);
-      await api.patch(`/users/${encodeURIComponent(session.id)}`, { skills }); ui.toast({ type: 'success', title: 'Skills saved' });
+      if (!['admin','superuser','volunteer'].includes(session.role)) throw new Error('Skill updates are unavailable for this account.');
+      const skillNames = {medical:'Medical Aid','first-aid':'First Aid'};
+      const skills = Object.keys(v).filter((k) => k.startsWith('pf-skill-') && v[k]).map((k) => skillNames[k.slice(9)] || k.slice(9).replaceAll('-', ' ').replace(/\b\w/g, letter=>letter.toUpperCase())).concat(state.customSkills);
+      await api.patch(session.role === 'volunteer' ? '/volunteers/me/profile' : `/users/${encodeURIComponent(session.id)}`, { skills }); ui.refresh(); ui.toast({ type: 'success', title: 'Skills saved' });
     },
     resetSkills: () => { update({ customSkills: ui.savedSkills.custom, customSkillsTouched: false, touchedFields: state.touchedFields.filter((field) => !field.startsWith('pf-skill-')) }); setValues(ui.savedSkills.checks); },
     changePassword: async () => {

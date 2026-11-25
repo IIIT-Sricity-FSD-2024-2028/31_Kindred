@@ -1,3 +1,4 @@
+import DeliveryOpportunities from './DeliveryOpportunities.jsx';
 import ProgramParticipation from './ProgramParticipation.jsx';
 import PurchaseWorkflows from './PurchaseWorkflows.jsx';
 import Modal from '../ui/Modal.jsx';
@@ -22,7 +23,7 @@ function WorkProofs() {
   }).map((record) => ({ collection, record })));
   return <section className="workflow-section" aria-label="Work proof verification">
     <h2>{admin ? 'Verify Volunteer Work & Deliveries' : 'Work & Delivery Proof'}</h2>
-    <p>Upload an image for each completed task, subtask, delivery or hour log. Completion is recorded after the responsible organization admin verifies it.</p>
+    <p>Upload an image for each completed task, subtask, delivery or hour log. The seller verifies shop deliveries and replacements; the organization admin verifies resource and program work.</p>
     {ui.collections.proofs?.error && <p role="alert">{ui.collections.proofs.error} <button onClick={ui.refresh}>Retry</button></p>}
     {!admin && work.map(({ collection, record }) => {
       const proof = [...proofs].reverse().find((p) => p.collection === collection && p.recordId === record.id);
@@ -60,13 +61,13 @@ export default function WorkflowPanels() {
   const certificate = ui.state.donorCertificate;
   return <>
     {(dashboard || orgAdminArea || /resources|incoming/.test(ui.path)) && <FulfillmentPanel />}
-    {(admin || dashboard && session.role !== 'volunteer') && <ProgramParticipation />}
-    {ui.path === '/volunteer-portal.html' && <ProgramParticipation />}
-    <PurchaseWorkflows />
+    {(ui.path === '/org-admin-programs.html' || ui.path === '/org-admin.html' && ui.activeTab === 'programs' || !admin && dashboard && session.role !== 'volunteer') && <ProgramParticipation />}
+    {ui.path === '/volunteer-portal.html' && <><DeliveryOpportunities /><ProgramParticipation /></>}
+    {(ui.path === '/shop.html' || ui.path === '/resources.html' || ui.path === '/org-admin.html' && ui.activeTab === 'resources' || ui.path === '/platform-admin.html' && ui.activeTab === 'shop' || /dashboard/.test(ui.path)) && <PurchaseWorkflows />}
     {(dashboard || orgAdminArea) && !platform && <WorkProofs />}
     {dashboard && !platform && <Donations />}
     {platform && ui.path === '/platform-admin.html' && ui.activeTab === 'requests' && <ProgramListingReviews />}
-    <Modal open={ui.state.modal === 'workProof'} title="Upload Completion Proof" busy={ui.state.busy} onClose={() => ui.update({ modal: null })}><form onSubmit={(e) => { e.preventDefault(); ui.action('submitWorkProof'); }}><p>Upload a PNG, JPG or WebP image (up to 5 MB). The organization admin will review it.</p><label>Proof Image<input type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => ui.selectFile('work-proof',e.target.files?.[0])} /></label>{ui.state.files['work-proof'] && <p>{ui.state.files['work-proof'].name}</p>}{ui.state.error && <p role="alert">{ui.state.error}</p>}<button className="btn-modal-save" disabled={ui.state.busy} type="submit">Submit Proof for Review</button></form></Modal>
+    <Modal open={ui.state.modal === 'workProof'} title="Upload Completion Proof" busy={ui.state.busy} onClose={() => ui.update({ modal: null })}><form onSubmit={(e) => { e.preventDefault(); ui.action('submitWorkProof'); }}><p>Upload a PNG, JPG or WebP image (up to 5 MB). The responsible seller or organization admin will review it.</p><label>Proof Image<input type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => ui.selectFile('work-proof',e.target.files?.[0])} /></label>{ui.state.files['work-proof'] && <p>{ui.state.files['work-proof'].name}</p>}{ui.state.error && <p role="alert">{ui.state.error}</p>}<button className="btn-modal-save" disabled={ui.state.busy} type="submit">Submit Proof for Review</button></form></Modal>
     <Modal open={ui.state.modal === 'proofReview'} title="Organization Proof Review" onClose={() => ui.update({ modal: null })}><p>Completion requires image proof. Review pending proof cards in “Verify Volunteer Work & Deliveries” below.</p><button onClick={() => ui.update({ modal: null })}>Close</button></Modal>
     <Modal open={ui.state.modal === 'donorCertificate'} title="Donor Thank-You Certificate" className="donor-certificate-dialog" onClose={() => ui.update({ modal: null })}>{certificate && <><div className="donor-thankyou-certificate"><h2>{certificate.org}</h2><p>CERTIFICATE OF APPRECIATION</p><h1>Thank you, {certificate.donor}</h1><p>For your generous contribution of <strong>{money(certificate.amount)}</strong> to {certificate.org}.</p><p>Issued by the Organization Administrator</p><p>{certificate.certificateNumber} · {certificate.certificateIssuedAt?.slice(0,10)}</p><small>Card demo contribution · This is an appreciation certificate, not a tax receipt.</small></div><button className="btn-modal-save" onClick={() => window.print()}>Print / Save PDF</button></>}</Modal>
   </>;

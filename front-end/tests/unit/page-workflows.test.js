@@ -1,12 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateCard, validatePasswords, validatePhone } from '../../src/services/validation.js';
+import { validateCard, validatePasswords, validatePhone, validateEmail } from '../../src/services/validation.js';
 import { pageRequests, filterRecords } from '../../src/services/pageData.js';
 import { executeConfirmation } from '../../src/services/workflow.js';
 
-test('phone validation accepts country/leading-zero prefixes and rejects original dummy patterns', () => {
-  for (const number of ['9812345678','+91 98123 45678','09812345678']) assert.doesNotThrow(() => validatePhone(number));
-  for (const number of ['123','5123456789','9999999999','9876543210','9898989898']) assert.throws(() => validatePhone(number));
+test('phone validation requires exactly ten digits starting with 6, 7, 8 or 9', () => {
+  for (const number of ['9812345678','6123456789','7123456789','8123456789','9999999999']) assert.doesNotThrow(() => validatePhone(number));
+  for (const number of ['123','5123456789','+91 98123 45678','09812345678','98123 45678','98abc12345678']) assert.throws(() => validatePhone(number));
+});
+
+test('email validation accepts common providers and rejects malformed addresses',()=>{
+  for(const email of ['person@gmail.com','person+tag@outlook.com','a.b@community.org'])assert.doesNotThrow(()=>validateEmail(email));
+  for(const email of ['bad','person@@gmail.com','.person@gmail.com','person..name@gmail.com','a b@outlook.com','person@-gmail.com'])assert.throws(()=>validateEmail(email));
 });
 test('registration passwords retain the original strength and matching requirements', () => {
   assert.doesNotThrow(() => validatePasswords('Valid@123','Valid@123'));

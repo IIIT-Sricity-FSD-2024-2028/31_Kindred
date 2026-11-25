@@ -197,7 +197,7 @@ export default function Page5ConnectedNotificationPage() {
                    {"*"}
                  </span>
                </label>
-               <PageField as="input" field="phone" spec={{"type": "tel", "className": "form-control", "name": "phone", "placeholder": "+91 98765 43210", "required": true}} />
+               <PageField as="input" field="phone" spec={{"type": "tel", "className": "form-control", "name": "phone", "placeholder": "9812345678", "required": true}} />
              </div>
              <div {...ui.props("page5-connected-notification-87", {"className": "form-group full"})}>
                <label {...ui.props("page5-connected-notification-88", {"className": "form-label"})}>

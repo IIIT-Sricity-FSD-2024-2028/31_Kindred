@@ -1,5 +1,6 @@
 import { Link } from '../../routes/navigation.jsx';
 import { usePage } from '../runtime/PageContext.js';
+import VolunteerPresence from '../../components/pages/VolunteerPresence.jsx';
 import PageExtras from '../../components/pages/PageExtras.jsx';
 import { PageField, PageRegion } from '../runtime/PageElements.jsx';
 
@@ -72,7 +73,7 @@ export default function ProfilePage() {
              <label {...ui.props("profile-24", {})}>
                {"Phone Number"}
              </label>
-             <PageField as="input" field="pf-phone" spec={{"type": "tel", "className": "profile-input", "id": "pf-phone", "placeholder": "+91 98765 43210"}} />
+             <PageField as="input" field="pf-phone" spec={{"type": "tel", "className": "profile-input", "id": "pf-phone", "placeholder": "9812345678"}} />
            </div>
            <div {...ui.props("profile-26", {"className": "profile-field"})}>
              <label {...ui.props("profile-27", {})}>
@@ -102,6 +103,10 @@ export default function ProfilePage() {
            <PageField as="textarea" field="pf-bio" spec={{"className": "profile-textarea", "id": "pf-bio", "placeholder": "Tell us a little about yourself…"}}>
            </PageField>
          </div>
+         {ui.session?.role === 'volunteer' && <><div className="profile-fields-grid">
+           <div className="profile-field"><label htmlFor="pf-location">Home location</label><PageField field="pf-location" spec={{className:'profile-input',id:'pf-location','aria-label':'Home location',placeholder:'City / area where you live',maxLength:200}} /></div>
+           <div className="profile-field"><label htmlFor="pf-dateOfBirth">Date of birth</label><PageField field="pf-dateOfBirth" spec={{className:'profile-input',id:'pf-dateOfBirth','aria-label':'Date of birth',type:'date'}} /><p className="field-hint">Age is calculated from your date of birth.</p></div>
+         </div><p className="field-hint">Verification status: <strong>{ui.savedProfile.verificationStatus?.replaceAll('_',' ') || 'Not recorded'}</strong>. Verification is recorded during registration and cannot be edited here.</p></>}
          <div {...ui.props("profile-37", {"className": "profile-actions"})}>
            <button {...ui.props("saveBtn", {"type": "submit", "className": "btn-profile-save", "id": "saveBtn", "actionLabel": "💾 Save Changes"})}>
              {ui.content("saveBtn", <>
@@ -233,6 +238,7 @@ export default function ProfilePage() {
          </>)}
        </form>
      </div>
+     {ui.session?.role === 'volunteer' && <VolunteerPresence />}
    </div>
      <PageExtras />
    </main>

@@ -134,11 +134,13 @@ test('profile Cancel restores server skills and custom tags without claiming an 
 
 test('resource donation rows focus invalid quantities and reset after a successful request', async ({page}) => {
   let writes = 0;
+  await page.route('**/resource-donations/options',route=>route.fulfill({json:{success:true,data:{organizations:[{id:'org-test',name:'Test Organization',neededResources:'Rice: 10 kg'}],programs:[]}}}));
   await page.route('**/resource-donations', (route) => {
     if (route.request().method() !== 'POST') return route.continue();
     writes++; return route.fulfill({json:{success:true,data:{id:'phase4-mocked-resource'}}});
   });
   await as(page,'donor','/donor-dashboard.html#resources'); await page.getByRole('button',{name:/Donate Resources/}).click();
+  await page.getByRole('combobox',{name:'Recipient Organization',exact:true}).selectOption('org-test');
   await page.locator('#rd-phone').fill('9812345678'); await page.locator('#rd-category').selectOption('Food');
   await page.getByRole('textbox',{name:'Item name',exact:true}).fill('Rice'); await page.getByRole('spinbutton',{name:'Quantity',exact:true}).fill('1.5');
   await page.locator('#rd-desc').fill('Phase 4 test'); await page.locator('#rd-address').fill('Test address'); await page.locator('#rd-date').fill('2099-12-12'); await page.locator('#rd-timeslot').selectOption('Morning (9AM-12PM)');

@@ -1,0 +1,52 @@
+[data-react-page="/volunteer-dashboard.html"] .volunteer-presence,
+[data-react-page="/volunteer-dashboard.html"] .volunteer-progress-section {
+  box-sizing:border-box; width:100%; min-width:0; margin:24px 0; padding:24px;
+  border:1px solid #dce5ee; border-radius:16px; background:#fff; box-shadow:0 4px 18px #173b5d06;
+}
+[data-react-page="/volunteer-dashboard.html"] .volunteer-presence-heading,
+[data-react-page="/volunteer-dashboard.html"] .volunteer-progress-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-presence h2,
+[data-react-page="/volunteer-dashboard.html"] .volunteer-progress-heading h2 { margin:0 0 6px; font-size:1.2rem; line-height:1.4; color:#173b5d; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-presence p,
+[data-react-page="/volunteer-dashboard.html"] .volunteer-progress-section p { font-size:.875rem; line-height:1.65; margin:6px 0 12px; overflow-wrap:anywhere; }
+[data-react-page="/volunteer-dashboard.html"] .presence-toggle { flex:none; width:auto; min-height:44px; padding:10px 14px; font-size:.84rem; white-space:nowrap; }
+[data-react-page="/volunteer-dashboard.html"] .presence-toggle-track { box-sizing:border-box; display:block; flex:0 0 38px; width:38px; height:24px; padding:4px; }
+[data-react-page="/volunteer-dashboard.html"] .presence-toggle-track span { width:16px; height:16px; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-location-form { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:end; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-location-form > div { min-width:0; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-presence input:not([type=checkbox]) { box-sizing:border-box; width:100%; min-width:0; min-height:44px; font-size:.9rem; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-presence .btn-primary-sm { display:inline-flex; align-items:center; justify-content:center; width:auto; min-height:44px; padding:10px 16px; border:1px solid #0f766e; border-radius:9px; background:#0f766e; color:#fff; font-family:inherit; font-size:.86rem; font-weight:600; line-height:1.4; cursor:pointer; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-presence button:disabled { opacity:.55; cursor:default; }
+[data-react-page="/volunteer-dashboard.html"] .presence-preferences { margin:18px 0 0; padding:20px; background:#f8fafc; }
+[data-react-page="/volunteer-dashboard.html"] .presence-preferences h3 { font-size:1rem; color:#274563; }
+[data-react-page="/volunteer-dashboard.html"] .presence-preferences > .workflow-field-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+[data-react-page="/volunteer-dashboard.html"] .presence-preferences > .workflow-field-grid > label:last-child { grid-column:1/-1; }
+[data-react-page="/volunteer-dashboard.html"] .presence-preferences label { margin:6px 0; font-size:.85rem; line-height:1.5; }
+[data-react-page="/volunteer-dashboard.html"] .presence-weekdays { min-width:0; margin:16px 0 12px; padding:12px 14px; border:1px solid #dce5ee; border-radius:10px; background:#fff; }
+[data-react-page="/volunteer-dashboard.html"] .presence-weekdays legend { padding:0 6px; font-size:.85rem; font-weight:600; color:#334155; }
+[data-react-page="/volunteer-dashboard.html"] .presence-weekdays .workflow-field-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px 12px; }
+[data-react-page="/volunteer-dashboard.html"] .presence-weekdays label,
+[data-react-page="/volunteer-dashboard.html"] .presence-preferences > label { display:flex; align-items:center; gap:8px; font-weight:500; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-presence input[type=checkbox] { width:17px; height:17px; flex:0 0 17px; margin:0; accent-color:#0f766e; }
+[data-react-page="/volunteer-dashboard.html"] .presence-preferences > button { margin-top:14px; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-progress-heading { align-items:center; margin-bottom:18px; padding-bottom:16px; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-progress-heading p { max-width:340px; color:#64748b; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-progress-subheading { margin:22px 0 12px; font-size:1rem; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-program-list { display:block; }
+[data-react-page="/volunteer-dashboard.html"] .participation-embedded { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:14px; padding:0; margin:0; border:0; box-shadow:none; background:transparent; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-task-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-progress-section .page-record-card { min-width:0; margin:0; padding:18px; border:1px solid #dce5ee; border-radius:12px; box-shadow:none; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-progress-section .page-record-card h3,
+[data-react-page="/volunteer-dashboard.html"] .volunteer-progress-section .page-record-card h4 { margin:0 0 10px; font-size:1rem; line-height:1.5; color:#173b5d; overflow-wrap:anywhere; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-progress-section progress { display:block; width:100%; height:9px; margin:14px 0; accent-color:#0f766e; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-progress-section .page-record-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+[data-react-page="/volunteer-dashboard.html"] .volunteer-progress-section button.action-btn { width:auto; height:auto; min-height:40px; max-width:100%; padding:9px 12px; font-size:.82rem; line-height:1.45; white-space:normal; }
+@media(max-width:700px) {
+ [data-react-page="/volunteer-dashboard.html"] .volunteer-presence,[data-react-page="/volunteer-dashboard.html"] .volunteer-progress-section { padding:16px; margin:18px 0; }
+ [data-react-page="/volunteer-dashboard.html"] .volunteer-presence-heading,[data-react-page="/volunteer-dashboard.html"] .volunteer-progress-heading { flex-direction:column; align-items:flex-start; gap:12px; }
+ [data-react-page="/volunteer-dashboard.html"] .volunteer-location-form,[data-react-page="/volunteer-dashboard.html"] .presence-preferences > .workflow-field-grid,[data-react-page="/volunteer-dashboard.html"] .participation-embedded,[data-react-page="/volunteer-dashboard.html"] .volunteer-task-list { grid-template-columns:minmax(0,1fr); }
+ [data-react-page="/volunteer-dashboard.html"] .presence-preferences { padding:14px; }
+ [data-react-page="/volunteer-dashboard.html"] .presence-weekdays .workflow-field-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ [data-react-page="/volunteer-dashboard.html"] .volunteer-location-form button,[data-react-page="/volunteer-dashboard.html"] .volunteer-presence .presence-preferences > button { width:100%; }
+ [data-react-page="/volunteer-dashboard.html"] .volunteer-progress-section .page-record-actions button { flex:1 1 140px; }
+}

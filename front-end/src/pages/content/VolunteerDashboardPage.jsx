@@ -1,3 +1,4 @@
+import '../../styles/volunteer-dashboard.css';
 import { Link } from '../../routes/navigation.jsx';
 import { usePage } from '../runtime/PageContext.js';
 import PageExtras from '../../components/pages/PageExtras.jsx';

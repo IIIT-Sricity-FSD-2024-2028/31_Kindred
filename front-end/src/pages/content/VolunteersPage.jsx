@@ -139,6 +139,11 @@ export default function VolunteersPage() {
          </table>
        </div>
      </div>
+     <section className="section-card" aria-label="Volunteer applications">
+       <h2>Volunteer Applications</h2>
+       <p>Review portal applicants and their profiles. Approved volunteers confirm attendance before work is assigned.</p>
+       <PageRegion name="programApplicationsList" />
+     </section>
      <PageExtras />
    </main>
   </>;

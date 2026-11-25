@@ -237,6 +237,11 @@ export default function OrgAdminPage() {
            <PageRegion name="taskApprovalList" />
          </div>
        </div>
+       <section className="section-card" aria-label="Volunteer applications">
+         <h2>Volunteer Applications</h2>
+         <p>Review portal applicants, then approve or reject their request. Applicants receive a notification.</p>
+         <PageRegion name="programApplicationsList" />
+       </section>
        </>)}
      </div>
      <div {...ui.props("org-panel-programs", {"id": "org-panel-programs", "className": "org-tab-panel", "style": {"display": "none"}})}>
@@ -262,7 +267,7 @@ export default function OrgAdminPage() {
        <div {...ui.props("org-admin-91", {"className": "section-card", "style": {"marginTop": "24px"}})}>
          <div {...ui.props("org-admin-92", {"className": "section-card-header"})}>
            <h2 {...ui.props("org-admin-93", {})}>
-             {"🙋 Pending Volunteer Applications"}
+             {"🙋 Volunteer Applications"}
            </h2>
          </div>
          <div {...ui.props("programApplicationsList", {"id": "programApplicationsList"})}>
