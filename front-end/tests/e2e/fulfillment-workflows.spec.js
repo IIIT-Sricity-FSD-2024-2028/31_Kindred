@@ -1,3 +1,4 @@
+import { API_BASE } from '../apiBase.js';
 /* global window */
 import { test,expect } from '@playwright/test';
 const org={id:'org_001',name:'HopeConnect',status:'active',listingStatus:'approved',bankAccountName:'HopeConnect',bankAccountNumber:'12345678901',bankIfsc:'SBIN0001234'};
@@ -6,7 +7,7 @@ const stock={id:'donation:0',donationId:'donation',orgName:org.name,name:'Blanke
 const delivery={id:'delivery',kind:'resource',sourceId:resourceRequest.id,title:'Deliver Blankets (3)',orgName:org.name,mode:'broadcast',status:'awaiting_acceptance',pickupAddress:'Details shared after acceptance',address:'Details shared after acceptance',contact:'',history:[]};
 async function setup(page,role,overrides={}) {
  const data={organizations:[org],resourceRequests:[structuredClone(resourceRequest)],inventory:[structuredClone(stock)],deliveries:[],proofs:[],orders:[],deliveryVolunteers:[{id:'vol',name:'Priya',email:'volunteer@kindred.org'}],...overrides},writes=[];
- await page.route('http://localhost:3000/**',async route=>{
+ await page.route(`${API_BASE}/**`,async route=>{
   const req=route.request(),url=new URL(req.url()),parts=url.pathname.split('/');
   if(req.method()!=='GET') {
    const body=req.postDataJSON();writes.push({path:url.pathname,body});
@@ -95,7 +96,7 @@ test('resource inventory has styled summary cards and fits mobile screens',async
  const panel=page.getByRole('region',{name:'Resources and deliveries',exact:true});
  await expect(panel.locator('.fulfillment-summary')).toBeVisible();
  await expect(panel.locator('.fulfillment-metric')).toHaveCount(4);
- await expect(panel.getByRole('button',{name:'Respond to Request',exact:true})).toHaveCSS('background-color','rgb(15, 118, 110)');
+ await expect(panel.getByRole('button',{name:'Respond to Request',exact:true})).toHaveCSS('background-color','rgb(8, 127, 117)');
  await panel.screenshot({path:testInfo.outputPath('resource-panel-desktop.png')});
  await page.setViewportSize({width:390,height:844});
  const bounds=await panel.boundingBox();

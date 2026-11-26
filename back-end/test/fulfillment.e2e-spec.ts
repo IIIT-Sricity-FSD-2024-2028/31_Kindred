@@ -1,10 +1,13 @@
+import { futureDate, readyVolunteer } from './workflow-fixtures';
+import { FulfillmentService } from '../src/modules/fulfillment/service';
+import { ResourceDonationsService } from '../src/modules/resource-donations/service';
 import { Test } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { ResponseInterceptor } from '../src/common/interceptors/response.interceptor';
 import { ProofStore } from '../src/modules/proofs/store';
-import { enableLocalState } from '../src/common/local-state';
+import { enableDatabaseRepositories } from '../src/common/repositories/database';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -19,7 +22,7 @@ describe('Resource inventory, beneficiary requests and shared delivery acceptanc
  const seller={role:'seller','user-email':'seller@kindred.org'};
  const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jN1sAAAAASUVORK5CYII=','base64');
  const data=(response:any)=>response.body.data;
- const newRequest=(quantity=3)=>request(app.getHttpServer()).post('/fulfillment/requests').set(beneficiary).send({orgName:'HopeConnect',resource:'Blankets',quantity,reason:'Winter supplies',address:'Recipient address, Pune',phone:'9812345678',name:'Beneficiary'});
+ const newRequest=(quantity=3)=>request(app.getHttpServer()).post('/fulfillment/requests').set(beneficiary).send({orgName:'HopeConnect',resource:app.get(ResourceDonationsService).findById('rdon_002').items[0].name,unit:app.get(ResourceDonationsService).findById('rdon_002').items[0].unit||'unit',quantity,reason:'Winter supplies',address:'Recipient address, Pune',phone:'9812345678',name:'Beneficiary'});
  beforeEach(async()=>{
   const module=await Test.createTestingModule({imports:[AppModule]}).compile();app=module.createNestApplication();
   app.useGlobalPipes(new ValidationPipe({whitelist:true,forbidNonWhitelisted:true,transform:true}));app.useGlobalInterceptors(new ResponseInterceptor());await app.init();
@@ -27,8 +30,17 @@ describe('Resource inventory, beneficiary requests and shared delivery acceptanc
  afterEach(async()=>{await app.close();});
  async function receiveStock(){return data(await request(app.getHttpServer()).post('/fulfillment/receipts/rdon_002').set(admin).send({items:[{index:0,quantity:4},{index:1,quantity:0}]}).expect(201))[0];}
  function approve(id:string,stockId:string,quantity=3){return request(app.getHttpServer()).patch(`/fulfillment/requests/${id}/respond`).set(admin).send({decision:'approve',message:'Supplies reserved for you',allocations:[{stockId,quantity}]});}
- async function offer(kind:string,sourceId:string,mode='broadcast',manager=admin){return data(await request(app.getHttpServer()).post('/fulfillment/deliveries').set(manager).send({kind,sourceId,mode,volunteerEmail:mode==='direct'?volunteer['user-email']:undefined}).expect(201));}
- function act(id:string,action:string,actor=volunteer,reason?:string){return request(app.getHttpServer()).patch(`/fulfillment/deliveries/${id}/action`).set(actor).send({action,reason});}
+ async function offer(kind:string,sourceId:string,mode='broadcast',manager=admin){
+  readyVolunteer(app,volunteer['user-email']);readyVolunteer(app,secondVolunteer['user-email']);
+  if(kind==='collection'){mode='direct';app.get(ResourceDonationsService).update(sourceId,{pickupDate:futureDate()});}
+  if(kind==='order')mode='broadcast';
+  return data(await request(app.getHttpServer()).post('/fulfillment/deliveries').set(manager).send({kind,sourceId,mode,volunteerEmail:mode==='direct'?volunteer['user-email']:undefined,scheduledDate:futureDate(),shiftStart:'12:00',shiftEnd:'14:00',pickupArea:'Pune',destinationArea:'Pune',pickupAddress:'Seller collection point, Pune',collectionAddress:'Organization collection point, Pune'}).expect(201));
+ }
+ function act(id:string,action:string,actor=volunteer,reason?:string){
+  let reviewedVersion:string|undefined;
+  if(action==='accept')try{reviewedVersion=app.get(FulfillmentService).brief(id,{role:actor.role,email:actor['user-email'],org:''}).reviewedVersion;}catch{/* Assert the HTTP authorization failure below. */}
+  return request(app.getHttpServer()).patch(`/fulfillment/deliveries/${id}/action`).set(actor).send({action,reason,reviewedVersion,confirmAvailability:true,confirmConflict:true});
+ }
  async function upload(id:string){return data(await request(app.getHttpServer()).post('/proofs').set(volunteer).field('collection','deliveries').field('recordId',id).attach('file',png,'proof.png').expect(201));}
 
  it('reserves stock atomically, prevents duplicate receipts and isolates organizations and beneficiaries',async()=>{
@@ -66,7 +78,7 @@ describe('Resource inventory, beneficiary requests and shared delivery acceptanc
   const replacement=data(await request(server).post('/proofs').set(winner).field('collection','deliveries').field('recordId',delivery.id).attach('file',png,'proof.png').expect(201));
   await request(server).patch(`/proofs/${replacement.id}/approve`).set(admin).send({}).expect(200);
   expect(data(await request(server).get('/fulfillment/inventory').set(admin))[0]).toMatchObject({available:1,reserved:0,distributed:3});
-  expect(data(await request(server).get('/fulfillment/requests').set(beneficiary))[0].status).toBe('delivered');
+  expect(data(await request(server).get('/fulfillment/requests').set(beneficiary))[0].status).toBe('partially_delivered');
   await request(server).patch(`/fulfillment/requests/${r.id}/receipt`).set(beneficiary).send({message:'Received safely'}).expect(200);
  });
 
@@ -79,7 +91,7 @@ describe('Resource inventory, beneficiary requests and shared delivery acceptanc
   const d=await offer('resource',r.id,'direct');
   await act(d.id,'accept',secondVolunteer).expect(403);await act(d.id,'accept').expect(200);
   await act(d.id,'withdraw',volunteer,'Cannot attend').expect(200);
-  await request(server).patch(`/fulfillment/deliveries/${d.id}/offer`).set(admin).send({kind:'resource',sourceId:r.id,mode:'broadcast'}).expect(200);
+  await request(server).patch(`/fulfillment/deliveries/${d.id}/offer`).set(admin).send({kind:'resource',sourceId:r.id,mode:'broadcast',scheduledDate:futureDate(),shiftStart:'12:00',shiftEnd:'14:00',pickupArea:'Pune',destinationArea:'Pune'}).expect(200);
   await act(d.id,'accept').expect(200);await act(d.id,'picked_up').expect(200);await act(d.id,'failed',volunteer,'Recipient unavailable').expect(200);
   await act(d.id,'cancel',admin,'Cancel now').expect(400);
   await act(d.id,'return',admin,'All reserved items returned to warehouse').expect(200);
@@ -89,10 +101,10 @@ describe('Resource inventory, beneficiary requests and shared delivery acceptanc
 
  it('uses the same acceptance flow for shop orders with seller verification and legacy-route protection',async()=>{
   const server=app.getHttpServer();
-  const order=data(await request(server).post('/orders').send({productId:'prod_001',quantity:1,buyerName:'Buyer',buyerEmail:'buyer@test.org',buyerPhone:'9812345678',address:'Buyer address'}).expect(201));
+  const order=data(await request(server).post('/orders').send({productId:'prod_001',quantity:1,buyerName:'Buyer',buyerEmail:'buyer@test.org',buyerPhone:'9812345678',address:'Buyer address, Pune'}).expect(201));
   const d=await offer('order',order.id,'direct',seller);
-  await request(server).patch(`/orders/${order.id}/assign-volunteer`).set(admin).send({volunteerEmail:secondVolunteer['user-email'],volunteerName:'Amit'}).expect(409);
-  await act(d.id,'accept',secondVolunteer).expect(403);await act(d.id,'accept').expect(200);
+  await request(server).patch(`/orders/${order.id}/assign-volunteer`).set(admin).send({volunteerEmail:secondVolunteer['user-email'],volunteerName:'Amit'}).expect(403);
+  await act(d.id,'accept').expect(200);await act(d.id,'accept',secondVolunteer).expect(409);
   await request(server).patch(`/orders/${order.id}/delivery-status`).set(volunteer).send({status:'picked_up'}).expect(409);
   await act(d.id,'picked_up').expect(200);await act(d.id,'in_transit').expect(200);
   const proof=await upload(d.id);
@@ -118,21 +130,22 @@ describe('Resource inventory, beneficiary requests and shared delivery acceptanc
 
  it('preserves reservations, account records and pending delivery offers across a local server restart',async()=>{
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),'kindred-fulfillment-'));
-  const file=path.join(directory,'state.json');
+  const file=path.join(directory,'state.sqlite');
   try {
    await app.close();
    const initialModule=await Test.createTestingModule({imports:[AppModule]}).compile();app=initialModule.createNestApplication();
-   enableLocalState(app,file);
-   app.useGlobalPipes(new ValidationPipe({whitelist:true,forbidNonWhitelisted:true,transform:true}));app.useGlobalInterceptors(new ResponseInterceptor());await app.init();
+   enableDatabaseRepositories(app,file);
+   app.useGlobalPipes(new ValidationPipe({whitelist:true,forbidNonWhitelisted:true,transform:true}));app.useGlobalInterceptors(new ResponseInterceptor());await app.listen(0,'127.0.0.1');
    const stock=await receiveStock(),r=data(await newRequest().expect(201));await approve(r.id,stock.id).expect(200);await offer('resource',r.id);
    expect(fs.readFileSync(file).includes(Buffer.from('Winter supplies'))).toBe(false);
-   expect(fs.readFileSync(file).subarray(0,4).toString()).toBe('KND1');
+   expect(fs.readFileSync(file).subarray(0,15).toString()).toBe('SQLite format 3');
    await app.close();
    const module=await Test.createTestingModule({imports:[AppModule]}).compile();app=module.createNestApplication();
-   enableLocalState(app,file);app.useGlobalInterceptors(new ResponseInterceptor());await app.init();
+   enableDatabaseRepositories(app,file);app.useGlobalInterceptors(new ResponseInterceptor());await app.listen(0,'127.0.0.1');
    expect(data(await request(app.getHttpServer()).get('/fulfillment/inventory').set(admin))[0]).toMatchObject({available:1,reserved:3});
    expect(data(await request(app.getHttpServer()).get('/fulfillment/deliveries').set(volunteer))[0].status).toBe('awaiting_acceptance');
-   expect(data(await request(app.getHttpServer()).get('/users').set({role:'superuser'})).length).toBeGreaterThan(0);
-  } finally {if(!path.resolve(directory).startsWith(path.resolve(os.tmpdir())+path.sep))throw new Error('Unexpected test directory');fs.rmSync(directory,{recursive:true,force:true});}
+   const signedIn=data(await request(app.getHttpServer()).post('/users/signin').send({email:'super@kindred.org',password:'Super@123',role:'superuser'}).expect(201));
+   expect(data(await request(app.getHttpServer()).get('/users').set({role:'superuser',authorization:`Bearer ${signedIn.authToken}`})).length).toBeGreaterThan(0);
+  } finally {await app.close();if(!path.resolve(directory).startsWith(path.resolve(os.tmpdir())+path.sep))throw new Error('Unexpected test directory');fs.rmSync(directory,{recursive:true,force:true});}
  });
 });

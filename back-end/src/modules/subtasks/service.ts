@@ -1,7 +1,7 @@
 import { ProofStore } from '../proofs/store';
 import { Inject } from '@nestjs/common';
 import { ProgramAssignmentsService } from '../program-assignments/service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Subtask } from './entities/subtask.entity';
 import { CreateSubtaskDto } from './dto/create-subtask.dto';
 import { UpdateSubtaskDto } from './dto/update-subtask.dto';
@@ -18,6 +18,11 @@ export class SubtasksService {
     { id: 'st_005', programId: 'prog_002', title: 'Community awareness campaign', description: 'Conduct water hygiene workshops in 15 villages', assignedToEmail: 'deepak.kumar@email.com', assignedToName: 'Deepak Kumar', status: 'in-progress', progress: 55, createdAt: '2024-02-12' },
     { id: 'st_006', programId: 'prog_002', title: 'Install purification units', description: 'Install 50 water purification systems', assignedToEmail: 'deepak.kumar@email.com', assignedToName: 'Deepak Kumar', status: 'pending', progress: 10, createdAt: '2024-03-01' },
   ];
+  private listeners=new Set<(id:string)=>void>();
+  onChange(listener:(id:string)=>void){this.listeners.add(listener);}
+  private changed(id:string){this.listeners.forEach(listener=>listener(id));}
+  cancelForHandover(id:string,reason:string){const t=this.subtasks.find(t=>t.id===id);if(t&&t.status!=='completed'){t.status='cancelled';t.description+=` Handover: ${reason}`;this.changed(t.programId);}}
+  transfer(id:string,email:string,name:string,reason:string){const t=this.subtasks.find(t=>t.id===id);if(!t)throw new NotFoundException();this.assignments.assertActive(t.programId,email);t.description+=` Handover from ${t.assignedToName}, ${t.progress}% already reported: ${reason}`;t.assignedToEmail=email;t.assignedToName=name;this.changed(t.programId);}
   private counter = 100;
 
   private generateId(): string {
@@ -51,12 +56,12 @@ export class SubtasksService {
   getProgramProgress(programId: string): number {
     const subs = this.findByProgram(programId);
     if (subs.length === 0) return 0;
-    const total = subs.reduce((sum, s) => sum + (s.progress || 0), 0);
-    return Math.round(total / subs.length);
+    const active=subs.filter(s=>s.status!=='cancelled');
+    return active.length?Math.round(active.filter(s=>s.status==='completed').length/active.length*100):0;
   }
 
   create(dto: CreateSubtaskDto): Subtask {
-    this.assignments.assertActive(dto.programId, dto.assignedToEmail);
+    this.assignments.assertReady(dto.programId, dto.assignedToEmail);
     const newSt: Subtask = {
       id: dto.id || this.generateId(),
       programId: dto.programId,
@@ -69,23 +74,33 @@ export class SubtasksService {
       createdAt: new Date().toISOString().split('T')[0],
     };
     this.subtasks.push(newSt);
+    this.changed(newSt.programId);
     return { ...newSt };
   }
 
   update(id: string, dto: UpdateSubtaskDto): Subtask {
     const idx = this.subtasks.findIndex((s) => s.id === id);
     if (idx === -1) throw new NotFoundException(`Subtask with id '${id}' not found`);
+    const current=this.subtasks[idx];
+    if(dto.progress!==undefined && (!Number.isFinite(dto.progress)||dto.progress<0||dto.progress>100))throw new BadRequestException('Progress must be between 0 and 100');
+    if(current.status==='completed' && (dto.progress!==undefined&&dto.progress!==100 || dto.status && dto.status!=='completed' || dto.assignedToEmail && dto.assignedToEmail!==current.assignedToEmail))throw new BadRequestException('Verified completed work is locked');
+    if(dto.status&&!['pending','in-progress','completed','cancelled'].includes(dto.status))throw new BadRequestException('Invalid work status');
+    if(dto.status==='completed' && dto.progress!==100)throw new BadRequestException('Completed work must have 100% progress');
+    if((dto.progress??0)>=100 && dto.status!=='completed')throw new BadRequestException('100% progress requires verified completion');
     const programId = dto.programId ?? this.subtasks[idx].programId;
     this.assignments.assertActive(programId, dto.assignedToEmail ?? this.subtasks[idx].assignedToEmail);
     if (dto.status === 'completed' || (dto.progress ?? 0) >= 100) this.proofs.assertVerified('subtasks', id);
     this.subtasks[idx] = { ...this.subtasks[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
+    this.changed(programId);
     return { ...this.subtasks[idx] };
   }
 
   delete(id: string): boolean {
     const idx = this.subtasks.findIndex((s) => s.id === id);
     if (idx === -1) throw new NotFoundException(`Subtask with id '${id}' not found`);
+    const programId=this.subtasks[idx].programId;
     this.subtasks.splice(idx, 1);
+    this.changed(programId);
     return true;
   }
 }

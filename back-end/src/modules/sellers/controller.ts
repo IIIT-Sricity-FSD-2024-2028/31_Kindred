@@ -1,6 +1,6 @@
 import {
   Controller, Get, Post, Patch, Delete,
-  Param, Body, Query, UseGuards,
+  Param, Body, Query, UseGuards, Headers, ForbiddenException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiHeader, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { SellersService } from './service';
@@ -50,7 +50,8 @@ export class SellersController {
   @ApiOperation({ summary: 'Update a seller' })
   @ApiResponse({ status: 200, description: 'Seller updated successfully' })
   @ApiResponse({ status: 404, description: 'Seller not found' })
-  update(@Param('id') id: string, @Body() dto: UpdateSellerDto) {
+  update(@Param('id') id: string, @Body() dto: UpdateSellerDto, @Headers() headers: Record<string,string>) {
+    if (headers.role === "seller" && this.sellersService.findById(id).email.toLowerCase() !== (headers["user-email"] || "").toLowerCase()) throw new ForbiddenException("You can only edit your own seller profile");
     return { success: true, data: this.sellersService.update(id, dto), message: 'Seller updated successfully' };
   }
 

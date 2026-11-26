@@ -1,3 +1,4 @@
+import { scheduledProgram, readyVolunteer, confirmExistingProgram } from './workflow-fixtures';
 import { Test } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
@@ -33,7 +34,8 @@ describe('Program participation, completion proofs, and demo card donations', ()
 
   it('keeps requested programs private until platform approval and counts accepted invitations and joins exactly once', async () => {
     const server = app.getHttpServer();
-    const program = data(await request(server).post('/programs').set(admin).send({ name: 'New Education Drive', org: 'HopeConnect', focus: ['Education'], startDate: '2026-10-16', budget: 1000, description: 'Community teaching', requestListing: true, volunteers: 500 }).expect(201));
+    readyVolunteer(app, volunteer['user-email']); readyVolunteer(app, donor['user-email']);
+    const program = data(await request(server).post('/programs').set(admin).send({ ...scheduledProgram(), name: 'New Education Drive', org: 'HopeConnect', budget: 1000, description: 'Community teaching', requestListing: true, volunteers: 500 }).expect(201));
     expect(program.volunteers).toBe(0);
     expect(program.listingStatus).toBe('pending');
     expect(data(await request(server).get('/programs')).some((p: any) => p.id === program.id)).toBe(false);
@@ -45,8 +47,8 @@ describe('Program participation, completion proofs, and demo card donations', ()
     const invitation = data(await request(server).post('/program-assignments').set(admin).send({ programId: program.id, programName: program.name, volunteerEmail: volunteer['user-email'], volunteerName: 'Priya' }).expect(201));
     const privatePrograms = data(await request(server).get('/program-assignments/my-programs').set(volunteer).expect(200));
     expect(privatePrograms.some((p: any) => p.id === program.id)).toBe(true);
-    await request(server).patch(`/program-assignments/${invitation.id}/respond`).set(volunteer).send({ action: 'accepted' }).expect(200);
-    await request(server).patch(`/program-assignments/${invitation.id}/respond`).set(volunteer).send({ action: 'accepted' }).expect(400);
+    await request(server).patch(`/program-assignments/${invitation.id}/respond`).set(volunteer).send({ action: 'accepted', attendanceConfirmed: true, version: 1 }).expect(200);
+    await request(server).patch(`/program-assignments/${invitation.id}/respond`).set(volunteer).send({ action: 'accepted', attendanceConfirmed: true, version: 1 }).expect(400);
     await request(server).patch(`/programs/${program.id}/approve-listing`).set(platform).send({}).expect(200);
     expect(data(await request(server).get(`/programs/${program.id}`)).volunteers).toBe(1);
     const application = data(await request(server).post('/program-applications').set(donor).send({ programId: program.id, programName: program.name, volunteerEmail: donor['user-email'], volunteerName: 'Donor volunteer' }).expect(201));
@@ -55,14 +57,16 @@ describe('Program participation, completion proofs, and demo card donations', ()
     const invitations = data(await request(server).get(`/program-assignments/by-volunteer/${donor['user-email']}`).set(donor));
     expect(invitations[0].status).toBe('pending');
     expect(data(await request(server).get(`/programs/${program.id}`)).volunteers).toBe(1);
-    await request(server).patch(`/program-assignments/${invitations[0].id}/respond`).set(donor).send({ action: 'accepted' }).expect(200);
+    await request(server).patch(`/program-assignments/${invitations[0].id}/respond`).set(donor).send({ action: 'accepted', attendanceConfirmed: true, version: 1 }).expect(200);
     expect(data(await request(server).get(`/programs/${program.id}`)).volunteers).toBe(2);
-    await request(server).patch(`/program-assignments/${invitation.id}`).set(admin).send({ status: 'cancelled' }).expect(200);
+    await request(server).patch(`/program-assignments/${invitation.id}`).set(admin).send({ status: 'cancelled' }).expect(400);
+    await request(server).patch(`/participation/memberships/${invitation.id}/withdraw`).set(volunteer).send({reason:'Unavailable before work starts'}).expect(200);
     expect(data(await request(server).get(`/programs/${program.id}`)).volunteers).toBe(1);
   });
 
   it('requires a valid image from the assignee and organization verification before work completion; rejection allows resubmission', async () => {
     const server = app.getHttpServer();
+    confirmExistingProgram(app, 'prog_001', volunteer['user-email']);
     const task = data(await request(server).post('/tasks').set(admin).send({ title: 'Proof task', programId: 'prog_001', assignedToEmail: volunteer['user-email'] }).expect(201));
     await request(server).patch(`/tasks/${task.id}`).set(volunteer).send({ status: 'in-progress' }).expect(200);
     await request(server).patch(`/tasks/${task.id}`).set(volunteer).send({ status: 'completed' }).expect(400);
@@ -73,7 +77,7 @@ describe('Program participation, completion proofs, and demo card donations', ()
     await request(server).patch(`/tasks/${task.id}`).set(admin).send({ status: 'completed' }).expect(400);
     await request(server).patch(`/proofs/${proof.id}/approve`).set({ ...admin, organization: 'Other Organization' }).send({}).expect(403);
     await request(server).patch(`/proofs/${proof.id}/approve`).set(platform).send({}).expect(403);
-    await request(server).patch(`/proofs/${proof.id}/reject`).set(admin).send({}).expect(200);
+    await request(server).patch(`/proofs/${proof.id}/reject`).set(admin).send({ reason: 'Please provide clearer evidence' }).expect(200);
     const replacement = data(await upload(volunteer,png).expect(201));
     await request(server).patch(`/proofs/${replacement.id}/approve`).set(admin).send({}).expect(200);
     expect(app.get(TasksService).findById(task.id).status).toBe('completed');

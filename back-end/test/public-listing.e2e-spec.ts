@@ -1,3 +1,4 @@
+import { scheduledProgram } from './workflow-fixtures';
 import { Test } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
@@ -32,7 +33,7 @@ describe('Bank prerequisites and public organization donation totals', () => {
   it('requires saved banking details, platform approval and exact recipient allocation before public display', async () => {
     const server = app.getHttpServer();
     await request(server).post('/organizations').set(platform).send({ id:'org_banktest',name:'New Community NGO',focus:'Education',city:'Pune',email:'new@example.test',phone:'9812345678',status:'active' }).expect(201);
-    const program = { name:'Bank-gated program',org:'New Community NGO',startDate:'2026-10-16',budget:1000,description:'Community support',requestListing:true };
+    const program = { name:'Bank-gated program',org:'New Community NGO',...scheduledProgram(),budget:1000,description:'Community support',requestListing:true };
     expect(data(await request(server).get('/organizations')).some((o: any) => o.id === 'org_banktest')).toBe(false);
     const privateProgram = data(await request(server).post('/programs').set(admin).send({...program,requestListing:false}).expect(201));
     await request(server).get(`/programs/${privateProgram.id}`).expect(403);

@@ -16,11 +16,14 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('serves the real public organization API', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .get('/organizations')
       .expect(200)
-      .expect('Hello World!');
+      .expect(response => {
+        expect(response.body.success).toBe(true);
+        expect(Array.isArray(response.body.data)).toBe(true);
+      });
   });
 
   afterEach(async () => {

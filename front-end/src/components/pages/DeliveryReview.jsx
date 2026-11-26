@@ -1,24 +1,25 @@
-import {useEffect,useState} from 'react';
+import { useUiState } from '../../store/hooks.js';
+import { useEffect } from 'react';
 import Modal from '../ui/Modal.jsx';
 import {usePage} from '../../pages/runtime/PageContext.js';
 
 export default function DeliveryReview(){
  const ui=usePage(),target=ui.state.deliveryReview;
- const [detail,setDetail]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[confirmed,setConfirmed]=useState(false),[conflictConfirmed,setConflictConfirmed]=useState(false),[accepted,setAccepted]=useState(false),[revision,setRevision]=useState(0);
+ const [detail,setDetail]=useUiState(null),[error,setError]=useUiState(''),[busy,setBusy]=useUiState(false),[confirmed,setConfirmed]=useUiState(false),[conflictConfirmed,setConflictConfirmed]=useUiState(false),[accepted,setAccepted]=useUiState(false),[revision,setRevision]=useUiState(0);
  const collection=target?.collection,id=target?.id;
  useEffect(()=>{
   if(!id)return;
   const controller=new AbortController();
-  ui.api.get(`/${collection==='replacements'?'replacements':'fulfillment/deliveries'}/${id}/brief`,{signal:controller.signal}).then(data=>{setDetail(data);setError('');setConfirmed(false);setConflictConfirmed(false);setAccepted(false);}).catch(problem=>{if(!controller.signal.aborted){setError(problem.message);setDetail(null);}});
+  ui.requests.get(`/${collection==='replacements'?'replacements':'fulfillment/deliveries'}/${id}/brief`,{signal:controller.signal}).then(data=>{setDetail(data);setError('');setConfirmed(false);setConflictConfirmed(false);setAccepted(false);}).catch(problem=>{if(!controller.signal.aborted){setError(problem.message);setDetail(null);}});
   return ()=>controller.abort();
- },[ui.api,collection,id,revision]);
+ },[ui.requests,collection,id,revision,setAccepted,setConfirmed,setConflictConfirmed,setDetail,setError]);
  if(!target)return null;
  const current=detail?.id===id?detail:null;
  const preferenceIssues=(current?.eligibility?.reasons||[]).filter(reason=>!current?.blockers?.includes(reason)&&!reason.startsWith('Conflicts with'));
  async function accept(){
   if(busy||!current?.available||!confirmed||current.conflicts?.length&&!conflictConfirmed)return;
   setBusy(true);setError('');
-  try{await ui.api.patch(`/${collection==='replacements'?'replacements':'fulfillment/deliveries'}/${id}/action`,{action:'accept',confirmAvailability:true,...(current.conflicts?.length?{confirmConflict:true}:{}),reviewedVersion:current.reviewedVersion});setAccepted(true);ui.refresh();}
+  try{await ui.requests.patch(`/${collection==='replacements'?'replacements':'fulfillment/deliveries'}/${id}/action`,{action:'accept',confirmAvailability:true,...(current.conflicts?.length?{confirmConflict:true}:{}),reviewedVersion:current.reviewedVersion});setAccepted(true);}
   catch(problem){setError(problem.message);ui.refresh();}finally{setBusy(false);}
  }
  return <Modal open title="Review delivery details" busy={busy} onClose={()=>ui.update({deliveryReview:null})}>

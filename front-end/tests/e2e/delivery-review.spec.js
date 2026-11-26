@@ -1,9 +1,10 @@
+import { API_BASE } from '../apiBase.js';
 import {test,expect} from '@playwright/test';
 
 async function setup(page,{preferences=false,conflict=false,race=false}={}){
  let open=true,claimed=false;const writes=[];
  const brief={id:'review-job',kind:'order',title:'Deliver bowls (2)',mode:'broadcast',status:'awaiting_acceptance',sellerName:'Artisan Shop',orgName:'HopeConnect',pickupAddress:'Shop 12, Market Road, Mumbai 400001',address:'Flat 8, Lake View, Pune 411001',contact:'9812345678',scheduledDate:'2099-01-05',shiftStart:'10:00',shiftEnd:'11:00',requirements:'Fragile parcel. Carry upright.',items:[{name:'Handmade bowl',quantity:2}],reviewedVersion:'review-v1',available:true,conflicts:conflict?['another accepted shift']:[],eligibility:{eligible:!preferences&&!conflict,reasons:conflict?['Conflicts with another accepted shift']:preferences?['Shift includes unavailable weekdays']:[]},blockers:[]};
- await page.route('http://localhost:3000/**',route=>{
+ await page.route(`${API_BASE}/**`,route=>{
   const req=route.request(),url=new URL(req.url());
   if(req.method()!=='GET'){
    writes.push({path:url.pathname,body:req.postDataJSON()});

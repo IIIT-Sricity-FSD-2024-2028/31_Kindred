@@ -31,7 +31,7 @@ export class ProofsController {
   @Get()
   @Roles('admin','superuser','volunteer','donor','beneficiary','seller')
   all(@Headers('role') role: string, @Headers('organization') org: string, @Headers('user-email') email: string) {
-    return { success: true, data: this.store.all().filter((p) => role === 'superuser' || (p.collection === 'deliveries' && role === 'seller' ? this.fulfillment.findById(p.recordId).sellerEmail?.toLowerCase() === String(email).toLowerCase() : role === 'admin' ? p.organization === org : p.volunteerEmail.toLowerCase() === String(email).toLowerCase())) };
+    return { success: true, data: this.store.all().filter((p) => role === 'superuser' || (p.collection==='replacements'&&role==='seller'?(()=>{try{this.replacements.assertManager(p.recordId,{role,email,org});return true;}catch{return false;}})():false) || (p.collection === 'deliveries' && role === 'seller' ? this.fulfillment.findById(p.recordId).sellerEmail?.toLowerCase() === String(email).toLowerCase() : role === 'admin' ? p.organization === org : p.volunteerEmail.toLowerCase() === String(email).toLowerCase())) };
   }
   @Post()
   @Roles('volunteer','donor','beneficiary','seller')
@@ -41,7 +41,7 @@ export class ProofsController {
     const record = this.record(body.collection, body.recordId);
     const assigned = record.volunteerEmail || record.assignedToEmail || record.assignedVolunteerEmail;
     if (!email || String(assigned).toLowerCase() !== email.toLowerCase()) throw new ForbiddenException('Only the assigned volunteer can upload proof');
-    const organization = this.organization(record); if (!organization && !(body.collection === 'deliveries' && record.kind === 'order' && record.sellerEmail)) throw new BadRequestException('An organization must be assigned before proof submission');
+    const organization = this.organization(record); if (!organization && !(body.collection === 'replacements' && record.sellerId) && !(body.collection === 'deliveries' && record.kind === 'order' && record.sellerEmail)) throw new BadRequestException('An organization must be assigned before proof submission');
     const current = record.deliveryStatus || record.status;
     const ready: Record<string, string[]> = { tasks: ['in-progress','pending_review'], subtasks: ['pending','in-progress'], orders: ['in_transit'], replacements: ['replacement_in_transit'], 'resource-donations': ['in_transit'], incoming: ['assigned'], 'hour-logs': ['pending','rejected'] };
     ready.deliveries = ['in_transit'];
@@ -55,16 +55,18 @@ export class ProofsController {
   review(@Param('id') id: string, @Param('decision') decision: string, @Headers('role') role: string, @Headers('organization') org: string, @Headers('user-email') email: string, @Body() body: { reason?: string }) {
     if (!['approve','reject'].includes(decision)) throw new BadRequestException('Choose approve or reject');
     const p = this.store.get(id);
+    if(decision==='reject'&&!body.reason?.trim())throw new BadRequestException('Provide feedback for resubmission');
     if (p.collection === 'deliveries') {
       this.fulfillment.proofReviewer(p.recordId,{role,email,org});
       if (decision === 'reject' && !body.reason?.trim()) throw new BadRequestException('Provide a rejection reason');
-    } else if (role !== 'admin' || !org || p.organization !== org) throw new ForbiddenException('Only the responsible organization admin can verify proof');
+    } else if(p.collection==='replacements'){this.replacements.assertManager(p.recordId,{role,email,org});}
+    else if (role !== 'admin' || !org || p.organization !== org) throw new ForbiddenException('Only the responsible organization admin can verify proof');
     if (p.status !== 'pending') throw new BadRequestException('Proof has already been reviewed');
     p.status = decision === 'approve' ? 'approved' : 'rejected';
     try {
       if (decision === 'approve') {
         const r = this.record(p.collection, p.recordId);
-        if ((p.collection !== 'deliveries' && this.organization(r) !== org) || String(r.volunteerEmail || r.assignedToEmail || r.assignedVolunteerEmail).toLowerCase() !== p.volunteerEmail.toLowerCase()) throw new BadRequestException('Assignment changed; reject this proof and request a new submission');
+        if ((!['deliveries','replacements'].includes(p.collection) && this.organization(r) !== org) || String(r.volunteerEmail || r.assignedToEmail || r.assignedVolunteerEmail).toLowerCase() !== p.volunteerEmail.toLowerCase()) throw new BadRequestException('Assignment changed; reject this proof and request a new submission');
         if (p.collection === 'deliveries') this.fulfillment.complete(p.recordId);
         if (p.collection === 'tasks') this.tasks.update(p.recordId, { status: 'completed' });
         if (p.collection === 'subtasks') this.subtasks.update(p.recordId, { status: 'completed', progress: 100 });

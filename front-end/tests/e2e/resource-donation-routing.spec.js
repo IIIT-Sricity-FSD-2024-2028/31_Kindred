@@ -1,3 +1,4 @@
+import { API_BASE } from '../apiBase.js';
 import {test,expect} from '@playwright/test';
 const organizations=[{id:'org-one',name:'HopeConnect',neededResources:'Rice: 100 kg; Blankets: 50 units'},{id:'org-two',name:'Community Care',neededResources:'Books: 200 units'}];
 const programs=[{id:'program-one',name:'Food support',org:'HopeConnect',status:'active'},{id:'program-two',name:'School support',org:'Community Care',status:'active'}];
@@ -5,7 +6,7 @@ async function setup(page,role,path){
  const writes=[];let needs=organizations[0].neededResources;
  const certificate={id:'RESOURCE-THANKS-001',donationId:'donation-received',organization:'HopeConnect',donorName:'Resource Donor',donorEmail:'donor@kindred.org',programName:'Food support',issuedAt:'2026-11-01T10:00:00Z',items:[{name:'Rice',quantity:8,unit:'kg',condition:'New',offeredQuantity:10}]};
  const resource={id:certificate.donationId,donorName:certificate.donorName,donorEmail:certificate.donorEmail,orgName:'HopeConnect',category:'Food',status:'received',items:certificate.items,certificate};
- await page.route('http://localhost:3000/**',route=>{
+ await page.route(`${API_BASE}/**`,route=>{
   const request=route.request(),url=new URL(request.url()),key=url.pathname.split('/')[1];
   if(request.method()!=='GET'){const body=request.postDataJSON();writes.push({path:url.pathname,body});if(url.pathname.startsWith('/organizations/'))needs=body.neededResources;return route.fulfill({json:{success:true,data:{id:'created-donation',...body}}});}
   const data=url.pathname==='/resource-donations/options'?{organizations:[{...organizations[0],neededResources:needs},organizations[1]],programs}:key==='organizations'?organizations.map(org=>({...org,status:'active',neededResources:org.id==='org-one'?needs:org.neededResources})):key==='programs'?programs:key==='resource-donations'?[resource]:[];

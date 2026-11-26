@@ -39,7 +39,7 @@ test('Enter submits sign-in through the same validated action as its button', as
 });
 
 test('payment prevents duplicate writes, locks input, retains failed values, and permits retry', async ({page}) => {
-  await donate(page); await page.locator('#proceed-donate-btn').click(); await card(page);
+  await donate(page); await card(page);
   let count = 0, release;
   await page.route('**/donations', async (route) => {
     if (route.request().method() !== 'POST') return route.continue();
@@ -47,21 +47,20 @@ test('payment prevents duplicate writes, locks input, retains failed values, and
     if (count === 1) { await new Promise((resolve) => {release=resolve;}); return route.fulfill({status:503,json:{success:false,message:'Temporary payment failure'}}); }
     return route.fulfill({json:{success:true,data:{id:'phase4-mocked-receipt', amount:500, cardLast4:'1111',status:'paid'}}});
   });
-  await page.locator('#pay-now-btn').evaluate((button) => {button.click(); button.click();});
-  await expect(page.locator('#pay-now-btn')).toBeDisabled(); await expect(page.locator('#card-number')).toBeDisabled();
+  await page.getByRole('dialog').getByRole('button',{name:'Save',exact:true}).evaluate((button) => {button.click(); button.click();});
+  await expect(page.getByRole('dialog').getByRole('button',{name:/Save|Saving/,exact:false})).toBeDisabled(); await expect(page.locator('#card-number')).toBeDisabled();
   await expect.poll(() => count).toBe(1); release();
   await expect(page.getByRole('dialog').getByRole('alert')).toContainText('Temporary payment failure');
-  await expect(page.locator('#card-number')).toHaveValue('4111 1111 1111 1111'); await expect(page.locator('#pay-now-btn')).toBeEnabled();
-  await page.locator('#pay-now-btn').click(); await expect(page.locator('#donate-step-success')).toBeVisible(); expect(count).toBe(2);
-  await expect(page.locator('#card-number')).toHaveValue(''); await expect(page.locator('#card-cvv')).toHaveValue('');
+  await expect(page.locator('#card-number')).toHaveValue('4111 1111 1111 1111'); await expect(page.getByRole('dialog').getByRole('button',{name:/Save|Saving/,exact:false})).toBeEnabled();
+  await page.getByRole('dialog').getByRole('button',{name:/Save|Saving/,exact:false}).click(); await expect(page.getByRole('dialog')).toHaveCount(0); expect(count).toBe(2);
+  await expect(page.getByRole('status')).toContainText('Demo card donation recorded');
 });
 
-test('closing and reopening donation starts a fresh payment and frequency selection', async ({page}) => {
-  await donate(page); await page.getByRole('button',{name:'Monthly',exact:true}).click(); await page.locator('#proceed-donate-btn').click(); await card(page);
-  await page.locator('#pay-now-btn').focus(); await page.keyboard.press('Escape'); await expect(page.getByRole('dialog')).toHaveCount(0);
+test('closing and reopening donation starts a fresh card form', async ({page}) => {
+  await donate(page); await card(page); await page.locator('#custom-amount').fill('750');
+  await page.locator('#card-number').focus(); await page.keyboard.press('Escape'); await expect(page.getByRole('dialog')).toHaveCount(0);
   await page.locator('#donate-org-grid .small-org-card').first().getByRole('button',{name:'Donate',exact:true}).click();
-  await expect(page.locator('#donate-step-1')).toBeVisible(); await expect(page.locator('[data-freq="one-time"]')).toHaveClass(/active/);
-  await page.locator('#proceed-donate-btn').click();
+  await expect(page.locator('#custom-amount')).toHaveValue('500');
   for (const field of ['card-number','card-holder-name','card-expiry','card-cvv']) await expect(page.locator('#'+field)).toHaveValue('');
 });
 
@@ -74,13 +73,13 @@ test('corrupt and wrong-shaped browser payment preferences do not break the dash
 });
 
 test('file selection validates type, permits the same file after removal, and resets new products', async ({page}) => {
-  await as(page,'seller','/seller-dashboard.html'); await page.getByRole('button',{name:/Add Product/}).first().click();
+  await as(page,'seller','/seller-dashboard.html'); await page.getByRole('button',{name:/Add (?:New )?Product/}).first().click();
   const input = page.locator('#prodPhotoInput');
   await input.setInputFiles({name:'invalid.txt', mimeType:'text/plain', buffer:Buffer.from('invalid')});
   await expect(page.getByRole('dialog').getByRole('alert')).toContainText('Only image');
   const image = {name:'small.png', mimeType:'image/png', buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aD1sAAAAASUVORK5CYII=','base64')};
   await input.setInputFiles(image); await expect(page.locator('#prodPhotoPreview')).toBeVisible(); await expect(page.getByRole('dialog').getByRole('alert')).toHaveCount(0);
-  await page.keyboard.press('Escape'); await page.getByRole('button',{name:/Add Product/}).first().click();
+  await page.keyboard.press('Escape'); await page.getByRole('button',{name:/Add (?:New )?Product/}).first().click();
   await expect(page.locator('#prodPhotoPreview')).toBeHidden(); await input.setInputFiles(image); await expect(page.locator('#prodPhotoPreview')).toBeVisible();
 });
 
@@ -119,7 +118,7 @@ test('donor tabs have unique IDs and refer to their own visible panels', async (
   }
 });
 
-test('profile Cancel restores server skills and custom tags without claiming an unsupported save', async ({page}) => {
+test('profile Cancel restores server skills and custom tags and supported saves persist', async ({page}) => {
   await as(page,'volunteer','/profile.html');
   await expect(page.locator('#pf-skill-logistics')).toBeChecked();
   await expect(page.locator('#pfCustomSkillTags')).toContainText('Field Work');
@@ -128,8 +127,12 @@ test('profile Cancel restores server skills and custom tags without claiming an 
   await page.locator('#skillsSection').getByRole('button',{name:'Cancel',exact:true}).click();
   await expect(page.locator('#pf-skill-logistics')).toBeChecked(); await expect(page.locator('#pf-skill-driving')).not.toBeChecked();
   await expect(page.locator('#pfCustomSkillTags')).toContainText('Field Work');
+  const saving=page.waitForResponse(response=>response.url().includes('/volunteers/me/profile')&&response.request().method()==='PATCH');
   await page.locator('#skillsSection').getByRole('button',{name:/Save Skills/}).click();
-  await expect(page.locator('.page-action-error')).toContainText('does not permit');
+  expect((await saving).ok()).toBe(true);
+  await expect(page.getByRole('status')).toContainText('Skills saved');
+  await page.reload(); await expect(page.locator('#pf-skill-logistics')).toBeChecked();
+  await expect(page.locator('#pfCustomSkillTags')).toContainText('Field Work');
 });
 
 test('resource donation rows focus invalid quantities and reset after a successful request', async ({page}) => {

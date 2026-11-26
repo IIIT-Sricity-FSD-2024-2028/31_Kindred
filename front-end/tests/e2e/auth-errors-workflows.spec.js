@@ -43,7 +43,7 @@ test('network errors appear in the sign-in form without breaking its layout', as
 });
 
 for (const [path,button] of [
-  ['/forgot-password','Send OTP'], ['/forgot-otp','Verify OTP'],
+  ['/forgot-password','Continue'], ['/forgot-otp','Verify OTP'],
   ['/otp-verify','Verify & Continue to Dashboard'], ['/phone-entry','Send Verification Code'],
   ['/reset-password','Reset Password'],
 ]) {

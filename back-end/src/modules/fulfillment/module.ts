@@ -1,3 +1,4 @@
+import { UsersModule } from '../users/module';
 import { Global, Module } from '@nestjs/common';
 import { ResourceDonationsModule } from '../resource-donations/module';
 import { OrdersModule } from '../orders/module';
@@ -9,5 +10,5 @@ import { NotificationsModule } from '../notifications/module';
 import { FulfillmentService } from './service';
 import { FulfillmentController } from './controller';
 @Global()
-@Module({imports:[ResourceDonationsModule,OrdersModule,ProgramsModule,OrganizationsModule,VolunteersModule,SellersModule,NotificationsModule],providers:[FulfillmentService],controllers:[FulfillmentController],exports:[FulfillmentService]})
+@Module({imports:[UsersModule,ResourceDonationsModule,OrdersModule,ProgramsModule,OrganizationsModule,VolunteersModule,SellersModule,NotificationsModule],providers:[FulfillmentService],controllers:[FulfillmentController],exports:[FulfillmentService]})
 export class FulfillmentModule {}

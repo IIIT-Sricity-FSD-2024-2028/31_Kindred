@@ -7,15 +7,17 @@ import App from './App.jsx';
 import { prepareRouteStyles } from './routes/routeStyles.js';
 import './styles/shared-ui.css';
 import './styles/pages.css';
+import { Provider } from 'react-redux';
+import { store } from './store/store.js';
 
 prepareRouteStyles().finally(() => {
   createRoot(document.getElementById('root')).render(
     <StrictMode>
-      <BrowserRouter>
+      <Provider store={store}><BrowserRouter>
         <AuthProvider>
           <ToastProvider><App /></ToastProvider>
         </AuthProvider>
-      </BrowserRouter>
+      </BrowserRouter></Provider>
     </StrictMode>,
   );
 });

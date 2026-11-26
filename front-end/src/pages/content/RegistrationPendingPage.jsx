@@ -1,10 +1,10 @@
 import { usePage } from '../runtime/PageContext.js';
 import PageExtras from '../../components/pages/PageExtras.jsx';
-import { readStored } from '../../services/storage.js';
+import { useSelector } from 'react-redux';
 
 export default function RegistrationPendingPage() {
   const ui = usePage();
-  const registration = readStored('kindred_registration') || {};
+  const registration = useSelector(state => state.preferences.registration) || {};
   return <>
    <main {...ui.props("registration-pending-1", {"data-react-page": "/registration-pending.html"})}>
      <div {...ui.props("registration-pending-2", {"className": "page-wrap"})}>
