@@ -1,3 +1,4 @@
+import { API_BASE } from '../apiBase.js';
 /* global window */
 import {test,expect} from '@playwright/test';
 
@@ -7,7 +8,7 @@ const membership={id:'member-test',programId:program.id,programName:program.name
 async function setup(page,role,path){
   const writes=[];
   const workspace={program,canRate:role==='admin',people:[{email:'admin@hopeconnect.org',name:'Coordinator',role:'Organization admin'},{email:volunteer.email,name:volunteer.name,role:'Program member'}],members:[{email:volunteer.email,name:volunteer.name,canRate:role==='admin'}],messages:[]};
-  await page.route('http://localhost:3000/**',route=>{
+  await page.route(`${API_BASE}/**`,route=>{
     const request=route.request(),url=new URL(request.url()),key=url.pathname.split('/')[1];
     if(request.method()!=='GET'){
       const body=request.postDataJSON();writes.push({path:url.pathname,body});
@@ -110,8 +111,8 @@ test('program creation allows reviewing a volunteer without changing selection',
 test('delisted programs disappear from the portal and close an already open application',async({page})=>{
   await setup(page,'volunteer','/volunteer-portal');
   await page.getByRole('button',{name:'Apply Now',exact:true}).click();
-  await page.route('http://localhost:3000/programs/portal',route=>route.fulfill({json:{success:true,data:[]}}));
-  await page.route('http://localhost:3000/program-assignments/my-programs',route=>route.fulfill({json:{success:true,data:[{...program,status:'paused'}]}}));
+  await page.route(`${API_BASE}/programs/portal`,route=>route.fulfill({json:{success:true,data:[]}}));
+  await page.route(`${API_BASE}/program-assignments/my-programs`,route=>route.fulfill({json:{success:true,data:[{...program,status:'paused'}]}}));
   await page.evaluate(()=>window.dispatchEvent(new Event('focus')));
   await expect(page.getByRole('alert')).toContainText('no longer accepting applications');
   await expect(page.getByRole('button',{name:/Submit Application/})).toBeDisabled();

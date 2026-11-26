@@ -1,7 +1,7 @@
 import { FulfillmentService } from '../fulfillment/service';
 import {
   Controller, Get, Post, Patch, Delete,
-  Param, Body, Query, Headers, ForbiddenException, UseGuards, UploadedFile, UseInterceptors,
+  Param, Body, Query, Headers, ForbiddenException, BadRequestException, UseGuards, UploadedFile, UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiHeader, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { ResourceDonationsService } from './service';
@@ -18,6 +18,8 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 @UseGuards(RolesGuard)
 export class ResourceDonationsController {
   constructor(private readonly service: ResourceDonationsService, private readonly fulfillment: FulfillmentService) {}
+  @Get('options')
+  options(){return {success:true,data:this.service.donationOptions()};}
   @Post('upload-image') @Roles('donor','admin','superuser') @UseInterceptors(FileInterceptor('file',{limits:{fileSize:5*1024*1024}})) uploadImage(@UploadedFile() file:any){return {success:true,data:{url:saveImage(file,'resource-donation')}};}
 
   @Get()
@@ -104,7 +106,9 @@ export class ResourceDonationsController {
   @ApiResponse({ status: 201, description: 'Resource donation submitted successfully' })
   @ApiResponse({ status: 400, description: 'Validation failed' })
   @ApiResponse({ status: 403, description: 'Access denied — requires donor, admin, or superuser role' })
-  create(@Body() dto: CreateResourceDonationDto) {
+  create(@Body() dto: CreateResourceDonationDto, @Headers('role') role:string, @Headers('user-email') email:string) {
+    if(dto.category==='Shop Delivery')throw new BadRequestException('Shop delivery records are created from shop orders');
+    if(role==='donor'&&(!email||email.toLowerCase()!==dto.donorEmail.toLowerCase()))throw new ForbiddenException('Submit donations using your signed-in donor email');
     return { success: true, data: this.service.create(dto), message: 'Resource donation submitted successfully' };
   }
 

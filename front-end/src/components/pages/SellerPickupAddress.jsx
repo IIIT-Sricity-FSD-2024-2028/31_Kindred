@@ -1,17 +1,18 @@
-import { useState } from 'react';
+import { useUiState } from '../../store/hooks.js';
+
 import { usePage } from '../../pages/runtime/PageContext.js';
 
 export default function SellerPickupAddress() {
   const ui=usePage();
   const seller=ui.data('sellers').find(record=>record.email?.toLowerCase()===ui.session.email?.toLowerCase());
-  const [draft,setDraft]=useState(null),[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[error,setError]=useState('');
+  const [draft,setDraft]=useUiState(null),[busy,setBusy]=useUiState(false),[message,setMessage]=useUiState(''),[error,setError]=useUiState('');
   async function save(event) {
     event.preventDefault();
     if(!seller||busy)return;
     const pickupAddress=(draft??seller.pickupAddress??'').trim();
     if(!pickupAddress){setError('Enter your full pickup address.');return;}
     setBusy(true);setError('');setMessage('');
-    try{await ui.api.patch(`/sellers/${seller.id}`,{pickupAddress});setMessage('Pickup address saved. It will fill automatically when delivery is arranged.');ui.refresh();}
+    try{await ui.requests.patch(`/sellers/${seller.id}`,{pickupAddress});setMessage('Pickup address saved. It will fill automatically when delivery is arranged.');}
     catch(e){setError(e.message);}finally{setBusy(false);}
   }
   return <section className="section-card" style={{marginBottom:24,padding:20}} aria-label="Seller pickup address">

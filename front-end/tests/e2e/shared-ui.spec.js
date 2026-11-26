@@ -1,3 +1,4 @@
+import { API_BASE } from '../apiBase.js';
 /* global window, document, getComputedStyle */
 import { test, expect } from '@playwright/test';
 const sessionFor = (role = 'donor', extra = {}) => ({ id: `phase2-${role}`, name: 'Shared UI Test', email: 'phase2@example.test', role, status: 'approved', org: role === 'admin' ? 'HopeConnect' : null, ...extra });
@@ -69,7 +70,7 @@ test('style families unload on navigation and assets are served at their origina
 
 test('notifications show backend errors and do not mark failed updates as read or navigate', async ({ context, page }) => {
   await session(context, 'donor');
-  await page.route('http://localhost:3000/notifications**', (route) => route.fulfill({ status: route.request().method() === 'PATCH' ? 500 : 200, json: route.request().method() === 'PATCH' ? { success: false, data: null, message: 'Update failed' } : { success: true, data: [{ id: 'test-id', title: 'Test update', message: 'Read this update', read: false, link: '/profile.html' }] } }));
+  await page.route(`${API_BASE}/notifications**`, (route) => route.fulfill({ status: route.request().method() === 'PATCH' ? 500 : 200, json: route.request().method() === 'PATCH' ? { success: false, data: null, message: 'Update failed' } : { success: true, data: [{ id: 'test-id', title: 'Test update', message: 'Read this update', read: false, link: '/profile.html' }] } }));
   await page.goto('/donor-dashboard.html');
   await page.getByRole('button', { name: /Notifications, 1 unread/ }).click();
   await page.getByRole('button', { name: /Test update/ }).click();
@@ -84,20 +85,20 @@ test('notifications display loading, empty, and fetch failure states', async ({ 
   await session(context, 'donor');
   let release;
   const delayed = new Promise((resolve) => { release = resolve; });
-  await page.route('http://localhost:3000/notifications**', async (route) => { await delayed; await route.fulfill({ json: { success: true, data: [] } }); });
+  await page.route(`${API_BASE}/notifications**`, async (route) => { await delayed; await route.fulfill({ json: { success: true, data: [] } }); });
   await page.goto('/donor-dashboard.html');
   await page.getByRole('button', { name: 'Notifications', exact: true }).click();
   await expect(page.getByRole('status')).toContainText('Loading notifications');
   release(); await expect(page.getByText('No notifications yet.')).toBeVisible();
-  await page.unroute('http://localhost:3000/notifications**');
-  await page.route('http://localhost:3000/notifications**', (route) => route.abort('failed'));
+  await page.unroute(`${API_BASE}/notifications**`);
+  await page.route(`${API_BASE}/notifications**`, (route) => route.abort('failed'));
   await page.reload(); await page.getByRole('button', { name: 'Notifications', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('Unable to reach the server');
 });
 
 test('real notification API loads targeted data, marks read, and opens its detail modal', async ({ context, page, request }) => {
   const email = `phase2-${Date.now()}@example.test`;
-  const created = await request.post('http://localhost:3000/notifications', { headers: { role: 'donor' }, data: { targetEmail: email, title: 'Phase 2 verification', message: 'Synthetic local notification for migration verification.', type: 'info' } });
+  const created = await request.post(`${API_BASE}/notifications`, { headers: { role: 'donor' }, data: { targetEmail: email, title: 'Phase 2 verification', message: 'Synthetic local notification for migration verification.', type: 'info' } });
   expect(created.ok()).toBe(true);
   const record = (await created.json()).data;
   await session(context, 'donor', { email });
@@ -107,7 +108,7 @@ test('real notification API loads targeted data, marks read, and opens its detai
   await expect(page.getByRole('dialog', { name: 'Phase 2 verification' })).toBeVisible();
   await page.getByRole('button', { name: 'OK', exact: true }).click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
-  const stored = await request.get(`http://localhost:3000/notifications?email=${encodeURIComponent(email)}`);
+  const stored = await request.get(`${API_BASE}/notifications?email=${encodeURIComponent(email)}`);
   expect((await stored.json()).data.find((item) => item.id === record.id).read).toBe(true);
 });
 

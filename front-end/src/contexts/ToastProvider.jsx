@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useUiState } from '../store/hooks.js';
+import { useCallback, useEffect } from 'react';
 import { ToastContext } from './ToastContext.js';
 
 function Toast({ toast, dismiss }) {
@@ -14,12 +15,12 @@ function Toast({ toast, dismiss }) {
   </div>;
 }
 export function ToastProvider({ children }) {
-  const [toasts, setToasts] = useState([]);
+  const [toasts, setToasts] = useUiState([]);
   const showToast = useCallback(({ type = 'info', title, body, duration = 4000 }) => {
     const id = crypto.randomUUID();
     setToasts((items) => [...items, { id, type, title, body, duration }].slice(-4));
     return id;
-  }, []);
-  const dismiss = useCallback((id) => setToasts((items) => items.filter((toast) => toast.id !== id)), []);
+  }, [setToasts]);
+  const dismiss = useCallback((id) => setToasts((items) => items.filter((toast) => toast.id !== id)), [setToasts]);
   return <ToastContext.Provider value={showToast}>{children}<div className="toast-stack" aria-label="Status messages">{toasts.map((toast) => <Toast key={toast.id} toast={toast} dismiss={dismiss} />)}</div></ToastContext.Provider>;
 }

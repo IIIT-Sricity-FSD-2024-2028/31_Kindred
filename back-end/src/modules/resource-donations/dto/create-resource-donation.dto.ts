@@ -3,6 +3,7 @@ import { IsString, IsOptional, IsArray, ValidateNested, IsInt, Min } from 'class
 import { Type } from 'class-transformer';
 
 class DonationItemDto {
+  @IsOptional() @IsString() unit?:string;
   @ApiProperty({ description: 'Item name', example: 'Rice Bags (25kg)' })
   @IsString()
   name!: string;

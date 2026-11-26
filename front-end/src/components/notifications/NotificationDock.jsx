@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useRepositoryQuery, useUiState } from '../../store/hooks.js';
+import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from '../../routes/navigation.jsx';
 import { useAuth } from '../../hooks/useAuth.js';
 import { useToast } from '../../hooks/useToast.js';
@@ -7,55 +8,42 @@ import { notificationsPath, safeNotificationLink } from '../../services/notifica
 import Modal from '../ui/Modal.jsx';
 
 export default function NotificationDock() {
-  const { session, api } = useAuth();
+  const { session, requests } = useAuth();
   const showToast = useToast();
   const navigate = useNavigate();
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(null);
-  const [readingId, setReadingId] = useState(null);
+  const query = useRepositoryQuery(session?.status === 'approved' ? notificationsPath(session) : null);
+  const loadQuery = query.load;
+  const items = query.data || [], loading = query.loading, error = query.error;
+  const [open, setOpen] = useUiState(false);
+  const [selected, setSelected] = useUiState(null);
+  const [readingId, setReadingId] = useUiState(null);
   const rootRef = useRef(null);
   const triggerRef = useRef(null);
   const reading = useRef(false);
-  const close = useCallback(() => setOpen(false), []);
+  const close = useCallback(() => setOpen(false), [setOpen]);
   useDismissable({ open, rootRef, triggerRef, onClose: close });
   useEffect(() => {
     if (session?.status !== 'approved') return;
     const controller = new AbortController();
-    let active = true;
-    let inFlight = false;
-    async function load() {
-      if (inFlight) return;
-      inFlight = true;
-      try {
-        const records = await api.get(notificationsPath(session), { signal: controller.signal });
-        if (!Array.isArray(records)) throw new Error('The server returned an invalid notification list.');
-        if (active) { setItems(records); setError(''); }
-      } catch (failure) {
-        if (active && failure.name !== 'AbortError') setError(failure.message);
-      } finally { inFlight = false; if (active) setLoading(false); }
-    }
+    const load = () => loadQuery({ signal: controller.signal }).catch(() => {});
     load();
     const interval = setInterval(load, 5000);
     const changed=event=>{if(event.key==='kindred_data_revision')load();};
     window.addEventListener('storage',changed);
     window.addEventListener('focus', load);
-    return () => { active = false; controller.abort(); clearInterval(interval); window.removeEventListener('focus', load); window.removeEventListener('storage',changed); };
-  }, [api, session]);
+    return () => { controller.abort(); clearInterval(interval); window.removeEventListener('focus', load); window.removeEventListener('storage',changed); };
+  }, [loadQuery, session]);
   async function read(item) {
     if (reading.current) return;
     reading.current = true; setReadingId(item.id);
     try {
-      if (!item.read) await api.patch(`/notifications/${encodeURIComponent(item.id)}/read`, {});
-      setItems((records) => records.map((record) => record.id === item.id ? { ...record, read: true } : record));
+      if (!item.read) await requests.patch(`/notifications/${encodeURIComponent(item.id)}/read`, {});
       setOpen(false);
       const destination = safeNotificationLink(item.link);
       if (destination) navigate(destination);
       else setSelected(item);
     } catch (failure) {
-      showToast({ type: 'error', title: 'Could not update notification', body: failure.message });
+      showToast({ type: 'error', title: 'Could not update notification', body: failure.message, duration: 8000 });
     } finally { reading.current = false; setReadingId(null); }
   }
   if (session?.status !== 'approved') return null;

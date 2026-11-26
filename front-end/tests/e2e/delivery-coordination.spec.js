@@ -1,3 +1,4 @@
+import { API_BASE } from '../apiBase.js';
 import {test,expect} from '@playwright/test';
 
 const org={id:'org_001',name:'HopeConnect',status:'active'};
@@ -8,7 +9,7 @@ const schedule={scheduledDate:'2099-01-05',shiftStart:'10:00',shiftEnd:'11:00',p
 const delivery={id:'delivery-one',kind:'order',sourceId:order.id,title:'Deliver Handmade bowl (1)',orgName:org.name,status:'awaiting_acceptance',mode:'broadcast',pickupAddress:'Details shared after acceptance',address:'Details shared after acceptance',...schedule,history:[]};
 async function setup(page,role,{portal=false,resource=false,replacement=false}={}){
  const data={orders:[structuredClone(order)],deliveries:portal?[structuredClone(delivery)]:[],claims:replacement?[{...claim,...(portal?{status:'portal_open',mode:'broadcast',schedule:{startDate:schedule.scheduledDate,endDate:schedule.scheduledDate,shiftStart:schedule.shiftStart,shiftEnd:schedule.shiftEnd,location:'Pune -> Mumbai'},destinationArea:'Mumbai'}:{})}]:[]},writes=[],reads=[];
- await page.route('http://localhost:3000/**',route=>{
+ await page.route(`${API_BASE}/**`,route=>{
   const req=route.request(),url=new URL(req.url()),key=url.pathname.split('/')[1];
   if(req.method()!=='GET'){
    const body=req.postDataJSON();writes.push({path:url.pathname,body});

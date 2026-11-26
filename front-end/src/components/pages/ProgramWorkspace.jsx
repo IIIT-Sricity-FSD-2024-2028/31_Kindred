@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useUiState } from '../../store/hooks.js';
+import { useEffect } from 'react';
 import { usePage } from '../../pages/runtime/PageContext.js';
 import Modal from '../ui/Modal.jsx';
 
 function RatingForm({ member, busy, save }) {
-  const [score,setScore]=useState(String(member.rating?.score || ''));
-  const [feedback,setFeedback]=useState(member.rating?.feedback || '');
+  const [score,setScore]=useUiState(String(member.rating?.score || ''));
+  const [feedback,setFeedback]=useUiState(member.rating?.feedback || '');
   return <article className="program-rating-card"><h4>{member.name}</h4>
     {member.rating && <p>Rating: <strong>{member.rating.score}/5</strong>{member.rating.feedback && ` — ${member.rating.feedback}`}</p>}
     {member.canRate ? <form onSubmit={event=>{event.preventDefault();save({volunteerEmail:member.email,score:Number(score),feedback});}}>
@@ -21,22 +22,22 @@ export default function ProgramWorkspace() {
   const communicationPage=['/org-admin.html','/org-admin-programs.html','/volunteer-dashboard.html','/volunteer-portal.html','/donor-dashboard.html','/beneficiary-dashboard.html','/seller-dashboard.html'].includes(ui.path);
   const queryProgram=communicationPage ? new URLSearchParams(ui.location.search).get('program') : null;
   const id=ui.state.programWorkspaceId || queryProgram;
-  const [result,setResult]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[recipient,setRecipient]=useState(''),[message,setMessage]=useState('');
+  const [result,setResult]=useUiState(null),[error,setError]=useUiState(''),[busy,setBusy]=useUiState(false),[recipient,setRecipient]=useUiState(''),[message,setMessage]=useUiState('');
   useEffect(()=>{
     if(!id)return;
     const controller=new AbortController();
-    const load=()=>ui.api.get(`/participation/programs/${encodeURIComponent(id)}/workspace`,{signal:controller.signal}).then(data=>{setResult({...data,id});setError('');}).catch(problem=>{if(!controller.signal.aborted)setError(problem.message);});
+    const load=()=>ui.requests.get(`/participation/programs/${encodeURIComponent(id)}/workspace`,{signal:controller.signal}).then(data=>{setResult({...data,id});setError('');}).catch(problem=>{if(!controller.signal.aborted)setError(problem.message);});
     load();const timer=setInterval(load,5000);
     return()=>{controller.abort();clearInterval(timer);};
-  },[id,ui.api]);
+  },[id,ui.requests,setError,setResult]);
   const data=result?.id===id?result:null;
   async function save(endpoint,body) {
     setBusy(true);setError('');
     try {
-      await ui.api.post(`/participation/programs/${encodeURIComponent(id)}/${endpoint}`,body);
+      await ui.requests.post(`/participation/programs/${encodeURIComponent(id)}/${endpoint}`,body);
       if(endpoint==='messages')setMessage('');
-      const next=await ui.api.get(`/participation/programs/${encodeURIComponent(id)}/workspace`);
-      setResult({...next,id});ui.refresh();
+      const next=await ui.requests.get(`/participation/programs/${encodeURIComponent(id)}/workspace`);
+      setResult({...next,id});
     }catch(problem){setError(problem.message);}finally{setBusy(false);}
   }
   function close() {

@@ -1,10 +1,11 @@
+import { API_BASE } from '../apiBase.js';
 import { test, expect } from '@playwright/test';
 
 const volunteer={id:'v1',name:'Priya',email:'volunteer@kindred.org',status:'active',eligible:true,availableNow:true,currentLocation:'Mumbai',willingToTravel:true,reasons:[],warnings:[]};
 async function session(page,role){await page.evaluate(s=>sessionStorage.setItem('kindred_session',JSON.stringify(s)),{id:role,role,name:'Tester',email:`${role}@kindred.org`,org:'HopeConnect',status:'approved'});await page.goto(role==='admin'?'/org-admin#resources':`/${role}-dashboard`,{waitUntil:'domcontentloaded'});}
 async function setup(page,status='requested'){
  const claim={id:'claim',orderId:'order',productTitle:'Handmade bag',sellerId:'seller_001',buyerEmail:'donor@kindred.org',buyerName:'Buyer',organizationName:'HopeConnect',reason:'Damaged',description:'Stitching is torn',status,quantity:1,stockReserved:status!=='requested',history:[]},writes=[];
- await page.route('http://localhost:3000/**',async route=>{
+ await page.route(`${API_BASE}/**`,async route=>{
   const req=route.request(),url=new URL(req.url());
   if(req.method()!=='GET'){
     const body=req.postDataJSON();writes.push({path:url.pathname,body});

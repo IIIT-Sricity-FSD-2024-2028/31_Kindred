@@ -1,7 +1,6 @@
 import { FieldError, validateField, requireFields, validateEmail, validatePasswordFields, validatePhone } from '../../services/validation.js';
 import { writeStored } from '../../services/storage.js';
-import { safeNotificationLink } from '../../services/notifications.js';
-import { apiClient } from '../../services/auth.js';
+
 
 export const demoCredentials = {
   platform: ['super@kindred.org', 'Super@123'], org: ['admin@hopeconnect.org', 'Admin@123'],
@@ -34,11 +33,10 @@ export function authActions(ui) {
     const joinProgramId = params.get('joinProgram');
     if (joinProgramId) {
       if (['admin', 'superuser'].includes(user.role)) throw new Error('Sign in with a volunteer or community account to send this join request.');
-      const program = await apiClient.get(`/programs/${encodeURIComponent(joinProgramId)}`);
-      await apiClient.post('/program-applications', { programId: program.id, programName: program.name, volunteerEmail: user.email, volunteerName: user.name, message: 'I would like to join this program as a volunteer.' });
+      const program = await api.get(`/programs/${encodeURIComponent(joinProgramId)}`);
+      await api.post('/program-applications', { programId: program.id, programName: program.name, volunteerEmail: user.email, volunteerName: user.name, message: 'I would like to join this program as a volunteer.' });
       ui.toast({ type: 'success', title: 'Join request submitted', body: 'The organization admin can now review your request.' });
     }
-    writeStored('kindred_signup_destination', null);
     navigate(user.dashboard, { replace: true });
   }
   async function register(role, prefix) {
@@ -138,8 +136,7 @@ export function authActions(ui) {
       const signedIn = await ui.signIn({ email: body.email, password: body.password, role });
       navigate(signedIn.dashboard);
     } else {
-      writeStored('kindred_signup_destination', safeNotificationLink(new URLSearchParams(location?.search || '').get('redirect')));
-      writeStored('kindred_registration', { name: user.name, email: user.email, role: user.role, verificationStatus: user.verificationStatus || 'not_required', approvalStatus: user.approvalStatus || user.status });
+      writeStored('kindred_registration', { verificationStatus: user.verificationStatus || 'not_required', approvalStatus: user.approvalStatus || user.status });
       navigate('/registration-pending.html');
     }
   }
@@ -157,7 +154,7 @@ export function authActions(ui) {
     }
     const saved = await api.patch(session.role === 'volunteer' ? '/volunteers/me/profile' : `/users/${encodeURIComponent(session.id)}`, body);
     ui.updateSession(saved);
-    ui.refresh(); ui.toast({ type: 'success', title: 'Profile saved' });
+     ui.toast({ type: 'success', title: 'Profile saved' });
   }
   async function saveRecoveryQuestions() {
     if (!session?.id) throw new Error('Sign in to update your account recovery questions.');
@@ -188,7 +185,7 @@ export function authActions(ui) {
       if (!['admin','superuser','volunteer'].includes(session.role)) throw new Error('Skill updates are unavailable for this account.');
       const skillNames = {medical:'Medical Aid','first-aid':'First Aid'};
       const skills = Object.keys(v).filter((k) => k.startsWith('pf-skill-') && v[k]).map((k) => skillNames[k.slice(9)] || k.slice(9).replaceAll('-', ' ').replace(/\b\w/g, letter=>letter.toUpperCase())).concat(state.customSkills);
-      await api.patch(session.role === 'volunteer' ? '/volunteers/me/profile' : `/users/${encodeURIComponent(session.id)}`, { skills }); ui.refresh(); ui.toast({ type: 'success', title: 'Skills saved' });
+      await api.patch(session.role === 'volunteer' ? '/volunteers/me/profile' : `/users/${encodeURIComponent(session.id)}`, { skills });  ui.toast({ type: 'success', title: 'Skills saved' });
     },
     resetSkills: () => { update({ customSkills: ui.savedSkills.custom, customSkillsTouched: false, touchedFields: state.touchedFields.filter((field) => !field.startsWith('pf-skill-')) }); setValues(ui.savedSkills.checks); },
     changePassword: async () => {

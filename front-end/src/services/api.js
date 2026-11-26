@@ -10,7 +10,7 @@ export class ApiError extends Error {
 }
 
 export function createApiClient({ baseUrl = API_BASE_URL, getSession = () => null, fetchImpl = globalThis.fetch } = {}) {
-  async function request(path, { method = 'GET', body, signal } = {}) {
+  async function request(path, { method = 'GET', body, signal, withMetadata = false } = {}) {
     const headers = new Headers({ Accept: 'application/json' });
     const session = getSession();
     if (session?.status === 'approved' && session.role) {
@@ -41,7 +41,8 @@ export function createApiClient({ baseUrl = API_BASE_URL, getSession = () => nul
       const message = Array.isArray(payload?.message) ? payload.message.join('; ') : payload?.message;
       throw new ApiError(message || `Request failed (HTTP ${response.status}).`, { status: response.status, data: payload?.data });
     }
-    return payload.data;
+    const revision = response.headers?.get('X-Kindred-Revision');
+    return withMetadata ? { data: payload.data, revision: revision ? Number(revision) : null } : payload.data;
   }
   return {
     request,
