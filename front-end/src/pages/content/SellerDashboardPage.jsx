@@ -6,7 +6,7 @@ import { PageField, PageModal, PageRegion } from '../runtime/PageElements.jsx';
 export default function SellerDashboardPage() {
   const ui = usePage();
   return <>
-   <main className="seller-dashboard-page">
+   <main className="seller-dashboard-page" data-react-page="/seller-dashboard.html">
    <div {...ui.props("seller-dashboard-1", {"className": "main-content"})}>
      <div {...ui.props("seller-dashboard-2", {"className": "page-header"})}>
        <div {...ui.props("seller-dashboard-3", {"className": "page-header-text"})}>

@@ -1,7 +1,11 @@
+import { SubtasksService } from '../subtasks/service';
+import { workProgress } from '../../common/work-progress';
 import { ProofStore } from '../proofs/store';
 import { Inject } from '@nestjs/common';
 import { ProgramAssignmentsService } from '../program-assignments/service';
 import { ProgramsService } from '../programs/service';
+import { NotificationsService } from '../notifications/service';
+import { UsersService } from '../users/service';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Task } from './entities/task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -20,18 +24,22 @@ const VALID_TRANSITIONS: Record<string, string[]> = {
 export class TasksService {
   @Inject(ProofStore) private readonly proofs!: ProofStore;
   constructor(private readonly assignments: ProgramAssignmentsService, private readonly programs: ProgramsService) {}
+  @Inject(SubtasksService) private subtasks:SubtasksService;
+  @Inject(NotificationsService) private notifications:NotificationsService;
+  @Inject(UsersService) private users:UsersService;
+  onModuleInit(){this.subtasks.onChange(id=>this.syncProgramProgress(id));this.rebuildProgramProgress();}
   private tasks: Task[] = [];
   private counter = 100;
 
   private syncProgramProgress(programId?: string): void {
     if (!programId) return;
     const activeTasks = this.tasks.filter((task) => task.programId === programId && task.status !== 'cancelled');
-    const completed = activeTasks.filter((task) => task.status === 'completed').length;
-    this.programs.setTaskProgress(programId, activeTasks.length, completed);
+    const result=workProgress(activeTasks,this.subtasks?.findByProgram(programId)||[]);
+    this.programs.setTaskProgress(programId,result.total,result.completed);
   }
 
   rebuildProgramProgress(): void {
-    for (const programId of new Set(this.tasks.map((task) => task.programId).filter((id): id is string => Boolean(id)))) {
+    for (const programId of this.programs.findAll().map(p=>p.id)) {
       this.syncProgramProgress(programId);
     }
   }
@@ -61,7 +69,7 @@ export class TasksService {
   }
 
   create(dto: CreateTaskDto): Task {
-    if (dto.programId) this.assignments.assertActive(dto.programId, dto.assignedToEmail);
+    if (dto.programId) this.assignments.assertReady(dto.programId, dto.assignedToEmail);
     const newTask: Task = {
       id: dto.id || this.generateId(),
       title: dto.title,
@@ -80,6 +88,7 @@ export class TasksService {
     };
     this.tasks.push(newTask);
     this.syncProgramProgress(newTask.programId);
+    this.notifications.create({targetEmail:newTask.assignedToEmail,title:'New program task assigned',message:`${newTask.programName || 'Volunteer work'}: ${newTask.title}`,link:this.users.findByEmail(newTask.assignedToEmail)?.dashboard || '/volunteer-dashboard',type:'info'});
     return { ...newTask };
   }
 
@@ -111,6 +120,7 @@ export class TasksService {
     };
     this.syncProgramProgress(previousProgramId);
     if (this.tasks[idx].programId !== previousProgramId) this.syncProgramProgress(this.tasks[idx].programId);
+    if (dto.status && programId) this.notifications.create({targetOrg:this.programs.findById(programId).org,title:'Volunteer task updated',message:`${this.tasks[idx].assignedToName}: ${this.tasks[idx].title} — ${dto.status.replaceAll('_',' ')}`,link:'/org-admin#volunteers',type:'info'});
     return { ...this.tasks[idx] };
   }
 
@@ -128,6 +138,7 @@ export class TasksService {
     return count;
   }
 
+  cancelForHandover(id:string,reason:string){const t=this.tasks.find(t=>t.id===id);if(t&&t.status!=='completed'){t.status='cancelled';t.notes=`${t.notes || ''} Handover: ${reason}`;this.syncProgramProgress(t.programId);}}
   delete(id: string): boolean {
     const idx = this.tasks.findIndex((t) => t.id === id);
     if (idx === -1) throw new NotFoundException(`Task with id '${id}' not found`);

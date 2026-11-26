@@ -1,3 +1,7 @@
+import { ParticipationModule } from './modules/participation/module';
+import { APP_PIPE } from '@nestjs/core';
+import { ContactValidationPipe } from './common/contact-validation.pipe';
+import { SchedulingModule } from './common/scheduling';
 import { FulfillmentModule } from './modules/fulfillment/module';
 import { ProofStoreModule } from './modules/proofs/store';
 import { ProofsModule } from './modules/proofs/module';
@@ -34,8 +38,9 @@ import { TasksController } from './modules/tasks/controller';
 import { ProgramAssignmentsController } from './modules/program-assignments/controller';
 
 @Module({
+  providers: [{provide:APP_PIPE,useClass:ContactValidationPipe}],
   imports: [
-    ProofStoreModule, FulfillmentModule, ProofsModule,
+    ParticipationModule, SchedulingModule, ProofStoreModule, FulfillmentModule, ProofsModule,
     UsersModule,
     OrganizationsModule,
     VolunteersModule,

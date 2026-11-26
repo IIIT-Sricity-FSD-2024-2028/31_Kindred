@@ -1,10 +1,12 @@
 export interface ResourceDonationItem {
+  unit?:string;
   name: string;
   quantity: number;
   condition: string;
 }
 
 export interface ResourceDonation {
+  certificate?: {id:string;issuedAt:string;donationId:string;organization:string;donorName:string;donorEmail:string;programName:string;items:{name:string;quantity:number;unit:string;condition:string;offeredQuantity:number}[]};
   image?: string;
   id: string;
   donorName: string;

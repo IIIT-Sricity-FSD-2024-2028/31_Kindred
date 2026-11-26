@@ -1,3 +1,4 @@
+import { API_BASE } from '../apiBase.js';
 /* global window */
 import { test, expect } from '@playwright/test';
 
@@ -7,7 +8,7 @@ const program = { id: 'prog-inline', name: 'Teaching Program', org: org.name, fo
 async function open(page, role, path, overrides = {}) {
   const writes = [];
   const records = { organizations: [org], programs: [program], ...overrides };
-  await page.route('http://localhost:3000/**', async (route) => {
+  await page.route(`${API_BASE}/**`, async (route) => {
     const url = new URL(route.request().url());
     if (route.request().method() !== 'GET') {
       const body = route.request().postDataJSON();

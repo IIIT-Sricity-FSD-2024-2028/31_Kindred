@@ -32,14 +32,12 @@ export function contributionActions(ui) {
     const receipt = await api.post('/donations', { org: state.donationOrg, amount: Number(v['custom-amount']),
       frequency: state.frequency, donor: v['donor-name'].trim(), email: session?.email || v['donor-email'].trim(), programId: state.donationProgramId || new URLSearchParams(ui.location?.search || '').get('program') || undefined, pan: (v['donor-pan'] || '').trim().toUpperCase() || undefined, ...card, status: 'paid' });
     update({ receipt, donationStep: 'success', editor: null }); ui.toast({ type: 'success', title: 'Demo card donation recorded', body: `Recipient: ${receipt.org}. No money was transferred.` });
-    // Persist only the backend receipt and masked card/PAN metadata; never raw PAN/CVV.
-    const key = `kindred_react_donations:${v['donor-email'].toLowerCase()}`;
-    writeStored(key, [receipt, ...readStored(key, [], 'localStorage')], 'localStorage');
+    // The database owns receipts. Only optional masked card preferences stay local.
     if (v['save-card-check']) {
       const key = `kindred_react_cards:${v['donor-email'].toLowerCase()}`;
       writeStored(key, [...readStored(key, [], 'localStorage'), { id: crypto.randomUUID(), ...card, holder: v['card-holder-name'], expiry: v['card-expiry'] }], 'localStorage');
     }
-    setValues({ 'card-number': '', 'card-cvv': '' }); ui.refresh();
+    setValues({ 'card-number': '', 'card-cvv': '' });
   }
   async function resourceDonation() {
     if (!session || !['donor', 'admin', 'superuser'].includes(session.role)) throw new Error('Sign in as a donor to arrange a resource donation.');
@@ -73,7 +71,7 @@ export function contributionActions(ui) {
     });
     setValues(Object.fromEntries(Object.keys(v).filter((key) => /^(rd-|res-)/.test(key)).map((key) => [key, ''])));
     ui.clearFile('resource-photo');
-    update({ modal: null, items: [{ id: crypto.randomUUID(), name: '', quantity: 1, condition: 'New' }] }); ui.refresh(); ui.toast({ type: 'success', title: 'Resource donation submitted', body: 'Your pickup request is awaiting assignment.' });
+    update({ modal: null, items: [{ id: crypto.randomUUID(), name: '', quantity: 1, condition: 'New' }] });  ui.toast({ type: 'success', title: 'Resource donation submitted', body: 'Your pickup request is awaiting assignment.' });
   }
   async function submitIncoming(kind) {
     if (kind !== 'emergencyRequestForm' && !['beneficiary', 'admin', 'superuser'].includes(session?.role)) throw new Error('The existing backend requires a beneficiary or administrator account for this submission. Sign in before submitting; your request has not been sent.');
@@ -117,8 +115,7 @@ export function contributionActions(ui) {
       receipt = await api.post('/orders', { productId: product.id, quantity: Number(v['checkout-qty']),
         buyerName: v['checkout-name'], buyerEmail: v['checkout-email'], buyerPhone: v['checkout-phone'], address: v['checkout-address'], ...card });
     } catch (error) { ui.refresh(); throw error; }
-    ui.replaceCollection('products', ui.data('products').map((item) => item.id === product.id ? { ...item, quantity: Math.max(0, item.quantity - Number(v['checkout-qty'])) } : item));
-    update({ shopStep: 'success', receipt }); setValues({ 'shop-card-number': '', 'shop-card-cvv': '' }); ui.refresh();
+    update({ shopStep: 'success', receipt }); setValues({ 'shop-card-number': '', 'shop-card-cvv': '' });
   }
   return {
     openDonation: ([org, programId]) => openDonation(org || ui.organization?.name || 'Kindred Verified NGO', programId),

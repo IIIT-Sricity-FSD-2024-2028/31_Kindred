@@ -1,5 +1,5 @@
 const enc = encodeURIComponent;
-const publicPages = /index|organizations|organization-details|programs|fundraising|donate|volunteer-portal|create-program|org-admin|donor-dashboard/;
+const publicPages = /index|organizations|organization-details|programs|program-success|fundraising|donate|volunteer-portal|create-program|org-admin|donor-dashboard/;
 
 // Each request uses the current user's actual role. No anonymous elevation or local
 // mock fallback: an unavailable collection keeps its own error and retry state.
@@ -38,7 +38,7 @@ export function pageRequests(path, session) {
     jobs.replacements = `/replacements/by-seller/${enc(session.id)}`;
     jobs.proofs = '/proofs';
   }
-  if (['admin', 'superuser'].includes(session?.role) && /admin|overview|analytics|requests|incoming|resources|volunteers|create-program/.test(path)) {
+  if (['admin', 'superuser'].includes(session?.role) && /admin|overview|analytics|requests|incoming|resources|volunteers|create-program|program-success/.test(path)) {
     Object.assign(jobs, { organizations: '/organizations/manage', programs: '/programs/manage', proofs: '/proofs', volunteers: '/volunteers',
       incoming: '/incoming', tasks: '/tasks', hours: '/hour-logs', subtasks: '/subtasks',
       assignments: '/program-assignments', applications: session.role === 'admin' ? `/program-applications/by-org/${enc(session.org || '')}` : '/program-applications',
@@ -55,7 +55,7 @@ export function pageRequests(path, session) {
     if (session.role === 'volunteer') jobs.incoming = `/incoming/by-volunteer/${email}`;
   }
   if (session?.role === 'admin' && /org-admin|overview/.test(path)) jobs.balance = `/donations/balance/${enc(session.org || '')}`;
-  if (session && /dashboard|org-admin|platform-admin|resources|incoming/.test(path)) {
+  if (session && /dashboard|org-admin|platform-admin|resources|incoming|create-program/.test(path)) {
     jobs.deliveries = '/fulfillment/deliveries';
     if (['beneficiary','admin','superuser'].includes(session.role)) jobs.resourceRequests = '/fulfillment/requests';
     if (['admin','superuser'].includes(session.role)) jobs.inventory = '/fulfillment/inventory';

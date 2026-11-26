@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsString, IsOptional, IsInt, Min } from 'class-validator';
 
 export class CreateReplacementDto {
+  @IsOptional() @IsInt() @Min(1) quantity?:number;
   @ApiProperty({ description: 'Original order ID' })
   @IsString()
   orderId!: string;

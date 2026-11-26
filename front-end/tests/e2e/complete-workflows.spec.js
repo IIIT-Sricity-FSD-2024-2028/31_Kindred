@@ -1,3 +1,4 @@
+import { API_BASE } from '../apiBase.js';
 import { test, expect } from '@playwright/test';
 
 const org={id:'org_001',name:'HopeConnect',status:'active',listingStatus:'approved',focus:'Education',city:'Mumbai',email:'coordinator@hopeconnect.org',phone:'9812345678',bankAccountName:'HopeConnect',bankAccountNumber:'12345678901',bankIfsc:'SBIN0001234'};
@@ -5,7 +6,7 @@ const program={id:'future-program',name:'Community Teaching',org:org.name,status
 const membership={id:'member-1',programId:program.id,programName:program.name,volunteerEmail:'volunteer@kindred.org',volunteerName:'Priya',status:'pending',role:'Teacher'};
 async function setup(page,role,path,overrides={}){
  const state={organizations:[org],programs:[program],assignments:[structuredClone(membership)],volunteers:[{id:'v1',name:'Priya',email:'volunteer@kindred.org',org:org.name,status:'active',currentLocation:'Mumbai',availableNow:true}],tasks:[],subtasks:[],buyerOrders:[],buyerReplacements:[],...overrides},writes=[];
- await page.route('http://localhost:3000/**',async route=>{
+ await page.route(`${API_BASE}/**`,async route=>{
    const req=route.request(),url=new URL(req.url()),parts=url.pathname.split('/');
    if(req.method()!=='GET'){
      const body=req.postDataJSON();writes.push({path:url.pathname,body});

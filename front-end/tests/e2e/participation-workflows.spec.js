@@ -1,3 +1,4 @@
+import { API_BASE } from '../apiBase.js';
 /* global window */
 import { test, expect } from '@playwright/test';
 
@@ -8,7 +9,7 @@ const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR
 async function setup(page, role, path, extra = {}) {
   const data = { organizations: [org], programs: [program], volunteers: [volunteer], assignments: [], proofs: [], donations: [], ...extra };
   const writes = [];
-  await page.route('http://localhost:3000/**', async (route) => {
+  await page.route(`${API_BASE}/**`, async (route) => {
     const req = route.request(), url = new URL(req.url()), key = url.pathname.split('/')[1];
     const names = { 'program-assignments': 'assignments', 'program-applications': 'applications', 'hour-logs': 'hours', 'resource-donations': 'resources' };
     if (req.method() !== 'GET') {
@@ -103,7 +104,7 @@ test('organization admin reviews proof and platform admin reviews program listin
   await page.evaluate(() => window.sessionStorage.setItem('kindred_session',JSON.stringify({ id:'super',name:'Platform Admin',email:'super@kindred.org',role:'superuser',status:'approved' })));
   await page.goto('/platform-admin#requests');
   // A pending listing is rendered from the management collection.
-  await page.route('http://localhost:3000/programs/manage',route => route.fulfill({json:{success:true,data:[{...program,listingStatus:'pending'}]}}));
+  await page.route(`${API_BASE}/programs/manage`,route => route.fulfill({json:{success:true,data:[{...program,listingStatus:'pending'}]}}));
   await page.reload();
   await expect(page.getByRole('region',{name:'Program listing requests'})).toContainText(program.name);
   await expect(page.getByRole('button',{name:'Accept Program Listing'})).toBeVisible();

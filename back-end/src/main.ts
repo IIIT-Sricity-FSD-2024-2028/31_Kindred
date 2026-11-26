@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { enableLocalState } from './common/local-state';
+import { enableDatabaseRepositories } from './common/repositories/database';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -11,7 +11,7 @@ import express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  enableLocalState(app);
+  enableDatabaseRepositories(app);
 
   const uploadsDir = path.join(process.cwd(), 'uploads');
   if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
@@ -22,6 +22,7 @@ async function bootstrap() {
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Accept,Authorization,role,user-email,organization',
+    exposedHeaders: 'X-Kindred-Revision',
   });
 
   // ── Global Validation Pipe ──────────────────────────────────
@@ -70,9 +71,10 @@ async function bootstrap() {
   console.log('📄 swagger.json exported to docs/swagger.json');
 
   // ── Start Server ────────────────────────────────────────────
-  await app.listen(3000);
-  console.log('🚀 Kindred API running on http://localhost:3000');
-  console.log('📚 Swagger UI available at http://localhost:3000/api/docs');
+  const port = Number(process.env.PORT || 3000);
+  await app.listen(port);
+  console.log(`Kindred API running on http://localhost:${port}`);
+  console.log(`Swagger UI available at http://localhost:${port}/api/docs`);
 }
 
 bootstrap();

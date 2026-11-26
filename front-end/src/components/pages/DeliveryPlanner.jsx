@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useUiState } from '../../store/hooks.js';
+import { useEffect } from 'react';
 import { usePage } from '../../pages/runtime/PageContext.js';
 
 export default function DeliveryPlanner({form,change, replacement=false}) {
-  const ui=usePage(),[candidates,setCandidates]=useState([]),[error,setError]=useState(''),[loading,setLoading]=useState(false);
+  const ui=usePage(),[candidates,setCandidates]=useUiState([]),[error,setError]=useUiState(''),[loading,setLoading]=useUiState(false);
   const {scheduledDate,shiftStart,shiftEnd,pickupArea,destinationArea}=form;
   const canInvite=['admin','superuser'].includes(ui.session.role),direct=canInvite&&(form.mode==='direct'||replacement);
   useEffect(()=>{
     if(!direct||!scheduledDate||!shiftStart||!shiftEnd||!pickupArea||!destinationArea)return;
     const controller=new AbortController();
-    const timer=setTimeout(()=>{setLoading(true);setError('');const q=new URLSearchParams({startDate:scheduledDate,endDate:scheduledDate,shiftStart,shiftEnd,location:`${pickupArea} -> ${destinationArea}`});ui.api.get('/fulfillment/candidates?'+q,{signal:controller.signal}).then(setCandidates).catch(e=>{if(!controller.signal.aborted)setError(e.message);}).finally(()=>{if(!controller.signal.aborted)setLoading(false);});},250);
+    const timer=setTimeout(()=>{setLoading(true);setError('');const q=new URLSearchParams({startDate:scheduledDate,endDate:scheduledDate,shiftStart,shiftEnd,location:`${pickupArea} -> ${destinationArea}`});ui.requests.get('/fulfillment/candidates?'+q,{signal:controller.signal}).then(setCandidates).catch(e=>{if(!controller.signal.aborted)setError(e.message);}).finally(()=>{if(!controller.signal.aborted)setLoading(false);});},250);
     return ()=>{clearTimeout(timer);controller.abort();};
-  },[ui.api,direct,scheduledDate,shiftStart,shiftEnd,pickupArea,destinationArea]);
+  },[ui.requests,direct,scheduledDate,shiftStart,shiftEnd,pickupArea,destinationArea,setCandidates,setError,setLoading]);
   const selected=candidates.find(v=>v.email===form.volunteerEmail);
   return <section className="workflow-form-section"><h3>Schedule and suitability</h3><p>Times use Asia/Kolkata. Volunteers can review the full route, addresses and job details before accepting.</p><div className="workflow-field-grid">{[['scheduledDate','Delivery date','date'],['shiftStart','Window starts','time'],['shiftEnd','Window ends','time'],['pickupArea','Pickup area / city','text'],['destinationArea','Destination area / city','text']].map(([key,label,type])=><label key={key}>{label}<input required type={type} value={form[key]||''} onChange={e=>change(key,e.target.value)}/></label>)}</div><label>Load, transport and work instructions<textarea value={form.requirements||''} onChange={e=>change('requirements',e.target.value)} placeholder="What must be collected, handling instructions, vehicle needed"/></label>
     {canInvite&&!replacement&&<label>Assignment method<select aria-label="Assignment method" value={form.mode||'broadcast'} onChange={e=>change('mode',e.target.value)}><option value="broadcast">Post to volunteer portal</option><option value="direct">Invite a particular volunteer</option></select></label>}

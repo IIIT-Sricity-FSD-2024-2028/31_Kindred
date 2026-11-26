@@ -1,8 +1,9 @@
+import { useUiState } from '../store/hooks.js';
 import { layoutDefinitions } from './layoutDefinitions.js';
 import Navbar from '../components/navigation/Navbar.jsx';
 import Footer from '../components/navigation/Footer.jsx';
 import NotificationDock from '../components/notifications/NotificationDock.jsx';
-import { cloneElement, useLayoutEffect, useState } from 'react';
+import { cloneElement, useLayoutEffect } from 'react';
 import interactionStyles from '../pages/runtime/interactionStyles.json';
 import { activateRouteStyles } from '../routes/routeStyles.js';
 import '../styles/dashboards.css';
@@ -17,7 +18,7 @@ const dashboardRoutes = new Set([
 ]);
 
 function LoadedLayout({ route, layout, children }) {
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useUiState(false);
   const stylesKey = JSON.stringify(layout.styles);
   useLayoutEffect(() => {
     let current = true;
@@ -25,7 +26,7 @@ function LoadedLayout({ route, layout, children }) {
       if (current) setFailed(hasFailed);
     });
     return () => { current = false; };
-  }, [stylesKey]);
+  }, [stylesKey, setFailed]);
   const footer = <Footer variant={layout.footer} includeShop={layout.footerShop} />;
   const insideMain = route.path === '/org-admin-overview.html';
   return (

@@ -34,6 +34,12 @@ export class ProgramApplicationsController {
     return { success: true, data: this.service.findByOrg(org), message: 'Organization applications retrieved' };
   }
 
+  @Get(':id/applicant')
+  @Roles('admin', 'superuser')
+  applicant(@Param('id') id: string, @Headers('role') role: string, @Headers('organization') org: string) {
+    return { success: true, data: this.service.applicantDetails(id, role, org) };
+  }
+
   @Get('pending')
   @Roles('admin', 'superuser')
   @ApiOperation({ summary: 'Get pending applications awaiting review' })
@@ -91,13 +97,18 @@ export class ProgramApplicationsController {
     return { success: true, data: this.service.create(dto), message: 'Application submitted successfully' };
   }
 
+  @Patch(':id/withdraw')
+  @Roles('volunteer','donor','beneficiary','seller')
+  withdraw(@Param('id') id:string,@Headers('user-email') email:string,@Body() body:{reason:string}) { return {success:true,data:this.service.withdraw(id,email,body.reason)}; }
+
   @Patch(':id/approve')
   @Roles('admin', 'superuser')
   @ApiOperation({ summary: 'Approve a program application' })
   @ApiResponse({ status: 200, description: 'Application approved' })
   @ApiResponse({ status: 404, description: 'Application not found' })
   @ApiResponse({ status: 403, description: 'Access denied' })
-  approve(@Param('id') id: string) {
+  approve(@Param('id') id: string, @Headers('role') role: string, @Headers('organization') org: string) {
+    this.service.applicantDetails(id,role,org);
     return { success: true, data: this.service.approve(id), message: 'Application approved' };
   }
 
@@ -107,7 +118,8 @@ export class ProgramApplicationsController {
   @ApiResponse({ status: 200, description: 'Application rejected' })
   @ApiResponse({ status: 404, description: 'Application not found' })
   @ApiResponse({ status: 403, description: 'Access denied' })
-  reject(@Param('id') id: string) {
+  reject(@Param('id') id: string, @Headers('role') role: string, @Headers('organization') org: string) {
+    this.service.applicantDetails(id,role,org);
     return { success: true, data: this.service.reject(id), message: 'Application rejected' };
   }
 
