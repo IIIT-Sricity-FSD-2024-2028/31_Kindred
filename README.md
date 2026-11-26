@@ -13,7 +13,7 @@ Kindred is a community support platform that connects organizations, volunteers,
 - Seller dashboard for managing products and viewing orders.
 - Reusable navigation, dashboard tabs, confirmation dialogs, and modal windows.
 - Role-based frontend access and navigation between public pages and role-specific dashboards.
-- A shared page layout that loads the appropriate navigation, footer, notifications, and page styles.
+- A shared page layout that loads the appropriate navigation, footer, notifications, and page styles
 
 ## Main React files
 
