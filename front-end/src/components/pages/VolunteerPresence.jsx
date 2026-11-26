@@ -1,20 +1,21 @@
-import { useState } from 'react';
+import { useUiState } from '../../store/hooks.js';
+
 import { usePage } from '../../pages/runtime/PageContext.js';
 
 export default function VolunteerPresence() {
   const ui = usePage();
   const volunteer = ui.data('volunteer')[0];
-  const [location, setLocation] = useState(null);
-  const [draft,setDraft]=useState({});
+  const [location, setLocation] = useUiState(null);
+  const [draft,setDraft]=useUiState({});
   const planned=key=>draft[key]??volunteer?.[key]??'';
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [saving, setSaving] = useUiState(false);
+  const [message, setMessage] = useUiState('');
+  const [error, setError] = useUiState('');
   async function save(patch) {
     setSaving(true); setMessage(''); setError('');
     try {
-      const saved = await ui.api.patch('/volunteers/me/presence', patch);
-      ui.replaceCollection('volunteer', saved);
+      await ui.requests.patch('/volunteers/me/presence', patch);
+
       if ('currentLocation' in patch) setLocation(null);
       setMessage('Saved. Organization admins can see your availability and location.');
     } catch (problem) { setError(problem.message); }

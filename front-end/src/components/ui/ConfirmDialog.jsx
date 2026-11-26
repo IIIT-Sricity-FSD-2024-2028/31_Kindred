@@ -1,9 +1,10 @@
-import { useRef, useState } from 'react';
+import { useUiState } from '../../store/hooks.js';
+import { useRef } from 'react';
 import Modal from './Modal.jsx';
 
 function Confirmation({ title = 'Confirm Action', children, onConfirm, onClose, confirmLabel = 'Confirm' }) {
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
+  const [busy, setBusy] = useUiState(false);
+  const [error, setError] = useUiState('');
   const submitting = useRef(false);
   async function confirm() {
     if (submitting.current) return;

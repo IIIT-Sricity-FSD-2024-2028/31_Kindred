@@ -10,6 +10,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { createHash, randomBytes, scryptSync, timingSafeEqual } from 'crypto';
 import { StartVerificationDto } from './dto/verification.dto';
+import { VerificationAttemptException } from '../../common/repositories/verification-attempt.exception';
 
 const SECURITY_QUESTIONS = [
   'first_school',
@@ -302,7 +303,7 @@ export class UsersService {
       ['aadhaar_otp_simulation', 'phone_otp_simulation'].includes(
         dto.method,
       ) &&
-      !/^\+?[\d\s-]{10,18}$/.test(reference)
+      !/^[6-9]\d{9}$/.test(reference)
     )
       throw new BadRequestException(
         'Enter a valid phone number for the development OTP simulation.',
@@ -344,11 +345,11 @@ export class UsersService {
       );
     challenge.attempts += 1;
     if (challenge.attempts > 5)
-      throw new BadRequestException(
+      throw new VerificationAttemptException(
         'Too many incorrect attempts. Request a new code.',
       );
     if (digest(code) !== challenge.codeHash)
-      throw new BadRequestException('The verification code is incorrect.');
+      throw new VerificationAttemptException('The verification code is incorrect.');
     challenge.used = true;
     const token = randomBytes(32).toString('hex');
     this.verifiedRegistrations.push({
@@ -501,6 +502,23 @@ export class UsersService {
 
     this.users.push(newUser);
     return { ...newUser };
+  }
+
+  updateVolunteerProfile(email: string, dto: Pick<UpdateUserDto, 'name'|'phone'|'bio'|'location'|'dateOfBirth'|'skills'>): User {
+    const user = this.findByEmail(email);
+    if (!user || user.role !== 'volunteer') throw new ForbiddenException('A volunteer account is required');
+    let age = user.age;
+    if (dto.dateOfBirth !== undefined) {
+      const date = new Date(`${dto.dateOfBirth}T00:00:00.000Z`);
+      age = calculateAge(dto.dateOfBirth);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(dto.dateOfBirth) || Number.isNaN(date.getTime()) || date.toISOString().slice(0,10) !== dto.dateOfBirth || !Number.isFinite(age) || age < 0 || age > 120 || date > new Date()) throw new BadRequestException('Enter a valid date of birth');
+    }
+    const allowed = ['name','phone','bio','location','dateOfBirth','skills'] as const;
+    this.update(user.id, Object.fromEntries(allowed.filter(key=>dto[key] !== undefined).map(key=>[key,dto[key]])));
+    // update() replaces the stored record; set the derived age on that record.
+    const saved = this.users.find(record=>record.id===user.id)!;
+    saved.age = age;
+    return { ...saved };
   }
 
   update(id: string, dto: UpdateUserDto): User {

@@ -28,6 +28,7 @@ export class CreateSellerDto {
   @IsOptional()
   @IsString()
   location?: string;
+  @ApiPropertyOptional({ description: "Exact seller pickup address" }) @IsOptional() @IsString() pickupAddress?: string;
 
   @ApiPropertyOptional({ description: 'Partner organization ID', example: 'org_001' })
   @IsOptional()

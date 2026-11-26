@@ -1,10 +1,11 @@
+import { API_BASE } from '../apiBase.js';
 import {test,expect} from '@playwright/test';
 
 async function setupVolunteer(page){
  const volunteer={id:'vol_001',name:'Priya',email:'volunteer@kindred.org',status:'active',availableNow:true,currentLocation:'Andheri East, Mumbai',availableFrom:'2099-01-01',availableUntil:'2099-12-31',availabilityDays:['Monday','Wednesday','Friday'],serviceAreas:'Mumbai, Thane',willingToTravel:true};
  const program={id:'program-one',name:'Community health and education support',org:'HopeConnect',status:'active'};
  const tasks=[{id:'task-one',title:'Coordinate community supplies and report the completed handover',status:'pending'},{id:'task-two',title:'Prepare learning materials',status:'in-progress'}].map(task=>({...task,programId:program.id,programName:program.name,assignedToEmail:volunteer.email,assignedToName:volunteer.name,description:'Coordinate with the program team and report progress.'}));
- await page.route('http://localhost:3000/**',route=>{
+ await page.route(`${API_BASE}/**`,route=>{
   const req=route.request(),url=new URL(req.url()),key=url.pathname.split('/')[1];
   if(req.method()!=='GET'){Object.assign(volunteer,req.postDataJSON());return route.fulfill({json:{success:true,data:volunteer}});}
   const data=key==='volunteers'?volunteer:key==='programs'||url.pathname==='/program-assignments/my-programs'?[program]:key==='program-assignments'?[{id:'assignment-one',programId:program.id,programName:program.name,volunteerEmail:volunteer.email,volunteerName:volunteer.name,status:'active',history:[]}]:key==='tasks'?tasks:[];
@@ -27,7 +28,7 @@ for(const width of [1440,390])test(`availability and volunteer progress fit at $
 
 test('buyer confirms original and replacement receipt and sees the recorded status',async({page})=>{
  const writes=[],order={id:'order-one',productTitle:'Handmade bowl',quantity:1,total:100,buyerEmail:'donor@kindred.org',address:'Buyer address',deliveryStatus:'in_transit',paymentStatus:'paid'},replacement={id:'replacement-one',orderId:order.id,productTitle:order.productTitle,quantity:1,buyerEmail:order.buyerEmail,status:'replacement_in_transit',history:[]};
- await page.route('http://localhost:3000/**',route=>{
+ await page.route(`${API_BASE}/**`,route=>{
   const req=route.request(),url=new URL(req.url());
   if(req.method()!=='GET'){writes.push(url.pathname);(url.pathname.startsWith('/orders/')?order:replacement).buyerReceivedAt='2026-11-02T12:00:00Z';return route.fulfill({json:{success:true,data:{}}});}
   const data=url.pathname.startsWith('/orders/by-buyer/')?[order]:url.pathname.startsWith('/replacements/by-buyer/')?[replacement]:[];return route.fulfill({json:{success:true,data}});

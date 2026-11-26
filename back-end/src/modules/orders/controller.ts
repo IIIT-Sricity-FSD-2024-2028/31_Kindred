@@ -19,11 +19,16 @@ export class OrdersController {
     return { success: true, data: this.service.create(dto), message: 'Payment successful. Order created and queued for delivery assignment.' };
   }
 
+  @Patch(':id/received') @Roles('donor','beneficiary','volunteer','seller','admin','superuser')
+  received(@Param('id') id:string,@Headers() h:Record<string,string>){return {success:true,data:this.fulfillment.confirmOrderReceipt(id,{role:h.role,email:h['user-email']||'',org:h.organization||''})};}
+  @Patch(':id/cancel') @Roles('donor','beneficiary','volunteer','seller','admin','superuser')
+  cancel(@Param('id') id:string,@Body() b:{reason:string},@Headers() h:Record<string,string>){return {success:true,data:this.fulfillment.cancelOrder(id,b.reason,{role:h.role,email:h['user-email']||'',org:h.organization||''})};}
+
   @Get()
   @Roles('admin', 'superuser', 'seller')
   @ApiQuery({ name: 'sellerId', required: false })
-  findAll(@Query('sellerId') sellerId?: string) {
-    const data = sellerId ? this.service.findBySeller(sellerId) : this.service.findAll();
+  findAll(@Headers() h:Record<string,string>,@Query('sellerId') sellerId?: string) {
+    const data = this.service.visibleToManager({role:h.role,email:h['user-email']||'',org:h.organization||''},sellerId);
     return { success: true, data, message: 'Orders retrieved successfully' };
   }
 
@@ -36,7 +41,9 @@ export class OrdersController {
 
   @Get('by-buyer/:email')
   @ApiOperation({ summary: 'Get order history for a buyer' })
-  findByBuyer(@Param('email') email: string) {
+  @Roles('donor','beneficiary','volunteer','seller','admin','superuser')
+  findByBuyer(@Param('email') email: string,@Headers('user-email') caller:string,@Headers('role') role:string) {
+    if(role!=='superuser'&&email.toLowerCase()!==String(caller).toLowerCase())throw new ForbiddenException('Read your own purchase history');
     return { success: true, data: this.service.findByBuyer(email), message: 'Buyer orders retrieved' };
   }
 

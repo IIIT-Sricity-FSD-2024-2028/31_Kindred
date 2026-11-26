@@ -1,6 +1,6 @@
 import { ProofStore } from '../proofs/store';
 import { Inject } from '@nestjs/common';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { ProductsService } from '../products/service';
 import { SellersService } from '../sellers/service';
 import { ResourceDonationsService } from '../resource-donations/service';
@@ -29,6 +29,9 @@ export class OrdersService {
     private readonly resources: ResourceDonationsService,
   ) {}
 
+  visibleToManager(actor:{role:string;email:string;org:string},sellerId?:string){
+    return this.orders.filter(order=>(!sellerId||order.sellerId===sellerId)&&(actor.role==='superuser'||actor.role==='admin'&&!!actor.org&&order.organizationName===actor.org||actor.role==='seller'&&this.sellers.findByEmail(actor.email)?.id===order.sellerId));
+  }
   findAll(): ShopOrder[] { return this.orders.slice(); }
 
   releaseDelivery(id: string) {
@@ -65,6 +68,26 @@ export class OrdersService {
     return { ...order };
   }
 
+  confirmReceipt(id:string,email:string):ShopOrder{
+    const order=this.orders.find(o=>o.id===id);if(!order)throw new NotFoundException('Order not found');
+    if(!email||order.buyerEmail.toLowerCase()!==email.toLowerCase())throw new ForbiddenException('Only the buyer can confirm receipt');
+    if(order.buyerReceivedAt)return {...order};
+    if(!['in_transit','delivered'].includes(order.deliveryStatus))throw new BadRequestException('Receipt can be confirmed once the order is out for delivery');
+    order.buyerReceivedAt=new Date().toISOString();(order.history||=[]).push({at:order.buyerReceivedAt,action:'buyer_confirmed_received',reason:'Buyer confirmed receipt'});
+    return {...order};
+  }
+  cancel(id:string,reason:string):ShopOrder {
+    const order=this.orders.find(o=>o.id===id);if(!order)throw new NotFoundException();
+    if(order.deliveryStatus==='cancelled')return {...order};
+    const age=Date.now()-Date.parse(order.createdAt);
+    if(!Number.isFinite(age)||age<0||age>=60*60*1000)throw new BadRequestException('Orders can only be cancelled within one hour of purchase');
+    if(!reason?.trim() || !['awaiting_admin_assignment','assigned'].includes(order.deliveryStatus))throw new BadRequestException('Cancel before pickup, or arrange a confirmed return first; a reason is required');
+    this.products.findById(order.productId);this.sellers.findById(order.sellerId);
+    this.products.increaseStock(order.productId,order.quantity);this.sellers.reverseSale(order.sellerId,order.total);
+    order.paymentStatus='reversed_demo';order.deliveryStatus='cancelled';order.cancelledAt=new Date().toISOString();order.cancellationReason=reason;
+    (order.history ||= []).push({at:order.cancelledAt,action:'cancelled_and_reversed',reason});
+    return {...order};
+  }
   create(dto: CreateOrderDto): ShopOrder {
     const product = this.products.findById(dto.productId);
     if (product.status !== 'approved') throw new BadRequestException('Product is not approved for sale');

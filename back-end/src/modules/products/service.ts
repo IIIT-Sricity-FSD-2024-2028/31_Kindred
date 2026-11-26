@@ -82,6 +82,7 @@ export class ProductsService {
   }
 
 
+  increaseStock(id:string,quantity:number){const p=this.products.find(p=>p.id===id);if(!p)throw new NotFoundException('Product not found');p.quantity+=quantity;return {...p};}
   decreaseStock(id: string, quantity: number): Product {
     const idx = this.products.findIndex((p) => p.id === id);
     if (idx === -1) throw new NotFoundException(`Product with id '${id}' not found`);
@@ -104,7 +105,7 @@ export class ProductsService {
   delete(id: string): boolean {
     const idx = this.products.findIndex((p) => p.id === id);
     if (idx === -1) throw new NotFoundException(`Product with id '${id}' not found`);
-    this.products.splice(idx, 1);
+    this.products[idx].status='archived';
     return true;
   }
 }

@@ -1,8 +1,9 @@
+import { API_BASE } from '../apiBase.js';
 import { test, expect } from '@playwright/test';
 
 async function setup(page, role, path, records) {
   const writes = [];
-  await page.route('http://localhost:3000/**', async (route) => {
+  await page.route(`${API_BASE}/**`, async (route) => {
     const request = route.request(), url = new URL(request.url());
     if (request.method() === 'POST' && url.pathname === '/orders') {
       const body = request.postDataJSON();

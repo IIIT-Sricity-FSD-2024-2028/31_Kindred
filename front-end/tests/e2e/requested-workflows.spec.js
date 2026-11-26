@@ -1,3 +1,4 @@
+import { API_BASE } from '../apiBase.js';
 /* global window, document */
 import { test, expect } from '@playwright/test';
 
@@ -12,7 +13,7 @@ async function setup(page, role, path, records = {}) {
     { id: 'a2', programId: program.id, programName: program.name, volunteerEmail: 'pending@example.test', volunteerName: 'Pending Volunteer', status: 'pending', role: 'Volunteer' },
   ], ...records };
   const writes = [];
-  await page.route('http://localhost:3000/**', async (route) => {
+  await page.route(`${API_BASE}/**`, async (route) => {
     const req = route.request(), url = new URL(req.url()), key = url.pathname.split('/')[1];
     if(url.pathname.includes('/brief'))return route.fulfill({json:{success:true,data:{program:{...program,startDate:'2099-01-01',endDate:'2099-01-07',version:1,description:'Teach children'},organization:org,membership:collections.assignments[1],eligibility:{eligible:true,reasons:[],warnings:[]}}}});
     const names = { 'program-assignments': 'assignments', 'hour-logs': 'hours', 'program-applications': 'applications', 'resource-donations': 'resources' };
@@ -80,8 +81,8 @@ test('task and subtask pickers contain only accepted program members', async ({ 
   await page.locator('[data-program-id="program-test"]').getByRole('button', { name: 'Assign Task', exact: true }).click();
   const modal = page.getByRole('dialog');
   await expect(modal.getByLabel('Volunteer', { exact: true }).locator('option')).toHaveText(['Select...', 'Accepted Volunteer (accepted@example.test)']);
-  await modal.getByLabel('Program', { exact: true }).selectOption('');
-  await expect(modal.getByLabel('Volunteer', { exact: true }).locator('option')).toHaveCount(1);
+  await expect(modal).toContainText('Program: Community Teaching');
+  await expect(modal.getByRole('combobox', { name: 'Program', exact: true })).toHaveCount(0);
   await modal.getByRole('button', { name: 'Cancel', exact: true }).click();
   await page.locator('[data-program-id="program-test"]').getByRole('button', { name: 'Details', exact: true }).click();
   await page.getByRole('button', { name: 'Add Subtask', exact: true }).click();

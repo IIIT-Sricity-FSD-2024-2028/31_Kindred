@@ -1,3 +1,4 @@
+import { API_BASE } from '../apiBase.js';
 import {test,expect} from '@playwright/test';
 
 const pickup='Shop 12, Market Road, Mumbai, Maharashtra 400001';
@@ -6,7 +7,7 @@ async function setup(page,role,{missing=false,reassign=false}={}) {
   const seller={id:'seller_001',email:'seller@kindred.org',businessName:'Artisan Shop',status:'approved',pickupAddress:missing?'':pickup};
   const order={id:'order-one',sellerId:seller.id,productTitle:'Handmade bowl',quantity:1,organizationName:'HopeConnect',address,deliveryStatus:'awaiting_admin_assignment'};
   const writes=[];
-  await page.route('http://localhost:3000/**',route=>{
+  await page.route(`${API_BASE}/**`,route=>{
     const req=route.request(),url=new URL(req.url()),key=url.pathname.split('/')[1];
     if(req.method()!=='GET'){
       const body=req.postDataJSON();writes.push({path:url.pathname,body});

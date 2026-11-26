@@ -67,6 +67,7 @@ export class SellersService {
       businessName: dto.businessName,
       businessDescription: dto.businessDescription,
       location: dto.location,
+      pickupAddress: dto.pickupAddress?.trim(),
       organizationId: dto.organizationId,
       organizationName: dto.organizationName,
       status: 'pending',
@@ -81,10 +82,15 @@ export class SellersService {
   update(id: string, dto: UpdateSellerDto): Seller {
     const idx = this.sellers.findIndex((s) => s.id === id);
     if (idx === -1) throw new NotFoundException(`Seller with id '${id}' not found`);
+    if (dto.pickupAddress !== undefined) {
+      if (!dto.pickupAddress.trim()) throw new BadRequestException("Enter the full seller pickup address");
+      dto = { ...dto, pickupAddress: dto.pickupAddress.trim() };
+    }
     this.sellers[idx] = { ...this.sellers[idx], ...Object.fromEntries(Object.entries(dto).filter(([, value]) => value !== undefined)) };
     return { ...this.sellers[idx] };
   }
 
+  reverseSale(id:string,amount:number){const seller=this.sellers.find(s=>s.id===id);if(!seller)throw new NotFoundException();seller.salesBalance=Math.max(0,(seller.salesBalance||0)-amount);}
   creditSale(id: string, amount: number): Seller {
     const idx = this.sellers.findIndex((s) => s.id === id);
     if (idx === -1) throw new NotFoundException(`Seller with id '${id}' not found`);

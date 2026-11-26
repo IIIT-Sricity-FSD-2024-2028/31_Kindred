@@ -18,6 +18,17 @@ export interface Program {
   volunteerGoal: number;
   openForApplications: boolean;
   location: string;
+  shiftStart?: string;
+  shiftEnd?: string;
+  shiftDays?: string[];
+  reportingTime?: string;
+  invitationDeadline?: string;
+  timeZone?: string;
+  contactName?: string;
+  contactPhone?: string;
+  meetingPoint?: string;
+  workBrief?: string;
+  version?: number;
   image?: string;
   listingStatus?: 'unlisted' | 'pending' | 'approved' | 'rejected';
 }

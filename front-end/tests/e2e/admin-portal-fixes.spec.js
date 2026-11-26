@@ -1,8 +1,9 @@
+import { API_BASE } from '../apiBase.js';
 import { test, expect } from '@playwright/test';
 
 const program = { id: 'portal-program', name: 'Open community program', org: 'HopeConnect', status: 'active', listingStatus: 'unlisted', openForApplications: true, requiredSkills: [], focus: ['Education'] };
 async function setup(page, path, role = 'admin') {
-  await page.route('http://localhost:3000/**', route => {
+  await page.route(`${API_BASE}/**`, route => {
     const key = new URL(route.request().url()).pathname.split('/')[1];
     return route.fulfill({ json: { success: true, data: ({ programs: [program], products: [{ id: 'product', title: 'Community bag', price: 100, quantity: 3, status: 'approved', photos: [] }] })[key] || [] } });
   });
@@ -85,7 +86,7 @@ test('admins can review applicant profiles including reviewed applications', asy
 test('admins can open full volunteer profiles from the volunteer directory', async ({ page }) => {
   await setup(page, '/volunteers');
   const profile = { id: 'vol-review', name: 'Directory Volunteer', email: 'volunteer@example.test', org: 'HopeConnect', status: 'active', phone: '9812345678', skills: ['Teaching'], serviceAreas: 'Mumbai', availableFrom: '2026-11-01', availableUntil: '2026-12-31' };
-  await page.route('http://localhost:3000/volunteers', route => route.fulfill({ json: { success: true, data: [profile] } }));
+  await page.route(`${API_BASE}/volunteers`, route => route.fulfill({ json: { success: true, data: [profile] } }));
   await page.route('**/volunteers/review/*', route => route.fulfill({ json: { success: true, data: profile } }));
   await page.reload();
   await page.getByRole('button', { name: 'Details', exact: true }).click();

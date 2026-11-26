@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useUiState } from '../../store/hooks.js';
+import { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from '../../routes/navigation.jsx';
 import { useAuth } from '../../hooks/useAuth.js';
 import { useToast } from '../../hooks/useToast.js';
@@ -13,15 +15,15 @@ import { readStored as stored, writeStored } from '../../services/storage.js';
 import { profileSkillValues } from '../../services/skills.js';
 import { validateField, validatePhone, validateEmail, localDate } from '../../services/validation.js';
 
-function initialValues(path, session) {
+function initialValues(path, session, loadedEdit, loadedRequest) {
   const values = Object.fromEntries(Object.entries(fields[path] || {}).map(([name, item]) => [name, item.default]));
   Object.assign(values, { 'pf-name': session?.name || '', 'pf-email': session?.email || '', 'pf-role': session?.role || '', 'pf-org': session?.org || '',
     'pf-phone': session?.phone || '', 'pf-bio': session?.bio || '',
     fullName: session?.name || '', 'donor-name': session?.name || '', 'donor-email': session?.email || '',
     'custom-amount': '500', 'log-date': localDate(), programStartDate:'', programShiftDays:[],
   });
-  const edit = path === '/create-program.html' ? stored('kindred_edit_program') : null;
-  const request = path === '/create-program.html' ? stored('kindred_resource_program_request') : null;
+  const edit = path === '/create-program.html' ? loadedEdit || stored('kindred_edit_program') : null;
+  const request = path === '/create-program.html' ? loadedRequest || stored('kindred_resource_program_request') : null;
   if (request && new URLSearchParams(window.location.search).get('request') === request.id) Object.assign(values, { programTitle: `${request.resource} Collection`, programDesc: `${request.reason}\nResources needed: ${request.resource}, quantity ${request.quantity}.`, programLocation: request.address, programBudget:'0', volunteerGoal:'1' });
   if (edit && new URLSearchParams(window.location.search).get('edit') === edit.id) Object.assign(values, { programStartDate:edit.startDate,programShiftStart:edit.shiftStart||'',programShiftEnd:edit.shiftEnd||'',programShiftDays:edit.shiftDays||[],programReportingTime:edit.reportingTime||'',programInvitationDeadline:edit.invitationDeadline||'',programMeetingPoint:edit.meetingPoint||'',programContactName:edit.contactName||'',programContactPhone:edit.contactPhone||'',programWorkBrief:edit.workBrief||edit.description,programTitle: edit.name, programLocation: edit.location, programBudget: String(edit.budget), programEndDate: edit.endDate, volunteerGoal: String(edit.volunteerGoal), programDesc: edit.description, progOpenApps: String(edit.openForApplications), requestPublicListing: false });
   return values;
@@ -36,14 +38,16 @@ export default function usePageModel(route) {
   const { session, api, signIn, updateSession } = useAuth();
   const toast = useToast(), navigate = useNavigate(), location = useLocation();
   const resources = usePageData(route.path, session, api);
-  const [rawValues, replaceValues] = useState(() => initialValues(route.path, session));
-  const [storedState, setState] = useState(() => {
+  const savedCards = useSelector(state => state.preferences.cards[session?.email?.toLowerCase()]);
+  const [rawValues, replaceValues] = useUiState(() => initialValues(route.path, session));
+  const [storedState, setState] = useUiState(() => {
     const edit = route.path === '/create-program.html' ? stored('kindred_edit_program') : null;
-    const editing = edit && new URLSearchParams(location.search).get('edit') === edit.id;
+    const editingId = route.path === '/create-program.html' ? new URLSearchParams(location.search).get('edit') : null;
+    const editing = edit && editingId === edit.id;
     const requestedRole = new URLSearchParams(location.search).get('role');
     return { selectedRole: route.path === '/signup.html' ? ['org','volunteer','donor','beneficiary','seller'].includes(requestedRole) ? requestedRole : 'org' : '', team: 'master', modal: route.path === '/page2-new-request-modal.html' ? 'request-modal' : null, donationStep: 1, shopStep: 1,
       donationOrg: new URLSearchParams(location.search).get('org') || '', frequency: 'one-time', visiblePasswords: {},
-      files: {}, customSkills: [], categories: editing ? [edit.focus].flat() : [], programSkills: editing ? edit.requiredSkills : [], editingProgram: editing ? edit.id : null, editingStartDate: editing ? edit.startDate : null,
+      files: {}, customSkills: [], categories: editing ? [edit.focus].flat() : [], programSkills: editing ? edit.requiredSkills : [], editingProgram: editingId, editingInitialized: Boolean(editing), editingStartDate: editing ? edit.startDate : null,
       urgency: 'medium', hiddenNodes: [], filters: { users: 'all', inbox: 'all', shop: 'all', catalog: 'all' }, searches: {},
       items: [{ id: 'first-item', name: '', quantity: 1, condition: 'New' }], error: '', busy: false, editor: null, confirmation: null,
       programWorkspaceId: null,
@@ -51,6 +55,16 @@ export default function usePageModel(route) {
       touchedFields: [], fieldErrors: {},
     };
   });
+  const requestedEdit = route.path === '/create-program.html' ? new URLSearchParams(location.search).get('edit') : null;
+  const requestedResource = route.path === '/create-program.html' ? new URLSearchParams(location.search).get('request') : null;
+  const loadedProgram = requestedEdit ? resources.data('programs').find(program => program.id === requestedEdit) : null;
+  const loadedRequest = requestedResource ? resources.data('resourceRequests').find(request => request.id === requestedResource) : null;
+  useEffect(() => {
+    if (storedState.editingInitialized || !loadedProgram && !loadedRequest) return;
+    const defaults = initialValues(route.path, session, loadedProgram, loadedRequest);
+    replaceValues(previous => ({ ...previous, ...Object.fromEntries(Object.entries(defaults).filter(([key]) => !storedState.touchedFields.includes(key))) }));
+    setState(previous => ({ ...previous, editingInitialized: true, ...(loadedProgram ? { editingProgram: loadedProgram.id, editingStartDate: loadedProgram.startDate, categories: [loadedProgram.focus].flat(), programSkills: loadedProgram.requiredSkills || [] } : {}) }));
+  }, [loadedProgram, loadedRequest, storedState.editingInitialized, route.path, session, replaceValues, setState, storedState.touchedFields]);
   const savedProfile = resources.data('profile')[0] || resources.data('volunteer')[0] || session || {};
   const savedSkills = profileSkillValues(resources.data('volunteer')[0]?.skills || resources.data('profile')[0]?.skills || session?.skills, Object.keys(fields['/profile.html']).filter((field) => field.startsWith('pf-skill-')));
   const state = { ...storedState, selectedVolunteers: storedState.editingProgram && !storedState.assignmentsTouched ? resources.data('assignments').filter((a) => a.programId === storedState.editingProgram && ['active', 'pending'].includes(a.status)).map((a) => a.volunteerEmail) : storedState.selectedVolunteers, customSkills: route.path === '/profile.html' && !storedState.customSkillsTouched ? savedSkills.custom : storedState.customSkills };
@@ -82,7 +96,7 @@ export default function usePageModel(route) {
   useEffect(() => {
     if (tabs.length && tabs.every((t) => !t.to) && requested && requested !== activeTab) navigate({ pathname: location.pathname, search: location.search, hash: activeTab }, { replace: true });
   }, [tabs, requested, activeTab, navigate, location.pathname, location.search]);
-  const ui = { path: route.path, values, state, session, api, signIn, updateSession, navigate, location, toast, update, setValues,
+  const ui = { path: route.path, values, state, session, api, requests: api, signIn, updateSession, navigate, location, toast, update, setValues,
     ...resources, tabs, activeTab, savedSkills, savedProfile,
     registerField: (field, element) => { fieldRefs.current[field] = element; },
     focusOtp: (field, direction) => { const keys = Object.keys(fieldRefs.current).filter((key) => fieldRefs.current[key]?.className?.includes('otp')); fieldRefs.current[keys[keys.indexOf(field)+direction]]?.focus(); },
@@ -90,7 +104,7 @@ export default function usePageModel(route) {
     organization: resources.data('organizations').find((o) => o.id === new URLSearchParams(location.search).get('id')),
     changeTab: (id) => navigate({ pathname: location.pathname, search: location.search, hash: id }),
     savedDonations: resources.data('donations'),
-    savedCards: stored(`kindred_react_cards:${session?.email?.toLowerCase()}`, [], 'localStorage'),
+    savedCards: savedCards || [],
     addSkill: (field) => { const skill = values[field]?.trim(); if (skill) { update({ customSkills: state.customSkills.some((item) => item.toLowerCase() === skill.toLowerCase()) ? state.customSkills : [...state.customSkills, skill] }); setValues({ [field]: '' }); } },
   };
   async function action(name, args = [], meta = {}) {
@@ -127,7 +141,7 @@ export default function usePageModel(route) {
       const link = document.createElement('a'); link.href = url; link.download = 'kindred-incoming.csv'; link.click(); URL.revokeObjectURL(url);
     },
     callHelpline: () => { window.location.href = 'tel:+919123456789'; },
-    removeSavedCard: ([id]) => { if (!writeStored(`kindred_react_cards:${session.email.toLowerCase()}`, ui.savedCards.filter((card) => card.id !== id), 'localStorage')) throw new Error('Browser storage is unavailable. This saved card could not be removed.'); update({ cardRevision: Date.now() }); },
+    removeSavedCard: ([id]) => { if (!writeStored(`kindred_react_cards:${session.email.toLowerCase()}`, ui.savedCards.filter((card) => card.id !== id), 'localStorage')) throw new Error('Browser storage is unavailable. This saved card could not be removed.'); },
   };
     const handler = handlers[name];
     if (!handler) { update({ error: `This action (${name}) could not be completed. Please try again.` }); return; }
@@ -316,7 +330,7 @@ export default function usePageModel(route) {
       'success-amount': '₹'+Number(receipt?.amount || 0).toLocaleString('en-IN'), 'success-org': receipt?.org, 'success-txn-id': receipt?.id,
       'success-card-mask': receipt?.cardLast4 ? '•••• '+receipt.cardLast4 : '', 'success-prod-title': state.product?.title,
       'success-order-amount': '₹'+Number(receipt?.total || receipt?.amount || 0).toLocaleString('en-IN'), 'success-order-id': receipt?.id,
-      'success-delivery-addr': receipt?.address || values['checkout-address'], programNameDisplay: stored('kindred_last_program')?.name || 'Your program',
+      'success-delivery-addr': receipt?.address || values['checkout-address'], programNameDisplay: resources.data('programs').find(program => program.id === new URLSearchParams(location.search).get('id'))?.name || stored('kindred_last_program')?.name || 'Your program',
       certFileName: state.files['org-cert-file']?.name, certFileSize: state.files['org-cert-file'] ? (state.files['org-cert-file'].size/1024).toFixed(1)+' KB' : '',
       adminTeamBadge: session?.team ? session.team === 'team1' ? 'Team 1' : 'Team 2' : 'Master Admin',
       shopProductCount: `${filterRecords(ui.data('products'),state.searches.catalog || '',state.filters.catalog).length} products found`,
