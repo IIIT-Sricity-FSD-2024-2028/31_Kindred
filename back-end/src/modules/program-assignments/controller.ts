@@ -71,7 +71,7 @@ export class ProgramAssignmentsController {
   @Patch(':id/respond')
   @Roles('volunteer', 'donor', 'beneficiary', 'seller')
   respond(@Param('id') id: string, @Headers('user-email') email: string, @Body() dto: RespondAssignmentDto) {
-    return { success: true, data: this.service.respond(id, email, dto.action), message: 'Invitation response saved' };
+    return { success: true, data: this.service.respond(id, email, dto.action, dto), message: 'Invitation response saved' };
   }
 
   @Patch(':id')

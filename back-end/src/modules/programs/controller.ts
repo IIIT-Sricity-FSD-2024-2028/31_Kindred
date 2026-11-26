@@ -25,6 +25,9 @@ export class ProgramsController {
     return { success: true, data: this.service.findPublic(), message: 'Programs retrieved successfully' };
   }
 
+  @Get('portal')
+  portal() { return { success: true, data: this.service.findPortal() }; }
+
   @Get('manage')
   @Roles('admin', 'superuser')
   manage(@Headers('role') role: string, @Headers('organization') org: string) { return { success: true, data: role === 'superuser' ? this.service.findAll() : this.service.findByOrg(org) }; }

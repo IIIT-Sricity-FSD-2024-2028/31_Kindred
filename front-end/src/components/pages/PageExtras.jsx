@@ -109,6 +109,6 @@ export default function PageExtras({ inlineError = false }) {
     <PublicOrganizationFunding />
     {ui.session?.role === 'superuser' && ui.path === '/admin-users.html' && <button className="btn-add-org" onClick={() => ui.action('openUserEditor')}>+ Create User</button>}
     <Editor /><RecordDetail /><VolunteerReports /><ProgramWorkspace /><ResourceThankYouCertificate />
-    <ConfirmDialog open={Boolean(confirm)} onClose={() => ui.update({ confirmation: null })} onConfirm={async () => { if (!confirm) return; await executeConfirmation(ui.api,confirm); ui.refresh(); ui.update({ confirmation: null }); ui.toast({ type: 'success', title: 'Record updated' }); }}>{confirm?.message}</ConfirmDialog>
+    <ConfirmDialog open={Boolean(confirm)} onClose={() => ui.update({ confirmation: null })} onConfirm={async () => { if (!confirm) return; await executeConfirmation(ui.requests,confirm);  ui.update({ confirmation: null }); ui.toast({ type: 'success', title: 'Record updated' }); }}>{confirm?.message}</ConfirmDialog>
   </>;
 }

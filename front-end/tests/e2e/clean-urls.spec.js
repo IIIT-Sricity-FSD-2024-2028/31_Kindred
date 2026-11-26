@@ -1,7 +1,8 @@
+import { FRONTEND_BASE } from '../apiBase.js';
 /* global document, location */
 import {test,expect} from '@playwright/test';
 test('public navigation shows clean URLs and clean internal link hrefs',async ({page})=>{
-  await page.goto('/index.html'); await expect(page).toHaveURL('http://127.0.0.1:5173/');
+  await page.goto('/index.html'); await expect(page).toHaveURL(FRONTEND_BASE + '/');
   await page.locator('.navbar-links').getByRole('link',{name:'Programs',exact:true}).click(); await expect(page).toHaveURL(/\/programs$/);
   await expect(page.locator('main[data-react-page]')).toBeVisible();
   expect(await page.evaluate(()=>[...document.querySelectorAll('a[href]')].filter((link)=>link.origin===location.origin&&link.pathname.endsWith('.html')).length)).toBe(0);

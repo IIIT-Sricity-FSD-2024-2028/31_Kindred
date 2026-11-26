@@ -1,3 +1,4 @@
+import { API_BASE } from '../apiBase.js';
 /* global document, getComputedStyle */
 import { test, expect } from '@playwright/test';
 
@@ -18,7 +19,7 @@ const roles = [
 ];
 
 async function setup(page, role, path) {
-  await page.route('http://localhost:3000/**', route => {
+  await page.route(`${API_BASE}/**`, route => {
     const url = new URL(route.request().url()), key = url.pathname.split('/')[1];
     const volunteer = { id: 'actor', name: 'Priya Singh', email: 'actor@kindred.org', status: 'active', availableNow: true, currentLocation: 'Mumbai', availabilityDays: ['Monday'] };
     const data = key === 'organizations' ? [organization] : key === 'programs' ? [program]
@@ -46,7 +47,7 @@ for (const width of [1440, 390]) {
       const count = await tabs.count();
       for (let index = 0; index < Math.max(1, count); index++) {
         if (count) await tabs.nth(index).click();
-        await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
+        await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= globalThis.innerWidth + 1)).toBe(true);
         const box = await main.boundingBox();
         expect(box.x).toBeGreaterThanOrEqual(0);
         expect(box.x + box.width).toBeLessThanOrEqual(width + 1);

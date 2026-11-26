@@ -7,6 +7,7 @@ export interface DeliveryTimestamps {
 }
 
 export interface ShopOrder {
+  buyerReceivedAt?:string;
   id: string;
   productId: string;
   productTitle: string;
@@ -29,5 +30,8 @@ export interface ShopOrder {
   assignedVolunteerName?: string;
   deliveryTimestamps?: DeliveryTimestamps;
   deliveryDonationId: string;
+  cancelledAt?:string;
+  cancellationReason?:string;
+  history?:{at:string;action:string;reason:string}[];
   createdAt: string;
 }

@@ -1,3 +1,5 @@
+import { login } from '../fixtures/liveWorkflow.js';
+import { FRONTEND_BASE } from '../apiBase.js';
 /* global window, document */
 import { test, expect } from '@playwright/test';
 import { routeDefinitions } from '../../src/routes/routeDefinitions.js';
@@ -9,6 +11,7 @@ const makeSession = (role, status = 'approved') => ({ id: ({superuser:'su_001',a
 test('all 53 original document URLs load React instead of their old HTML', async ({ page }) => {
   test.setTimeout(120000);
   await page.goto('/');
+  const sessions=Object.fromEntries(await Promise.all(Object.keys(ROLE_DASHBOARDS).map(async role=>[role,await login(page.request,role)])));
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
@@ -16,7 +19,7 @@ test('all 53 original document URLs load React instead of their old HTML', async
     await page.evaluate((session) => {
       if (session) sessionStorage.setItem('kindred_session', JSON.stringify(session));
       else sessionStorage.removeItem('kindred_session');
-    }, route.roles ? makeSession(route.roles[0]) : null);
+    }, route.roles ? sessions[route.roles[0]] : null);
     await page.goto(route.path);
     await expect(page.locator('main')).toHaveAttribute('data-react-page', route.path);
     await expect(page).toHaveTitle(route.title);
@@ -33,7 +36,7 @@ test('client navigation, query strings, history, and reload work', async ({ page
   await expect(page).toHaveURL(/\/organizations$/);
   expect(await page.evaluate(() => window.__foundationNavigationMarker)).toBe(true);
   await page.goBack();
-  await expect(page).toHaveURL('http://127.0.0.1:5173/');
+  await expect(page).toHaveURL(FRONTEND_BASE + '/');
   await page.goto('/organization-details.html?id=org_001#mission');
   await page.reload();
   await expect(page).toHaveURL(/organization-details\?id=org_001#mission$/);

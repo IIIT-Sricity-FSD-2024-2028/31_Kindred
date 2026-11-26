@@ -1,4 +1,5 @@
-import { useCallback, useRef, useState } from 'react';
+import { useUiState } from '../../store/hooks.js';
+import { useCallback, useRef } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from '../../routes/navigation.jsx';
 import { useAuth } from '../../hooks/useAuth.js';
 import { useDismissable } from '../../hooks/useDismissable.js';
@@ -13,10 +14,10 @@ export default function Navbar({ showShop, variant = 'standard' }) {
   const { session, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useUiState(false);
   const rootRef = useRef(null);
   const triggerRef = useRef(null);
-  const close = useCallback(() => setOpen(false), []);
+  const close = useCallback(() => setOpen(false), [setOpen]);
   useDismissable({ open, rootRef, triggerRef, onClose: close });
   const approved = session?.status === 'approved';
   const organization = variant === 'organization';

@@ -1,7 +1,8 @@
-import { IsArray, IsIn, IsInt, IsOptional, IsString, Min, MinLength, ValidateNested } from 'class-validator';
+import { IsArray, IsBoolean, IsIn, IsInt, IsOptional, IsString, Min, MinLength, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class ResourceRequestDto {
+  @IsOptional() @IsString() unit?:string;
   @IsString() @MinLength(1) orgName!: string;
   @IsString() @MinLength(1) resource!: string;
   @IsInt() @Min(1) quantity!: number;
@@ -22,6 +23,13 @@ export class ResourceResponseDto {
   @IsOptional() @IsString() programId?: string;
 }
 export class DeliveryOfferDto {
+  @IsOptional() @IsString() pickupAddress?:string;
+  @IsOptional() @IsString() scheduledDate?:string;
+  @IsOptional() @IsString() shiftStart?:string;
+  @IsOptional() @IsString() shiftEnd?:string;
+  @IsOptional() @IsString() pickupArea?:string;
+  @IsOptional() @IsString() destinationArea?:string;
+  @IsOptional() @IsString() requirements?:string;
   @IsIn(['collection','resource','order']) kind!: 'collection'|'resource'|'order';
   @IsString() sourceId!: string;
   @IsIn(['direct','broadcast']) mode!: 'direct'|'broadcast';
@@ -29,7 +37,10 @@ export class DeliveryOfferDto {
   @IsOptional() @IsString() collectionAddress?: string;
 }
 export class DeliveryActionDto {
-  @IsIn(['accept','decline','withdraw','picked_up','in_transit','failed','return','cancel']) action!: string;
+  @IsOptional() @IsBoolean() confirmAvailability?:boolean;
+  @IsOptional() @IsBoolean() confirmConflict?:boolean;
+  @IsOptional() @IsString() reviewedVersion?:string;
+  @IsIn(['accept','decline','withdraw','picked_up','in_transit','failed','return','cancel','report']) action!: string;
   @IsOptional() @IsString() reason?: string;
 }
 export class ReceiptDto {
@@ -40,6 +51,7 @@ export class ReceivedItemDto {
   @IsInt() @Min(0) quantity!: number;
 }
 export class RequestUpdateDto {
+  @IsOptional() @IsIn(['received','issue','investigate','resolve','close','reopen']) action?:string;
   @IsString() @MinLength(1) message!: string;
   @IsOptional() @IsString() programId?: string;
 }

@@ -1,3 +1,4 @@
+import { scheduledProgram, readyVolunteer } from './workflow-fixtures';
 import { Test } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
@@ -48,15 +49,17 @@ describe('Listing review and program membership', () => {
 
   it('prevents assignment before volunteer acceptance, including attempts to bypass it, and checks reassignment', async () => {
     const server = app.getHttpServer();
-    const assignment = data(await request(server).post('/program-assignments').set(admin).send({ programId: 'prog_001', programName: 'Cyclone Relief Fund', volunteerEmail: volunteer['user-email'], volunteerName: 'Invited', status: 'active' }).expect(201));
+    readyVolunteer(app, volunteer['user-email']);
+    const program = data(await request(server).post('/programs').set(admin).send({ ...scheduledProgram(), name: 'Membership verification', org: admin.organization, budget: 100, description: 'Verify membership workflow' }).expect(201));
+    const assignment = data(await request(server).post('/program-assignments').set(admin).send({ programId: program.id, programName: program.name, volunteerEmail: volunteer['user-email'], volunteerName: 'Invited', status: 'active' }).expect(201));
     expect(assignment.status).toBe('pending');
-    const task = { title: 'Member task', programId: 'prog_001', assignedToEmail: volunteer['user-email'], assignedToName: 'Invited' };
+    const task = { title: 'Member task', programId: program.id, assignedToEmail: volunteer['user-email'], assignedToName: 'Invited' };
     await request(server).post('/tasks').set(admin).send(task).expect(400);
     await request(server).post('/subtasks').set(admin).send(task).expect(400);
     await request(server).patch(`/program-assignments/${assignment.id}`).set(admin).send({ status: 'active' }).expect(400);
-    await request(server).patch(`/program-assignments/${assignment.id}/respond`).set({ ...volunteer, 'user-email': 'other@example.test' }).send({ action: 'accepted' }).expect(403);
+    await request(server).patch(`/program-assignments/${assignment.id}/respond`).set({ ...volunteer, 'user-email': 'other@example.test' }).send({ action: 'accepted', attendanceConfirmed: true, version: 1 }).expect(403);
     await request(server).patch(`/program-assignments/${assignment.id}/respond`).set(volunteer).send({ action: 'invalid' }).expect(400);
-    await request(server).patch(`/program-assignments/${assignment.id}/respond`).set(volunteer).send({ action: 'accepted' }).expect(200);
+    await request(server).patch(`/program-assignments/${assignment.id}/respond`).set(volunteer).send({ action: 'accepted', attendanceConfirmed: true, version: 1 }).expect(200);
     const savedTask = data(await request(server).post('/tasks').set(admin).send(task).expect(201));
     const savedSubtask = data(await request(server).post('/subtasks').set(admin).send(task).expect(201));
     for (const [collection, id] of [['tasks', savedTask.id], ['subtasks', savedSubtask.id]]) {
@@ -64,7 +67,8 @@ describe('Listing review and program membership', () => {
       await request(server).patch(`/${collection}/${id}`).set(admin).send({ programId: 'prog_002' }).expect(400);
       await request(server).patch(`/${collection}/${id}`).set(admin).send({ programId: '' }).expect(collection === 'tasks' ? 400 : 404);
     }
-    await request(server).patch(`/program-assignments/${assignment.id}`).set(admin).send({ status: 'cancelled' }).expect(200);
+    await request(server).patch(`/program-assignments/${assignment.id}`).set(admin).send({ status: 'cancelled' }).expect(400);
+    await request(server).patch(`/participation/memberships/${assignment.id}/withdraw`).set(volunteer).send({ reason: 'Cannot attend; cancel unstarted work' }).expect(200);
     await request(server).post('/tasks').set(admin).send(task).expect(400);
     await request(server).patch(`/program-assignments/${assignment.id}`).set(admin).send({ status: 'pending' }).expect(200);
     await request(server).patch(`/program-assignments/${assignment.id}/respond`).set(volunteer).send({ action: 'declined' }).expect(200);

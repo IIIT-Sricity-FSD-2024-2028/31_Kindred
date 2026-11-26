@@ -1,3 +1,4 @@
+import { API_BASE } from '../apiBase.js';
 /* global window */
 import {test,expect} from '@playwright/test';
 
@@ -5,7 +6,7 @@ const program={id:'portal-program',name:'Portal teaching',org:'HopeConnect',stat
 const volunteer={id:'portal-volunteer',name:'Portal Volunteer',email:'portal@example.org',org:'Another NGO',status:'active',skills:['Teaching']};
 async function setup(page){
   const data={applications:[],assignments:[],tasks:[],writes:[]};
-  await page.route('http://localhost:3000/**',route=>{
+  await page.route(`${API_BASE}/**`,route=>{
     const req=route.request(),path=new URL(req.url()).pathname;
     if(req.method()!=='GET'){
       const body=req.postDataJSON();data.writes.push({path,body});let result={};

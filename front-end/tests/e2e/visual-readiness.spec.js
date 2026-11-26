@@ -1,3 +1,4 @@
+import { login, readyVolunteer, futureDate } from '../fixtures/liveWorkflow.js';
 /* global document, getComputedStyle */
 import { test, expect } from '@playwright/test';
 
@@ -22,12 +23,17 @@ test('a failed route stylesheet shows an error and allows reload instead of stay
 
 test('program choices retain original neutral and selected styles', async ({page}) => {
   await page.goto('/');
-  await page.evaluate(()=>sessionStorage.setItem('kindred_session',JSON.stringify({id:'adm_001',name:'Rajesh Verma',email:'admin@hopeconnect.org',org:'HopeConnect',role:'admin',status:'approved'})));
+  await readyVolunteer(page.request);
+  const session=await login(page.request,'admin');
+  await page.evaluate(value=>sessionStorage.setItem('kindred_session',JSON.stringify(value)),session);
   await page.goto('/create-program.html');
   const education=page.locator('#progCategoryContainer').getByLabel('Education',{exact:true});
   await education.check();
   await expect.poll(()=>education.evaluate((input)=>getComputedStyle(input.parentElement).backgroundColor)).toBe('rgb(254, 243, 199)');
   await education.uncheck();
   await expect.poll(()=>education.evaluate((input)=>getComputedStyle(input.parentElement).backgroundColor)).toBe('rgb(255, 255, 255)');
-  await expect(page.locator('#progVolsContainer .program-volunteer').first()).toContainText('@');
+  await page.getByLabel('Start date',{exact:true}).fill(futureDate()); await page.locator('#programEndDate').fill(futureDate(14));
+  await page.getByLabel('Shift starts',{exact:true}).fill('17:00'); await page.getByLabel('Shift ends',{exact:true}).fill('18:00'); await page.locator('#programLocation').fill('Pune');
+  await page.getByRole('checkbox',{name:'Monday',exact:true}).check();
+  await expect(page.locator('#progVolsContainer .candidate-card').first()).toContainText('@');
 });

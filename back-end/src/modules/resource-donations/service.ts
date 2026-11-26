@@ -6,9 +6,12 @@ import { CreateResourceDonationDto } from './dto/create-resource-donation.dto';
 import { UpdateResourceDonationDto } from './dto/update-resource-donation.dto';
 import { OrganizationsService } from '../organizations/service';
 import { ProgramsService } from '../programs/service';
+import { NotificationsService } from '../notifications/service';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class ResourceDonationsService {
+  @Inject(NotificationsService) private readonly notifications: NotificationsService;
   @Inject(ProofStore) private readonly proofs!: ProofStore;
   private donations: ResourceDonation[] = [
     {
@@ -73,8 +76,18 @@ export class ResourceDonationsService {
     if (!donation) throw new NotFoundException('Donation not found');
     donation.status='completed'; donation.deliveredAt=new Date().toISOString();
   }
-  recordReceipt(id: string) {
-    const donation=this.donations.find(d=>d.id===id);if(!donation)throw new NotFoundException('Donation not found');donation.status='received';
+  recordReceipt(id: string,received:{index:number;quantity:number}[]) {
+    const donation=this.donations.find(d=>d.id===id);if(!donation)throw new NotFoundException('Donation not found');
+    if(donation.certificate)return donation.certificate;
+    donation.status='received';
+    donation.certificate={id:`RESOURCE-${randomUUID()}`,issuedAt:new Date().toISOString(),donationId:id,organization:donation.orgName||'',donorName:donation.donorName,donorEmail:donation.donorEmail,programName:donation.programName,items:received.map(item=>{const original=donation.items[item.index];return {name:original.name,quantity:item.quantity,unit:original.unit||'unit',condition:original.condition,offeredQuantity:original.quantity};})};
+    return donation.certificate;
+  }
+
+  donationOptions() {
+    const organizations=this.organizations.findAll().filter(o=>o.status==='active').map(o=>({id:o.id,name:o.name,focus:o.focus,city:o.city,neededResources:o.neededResources||'',image:o.image}));
+    const programs=this.programs.findAll().filter(p=>p.status==='active'&&(p.listingStatus==='approved'||p.openForApplications)&&organizations.some(o=>o.name===p.org)).map(p=>({id:p.id,name:p.name,org:p.org,status:p.status}));
+    return {organizations,programs};
   }
 
   private generateId(): string {
@@ -120,8 +133,10 @@ export class ResourceDonationsService {
   create(dto: CreateResourceDonationDto): ResourceDonation {
     if (dto.category !== 'Shop Delivery') {
       const program=dto.programId ? this.programs.findById(dto.programId) : undefined;
-      const org=this.organizations.findAll().find(o=>o.name===(dto.orgName||program?.org));
-      if(!org||org.status!=='active'||(program&&program.org!==org.name))throw new BadRequestException('Select an active recipient organization and a matching program');
+      if(!dto.orgId?.trim()&&!dto.orgName?.trim())throw new BadRequestException('Recipient organization is required');
+      const org=this.organizations.findAll().find(o=>dto.orgId?o.id===dto.orgId:o.name===dto.orgName);
+      if(!org||org.status!=='active'||dto.orgName&&dto.orgName!==org.name||(program&&(program.org!==org.name||!this.donationOptions().programs.some(p=>p.id===program.id))))throw new BadRequestException('Select an active recipient organization and one of its available programs');
+      if(!dto.items.length||dto.items.some(item=>!item.name?.trim()||!Number.isInteger(item.quantity)||item.quantity<1))throw new BadRequestException('Enter each donated item and its positive whole-number quantity');
       dto={...dto,orgName:org.name,orgId:org.id,programName:program?.name||''};
     }
     const newDon: ResourceDonation = {
@@ -131,7 +146,7 @@ export class ResourceDonationsService {
       donorEmail: dto.donorEmail,
       donorPhone: dto.donorPhone,
       category: dto.category,
-      items: dto.items,
+      items: dto.items.map(item=>({...item,name:item.name.trim(),unit:(item.unit||'unit').trim().toLowerCase()})),
       description: dto.description,
       pickupAddress: dto.pickupAddress,
       pickupDate: dto.pickupDate,
@@ -149,6 +164,7 @@ export class ResourceDonationsService {
       createdAt: new Date().toISOString(),
     };
     this.donations.push(newDon);
+    if(newDon.category!=='Shop Delivery')this.notifications?.create({targetOrg:newDon.orgName,title:'New resource donation',message:`${newDon.donorName}: ${newDon.items.map(item=>`${item.name} ${item.quantity} ${item.unit}`).join(', ')}`,link:'/org-admin#resources',type:'info'});
     return { ...newDon };
   }
 
